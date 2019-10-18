@@ -23,7 +23,7 @@
 #include <QPointer>
 #include <memory>
 #include <string>
-#include <libff/ff-util.h>	
+#include <libff/ff-util.h>
 #include <QStringList>
 
 #include<window-control.hpp>
@@ -247,6 +247,10 @@ private slots:
 	void on_useStreamKey_clicked();
 	void on_useAuth_toggled();
 
+	void HotkeysTabChanged(int tab);
+	void HotkeysComboChanged(const QString &text);
+	void FiltersSourceComboChanged(const QString &text);
+
 private:
 	bool startup = true;
 	/* output */
@@ -430,8 +434,8 @@ public:
 	std::vector<sources_elem_t> filters;
  private slots:
 	void obs_type_select(int);
-	
+
 signals:
 	void onControlChange(QString Change);
-	
+
 };
