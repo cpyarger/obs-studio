@@ -77,6 +77,10 @@ private:
 
 	bool editActive = false;
 
+	std::string gundo_data;
+	bool changed = false;
+	std::vector<std::string> add_filters;
+
 private slots:
 	void AddFilter(OBSSource filter, bool focus = true);
 	void RemoveFilter(OBSSource filter);

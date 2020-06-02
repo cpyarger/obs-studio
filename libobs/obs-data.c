@@ -1351,6 +1351,16 @@ void obs_data_array_erase(obs_data_array_t *array, size_t idx)
 	}
 }
 
+void obs_data_array_enum(obs_data_array_t *array,
+			 void (*cb)(obs_data_t *data, void *param), void *param)
+{
+	if (array && cb) {
+		for (size_t i = 0; i < array->objects.num; i++) {
+			cb(array->objects.array[i], param);
+		}
+	}
+}
+
 /* ------------------------------------------------------------------------- */
 /* Item status inspection */
 

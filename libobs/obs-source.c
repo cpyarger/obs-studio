@@ -929,8 +929,9 @@ void obs_source_update(obs_source_t *source, obs_data_t *settings)
 	if (!obs_source_valid(source, "obs_source_update"))
 		return;
 
-	if (settings)
+	if (settings) {
 		obs_data_apply(source->context.settings, settings);
+	}
 
 	if (source->info.output_flags & OBS_SOURCE_VIDEO) {
 		os_atomic_inc_long(&source->defer_update_count);
@@ -3591,6 +3592,25 @@ const char *obs_source_get_id(const obs_source_t *source)
 							     : NULL;
 }
 
+obs_source_t *obs_get_source_by_id(const char *id)
+{
+	obs_source_t *source = obs->data.first_source;
+
+	pthread_mutex_lock(&obs->data.sources_mutex);
+
+	while (source) {
+		if (strcmp(source->info.id, id) == 0) {
+			break;
+		}
+
+		source = (obs_source_t *)source->context.next;
+	}
+
+	pthread_mutex_unlock(&obs->data.sources_mutex);
+
+	return source;
+}
+
 const char *obs_source_get_unversioned_id(const obs_source_t *source)
 {
 	return obs_source_valid(source, "obs_source_get_unversioned_id")
@@ -4282,6 +4302,16 @@ void obs_source_enum_filters(obs_source_t *source,
 	}
 
 	pthread_mutex_unlock(&source->filter_mutex);
+}
+
+void obs_source_set_hidden(obs_source_t *source, bool hidden)
+{
+	source->temp_removed = hidden;
+}
+
+bool obs_source_is_hidden(obs_source_t *source)
+{
+	return source->temp_removed;
 }
 
 obs_source_t *obs_source_get_filter_by_name(obs_source_t *source,

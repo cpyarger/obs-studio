@@ -298,9 +298,28 @@ Scene Item Functions
 
 ---------------------
 
+.. function:: obs_sceneitem_t *obs_scene_sceneitem_from_source(obs_scene_t *scene, obs_source_t *source)
+
+   :return: The sceneitem associated with a source in a scene
+
+---------------------
+
+.. function:: void obs_sceneitem_set_id(obs_sceneitem_t *item);
 .. function:: int64_t obs_sceneitem_get_id(const obs_sceneitem_t *item)
 
-   :return: The unique numeric identifier of the scene item.
+   This shouldn't really be used.
+
+   :return: Sets/gets the unique numeric identifier of the scene item.
+
+---------------------
+
+.. function:: obs_data_t *obs_scene_save_transform_states(obs_scene_t *scene, bool all_items)
+.. function:: void obs_scene_load_transform_states(oconst char *states)
+
+   Saves all the transformation states for the sceneitms in scene. When all_items is false, it
+   will only save selected items
+
+   :return: Data containing transformation states for all* sceneitems in scene
 
 ---------------------
 
@@ -353,8 +372,11 @@ Scene Item Functions
 ---------------------
 
 .. function:: void obs_sceneitem_set_order_position(obs_sceneitem_t *item, int position)
+.. function:: int obs_sceneitem_get_order_positionobs_sceneitem_t *item)
 
    Changes the scene item's order index.
+
+   :return: Getter gets position of sceneitem in its scene
 
 ---------------------
 

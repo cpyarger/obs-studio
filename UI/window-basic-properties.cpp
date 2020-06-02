@@ -341,6 +341,46 @@ void OBSBasicProperties::on_buttonBox_clicked(QAbstractButton *button)
 	QDialogButtonBox::ButtonRole val = buttonBox->buttonRole(button);
 
 	if (val == QDialogButtonBox::AcceptRole) {
+
+		std::string scene_name =
+			obs_source_get_name(main->GetCurrentSceneSource());
+		auto undo_redo = [this, scene_name](const std::string &data) {
+			obs_data_t *settings =
+				obs_data_create_from_json(data.c_str());
+			obs_source_t *source = obs_get_source_by_name(
+				obs_data_get_string(settings, "undo_sname"));
+			obs_source_update(source, settings);
+
+			obs_source_t *scene_source =
+				obs_get_source_by_name(scene_name.c_str());
+			main->SetCurrentScene(source);
+			obs_source_release(scene_source);
+
+			obs_data_release(settings);
+			obs_source_release(source);
+		};
+
+		obs_data_t *new_settings = obs_data_create();
+		obs_data_t *curr_settings = obs_source_get_settings(source);
+		obs_data_apply(new_settings, curr_settings);
+		obs_data_set_string(new_settings, "undo_sname",
+				    obs_source_get_name(source));
+		obs_data_set_string(oldSettings, "undo_sname",
+				    obs_source_get_name(source));
+
+		std::string undo_data(obs_data_get_json(oldSettings));
+		std::string redo_data(obs_data_get_json(new_settings));
+
+		if (undo_data.compare(redo_data) != 0)
+			main->undo_s.add_action(
+				QTStr("Undo.Properties")
+					.arg(obs_source_get_name(source)),
+				undo_redo, undo_redo, undo_data, redo_data,
+				NULL);
+
+		obs_data_release(new_settings);
+		obs_data_release(curr_settings);
+
 		acceptClicked = true;
 		close();
 

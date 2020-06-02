@@ -1891,7 +1891,8 @@ void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
 	for (i = 0; i < count; i++) {
 		obs_data_t *source_data = obs_data_array_item(array, i);
 		obs_source_t *source = obs_load_source(source_data);
-
+		blog(LOG_INFO, "------------------------: %s",
+		     obs_source_get_name(source));
 		da_push_back(sources, &source);
 
 		obs_data_release(source_data);
