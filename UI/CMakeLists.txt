@@ -261,7 +261,6 @@ set(obs_SOURCES
 	slider-absoluteset-style.cpp
 	qt-display.cpp
 	crash-report.cpp
-	hotkey-edit.cpp
 	source-label.cpp
 	remote-text.cpp
 	audio-encoders.cpp
@@ -323,7 +322,6 @@ set(obs_HEADERS
 	slider-absoluteset-style.hpp
 	qt-display.hpp
 	crash-report.hpp
-	hotkey-edit.hpp
 	source-label.hpp
 	remote-text.hpp
 	audio-encoders.hpp

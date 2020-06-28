@@ -344,8 +344,7 @@ private slots:
 	void VideoChanged();
 	void VideoChangedResolution();
 	void VideoChangedRestart();
-	void HotkeysChanged();
-	void ReloadHotkeys(obs_hotkey_id ignoreKey = OBS_INVALID_HOTKEY_ID);
+
 	void AdvancedChanged();
 	void AdvancedChangedRestart();
 
