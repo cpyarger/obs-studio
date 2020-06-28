@@ -4421,10 +4421,7 @@ QIcon OBSBasicSettings::GetVideoIcon() const
 	return videoIcon;
 }
 
-QIcon OBSBasicSettings::GetHotkeysIcon() const
-{
-	return hotkeysIcon;
-}
+
 
 QIcon OBSBasicSettings::GetAdvancedIcon() const
 {
@@ -4456,10 +4453,7 @@ void OBSBasicSettings::SetVideoIcon(const QIcon &icon)
 	ui->listWidget->item(4)->setIcon(icon);
 }
 
-void OBSBasicSettings::SetHotkeysIcon(const QIcon &icon)
-{
-	ui->listWidget->item(5)->setIcon(icon);
-}
+
 
 void OBSBasicSettings::SetAdvancedIcon(const QIcon &icon)
 {

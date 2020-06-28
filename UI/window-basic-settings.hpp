@@ -36,7 +36,6 @@ class QComboBox;
 class QCheckBox;
 class QLabel;
 class OBSPropertiesView;
-class OBSHotkeyWidget;
 
 #include "ui_OBSBasicSettings.h"
 
@@ -94,8 +93,7 @@ class OBSBasicSettings : public QDialog {
 			   DESIGNABLE true)
 	Q_PROPERTY(QIcon videoIcon READ GetVideoIcon WRITE SetVideoIcon
 			   DESIGNABLE true)
-	Q_PROPERTY(QIcon hotkeysIcon READ GetHotkeysIcon WRITE SetHotkeysIcon
-			   DESIGNABLE true)
+
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
 
@@ -149,9 +147,7 @@ private:
 	OBSSignal sourceCreated;
 	OBSSignal channelChanged;
 
-	std::vector<std::pair<bool, QPointer<OBSHotkeyWidget>>> hotkeys;
-	OBSSignal hotkeyRegistered;
-	OBSSignal hotkeyUnregistered;
+	
 
 	uint32_t outputCX = 0;
 	uint32_t outputCY = 0;
@@ -214,8 +210,7 @@ private:
 	void LoadOutputSettings();
 	void LoadAudioSettings();
 	void LoadVideoSettings();
-	void
-	LoadHotkeySettings(obs_hotkey_id ignoreKey = OBS_INVALID_HOTKEY_ID);
+	
 	void LoadAdvancedSettings();
 	void LoadSettings(bool changedOnly);
 
@@ -294,7 +289,6 @@ private:
 	QIcon outputIcon;
 	QIcon audioIcon;
 	QIcon videoIcon;
-	QIcon hotkeysIcon;
 	QIcon advancedIcon;
 
 	QIcon GetGeneralIcon() const;
@@ -370,7 +364,6 @@ private slots:
 	void SetOutputIcon(const QIcon &icon);
 	void SetAudioIcon(const QIcon &icon);
 	void SetVideoIcon(const QIcon &icon);
-	void SetHotkeysIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
 
 protected:

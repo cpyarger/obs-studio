@@ -21,8 +21,8 @@
 #include <QPointer>
 #include <QStyle>
 
-#include "obs-app.hpp"
-#include "qt-wrappers.hpp"
+//#include "obs-app.hpp"
+//#include "qt-wrappers.hpp"
 
 static inline bool operator!=(const obs_key_combination_t &c1,
 			      const obs_key_combination_t &c2)
@@ -63,8 +63,7 @@ void OBSHotkeyEdit::keyPressEvent(QKeyEvent *event)
 			obs_key_from_virtual_key(event->nativeVirtualKey());
 	}
 
-	new_key.modifiers =
-		TranslateQtKeyboardEventModifiers(event->modifiers());
+	//new_key.modifiers =TranslateQtKeyboardEventModifiers(event->modifiers());
 
 	HandleNewKey(new_key);
 }
@@ -136,8 +135,7 @@ void OBSHotkeyEdit::mousePressEvent(QMouseEvent *event)
 #undef MAP_BUTTON
 	}
 
-	new_key.modifiers =
-		TranslateQtKeyboardEventModifiers(event->modifiers());
+	//new_key.modifiers =TranslateQtKeyboardEventModifiers(event->modifiers());
 
 	HandleNewKey(new_key);
 }
@@ -160,7 +158,7 @@ void OBSHotkeyEdit::RenderKey()
 	DStr str;
 	obs_key_combination_to_str(key, str);
 
-	setText(QT_UTF8(str));
+	//setText(QT_UTF8(str));
 }
 
 void OBSHotkeyEdit::ResetKey()
@@ -271,14 +269,14 @@ void OBSHotkeyWidget::AddEdit(obs_key_combination combo, int idx)
 
 	auto revert = new QPushButton;
 	revert->setProperty("themeID", "revertIcon");
-	revert->setToolTip(QTStr("Revert"));
+	//revert->setToolTip(QTStr("Revert"));
 	revert->setFixedSize(24, 24);
 	revert->setFlat(true);
 	revert->setEnabled(false);
 
 	auto clear = new QPushButton;
 	clear->setProperty("themeID", "trashIcon");
-	clear->setToolTip(QTStr("Clear"));
+	//clear->setToolTip(QTStr("Clear"));
 	clear->setFixedSize(24, 24);
 	clear->setFlat(true);
 	clear->setEnabled(!obs_key_combination_is_empty(combo));
