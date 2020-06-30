@@ -72,7 +72,6 @@ struct obs_control_info {
 	enum obs_control_type type;
 
 	/** Control output flags */
-	uint32_t output_flags;
 
 	/**
 	 * Get the translated name of the control type

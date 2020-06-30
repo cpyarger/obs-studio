@@ -32,7 +32,6 @@ static const char *control_signals[] = {
 	"void update_properties(ptr control)",
 	NULL,
 };
-
 static inline bool data_valid(const struct obs_control *control, const char *f)
 {
 	return obs_control_valid(control, f) && control->context.data;
@@ -157,7 +156,6 @@ obs_control_create_internal(const char *id, const char *name,
 	blog(LOG_DEBUG, "%scontrol '%s' (%s) created", private ? "private " : "",
 	     name, id);
 
-	control->flags = control->default_flags;
 	control->enabled = true;
 
 	if (!private) {
@@ -183,7 +181,7 @@ obs_control_t *obs_control_create(const char *id, const char *name,
 obs_control_t *obs_control_create_private(const char *id, const char *name,
 					obs_data_t *settings)
 {
-	return obs_control_create_internal(id, name, settings, NULL, true,
+	return obs_control_create_internal(id, name, settings,  true,
 					  LIBOBS_API_VER);
 }
 
@@ -400,18 +398,8 @@ obs_properties_t *obs_control_properties(const obs_control_t *control)
 	return NULL;
 }
 
-uint32_t obs_control_get_output_flags(const obs_control_t *control)
-{
-	return obs_control_valid(control, "obs_control_get_output_flags")
-		       ? control->info.output_flags
-		       : 0;
-}
 
-uint32_t obs_get_control_output_flags(const char *id)
-{
-	const struct obs_control_info *info = get_control_info(id);
-	return info ? info->output_flags : 0;
-}
+
 
 static void obs_control_deferred_update(obs_control_t *control)
 {

@@ -722,9 +722,7 @@ EXPORT obs_data_array_t *obs_save_controls(void);
 typedef bool (*obs_save_control_filter_cb)(void *data, obs_control_t *control);
 EXPORT obs_data_array_t *obs_save_controls_filtered(obs_save_control_filter_cb cb,
 						   void *data);
-EXPORT void obs_control_enum_active_controls(obs_control_t *control,
-					   obs_control_enum_proc_t enum_callback,
-					   void *param);
+EXPORT void obs_control_enum_active_controls(obs_control_t *control,  obs_control_enum_proc_t enum_callback,  void *param);
 
 /** Enumerates the entire active child control tree used by this control */
 EXPORT void obs_control_enum_active_tree(obs_control_t *control,
