@@ -23,8 +23,12 @@
 #include <QPointer>
 #include <memory>
 #include <string>
-
+#if __has_include(<libff/ff-util.h>)
 #include <libff/ff-util.h>
+#else
+#include "../deps/libff/libff/ff-util.h" 
+#endif
+
 
 #include <obs.hpp>
 
@@ -36,9 +40,11 @@ class QComboBox;
 class QCheckBox;
 class QLabel;
 class OBSPropertiesView;
-
+#if __has_include("ui_OBSBasicSettings.h")
 #include "ui_OBSBasicSettings.h"
-
+#else()
+#include "../UI/ui_OBSBasicSettings.h"
+#endif
 #define VOLUME_METER_DECAY_FAST 23.53
 #define VOLUME_METER_DECAY_MEDIUM 11.76
 #define VOLUME_METER_DECAY_SLOW 8.57
@@ -93,7 +99,8 @@ class OBSBasicSettings : public QDialog {
 			   DESIGNABLE true)
 	Q_PROPERTY(QIcon videoIcon READ GetVideoIcon WRITE SetVideoIcon
 			   DESIGNABLE true)
-
+	Q_PROPERTY(QIcon controlsIcon READ GetControlsIcon WRITE SetControlsIcon
+			   DESIGNABLE true)
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
 
@@ -210,7 +217,8 @@ private:
 	void LoadOutputSettings();
 	void LoadAudioSettings();
 	void LoadVideoSettings();
-	
+	void ControlsChanged();
+	void ReloadControls();
 	void LoadAdvancedSettings();
 	void LoadSettings(bool changedOnly);
 
@@ -289,6 +297,7 @@ private:
 	QIcon outputIcon;
 	QIcon audioIcon;
 	QIcon videoIcon;
+	QIcon controlsIcon;
 	QIcon advancedIcon;
 
 	QIcon GetGeneralIcon() const;
@@ -296,7 +305,7 @@ private:
 	QIcon GetOutputIcon() const;
 	QIcon GetAudioIcon() const;
 	QIcon GetVideoIcon() const;
-	QIcon GetHotkeysIcon() const;
+	QIcon GetControlsIcon() const;
 	QIcon GetAdvancedIcon() const;
 
 	int CurrentFLVTrack();
@@ -364,7 +373,9 @@ private slots:
 	void SetOutputIcon(const QIcon &icon);
 	void SetAudioIcon(const QIcon &icon);
 	void SetVideoIcon(const QIcon &icon);
+	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
+
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -372,4 +383,7 @@ protected:
 public:
 	OBSBasicSettings(QWidget *parent);
 	~OBSBasicSettings();
+	QListWidget getControlsList();
+	QStackedWidget GetControlsStack();
+	int AddControlPage(QIcon icon, QString name, QWidget page);
 };

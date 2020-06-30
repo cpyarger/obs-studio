@@ -34,6 +34,7 @@
 #include <QScreen>
 #include <QStandardItemModel>
 #include <QSpacerItem>
+#include <QListWidget>
 
 #include "audio-encoders.hpp"
 #include "source-label.hpp"
@@ -45,7 +46,7 @@
 #include "window-basic-settings.hpp"
 #include "window-basic-main-outputs.hpp"
 #include "window-projector.hpp"
-
+#include "control-edit.hpp"
 #include <util/platform.h>
 #include "ui-config.h"
 
@@ -808,6 +809,9 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	QValidator *validator = new QRegExpValidator(rx, this);
 	ui->baseResolution->lineEdit()->setValidator(validator);
 	ui->outputResolution->lineEdit()->setValidator(validator);
+
+	// Controls Plugin stuff
+	//connect(OBSControl(), SIGNAL(ModuleLoaded), this, SLOT(AddControlPage));
 }
 
 OBSBasicSettings::~OBSBasicSettings()
@@ -4420,7 +4424,10 @@ QIcon OBSBasicSettings::GetVideoIcon() const
 {
 	return videoIcon;
 }
-
+QIcon OBSBasicSettings::GetControlsIcon() const
+{
+	return controlsIcon;
+}
 
 
 QIcon OBSBasicSettings::GetAdvancedIcon() const
@@ -4452,8 +4459,10 @@ void OBSBasicSettings::SetVideoIcon(const QIcon &icon)
 {
 	ui->listWidget->item(4)->setIcon(icon);
 }
-
-
+void OBSBasicSettings::SetControlsIcon(const QIcon &icon)
+{
+	ui->listWidget->item(5)->setIcon(icon);
+}
 
 void OBSBasicSettings::SetAdvancedIcon(const QIcon &icon)
 {
@@ -4476,4 +4485,16 @@ int OBSBasicSettings::CurrentFLVTrack()
 		return 6;
 
 	return 0;
+}
+
+QListWidget OBSBasicSettings::getControlsList() {
+	return static_cast<QListWidget>(this);
+}
+
+int OBSBasicSettings::AddControlPage(QIcon icon, QString name,
+				     QWidget page) {
+	QListWidgetItem *newpage = new QListWidgetItem(icon, name);
+	ui->ControlsListWidget->addItem(newpage);
+	int PageNumber = ui->ControlsStackedWidget->addWidget(&page);
+	return PageNumber;
 }

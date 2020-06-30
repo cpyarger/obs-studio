@@ -62,13 +62,22 @@ void *obs_frontend_get_main_window(void)
 	return !!callbacks_valid() ? c->obs_frontend_get_main_window()
 				   : nullptr;
 }
+void *obs_frontend_get_settings_window(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_settings_window()
+				   : nullptr;
+}
 
 void *obs_frontend_get_main_window_handle(void)
 {
 	return !!callbacks_valid() ? c->obs_frontend_get_main_window_handle()
 				   : nullptr;
 }
-
+void *obs_frontend_get_settings_window_handle(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_settings_window_handle()
+				   : nullptr;
+}
 void *obs_frontend_get_system_tray(void)
 {
 	return !!callbacks_valid() ? c->obs_frontend_get_system_tray()

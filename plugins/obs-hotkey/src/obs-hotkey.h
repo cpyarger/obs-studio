@@ -74,10 +74,8 @@ map<obs_hotkey_id, pair<obs_hotkey_id, OBSHotkeyLabel *>> pairLabels;
 std::vector<std::pair<bool, QPointer<OBSHotkeyWidget>>> hotkeys;
 OBSSignal hotkeyRegistered;
 OBSSignal hotkeyUnregistered;
-class OBSHotkey:QFormLayout{
-	
-
-
+class OBSHotkey:QWidget{
+	Q_OBJECT
 
 
 public:

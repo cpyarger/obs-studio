@@ -1,5 +1,5 @@
 #include "hotkey-edit.hpp"
-#include "obs-hotkey.h""
+//#include "obs-hotkey.h""
 auto ReloadHotkeys = [](void *data, calldata_t *) {	
 		auto settings = static_cast<OBSHotkey *>(data);	
 		//QMetaObject::invokeMethod(settings, "ReloadHotkeys");	

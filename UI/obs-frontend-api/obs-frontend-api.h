@@ -86,7 +86,10 @@ obs_frontend_source_list_free(struct obs_frontend_source_list *source_list)
 #ifndef SWIG
 
 EXPORT void *obs_frontend_get_main_window(void);
+EXPORT void *obs_frontend_get_settings_window(void);
 EXPORT void *obs_frontend_get_main_window_handle(void);
+EXPORT void *obs_frontend_get_settings_window_handle(void);
+
 EXPORT void *obs_frontend_get_system_tray(void);
 
 EXPORT char **obs_frontend_get_scene_names(void);

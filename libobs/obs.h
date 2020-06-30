@@ -50,6 +50,7 @@ struct obs_service;
 struct obs_module;
 struct obs_fader;
 struct obs_volmeter;
+struct obs_control;
 
 typedef struct obs_display obs_display_t;
 typedef struct obs_view obs_view_t;
@@ -62,7 +63,7 @@ typedef struct obs_service obs_service_t;
 typedef struct obs_module obs_module_t;
 typedef struct obs_fader obs_fader_t;
 typedef struct obs_volmeter obs_volmeter_t;
-
+typedef struct obs_control obs_control_t;
 typedef struct obs_weak_source obs_weak_source_t;
 typedef struct obs_weak_output obs_weak_output_t;
 typedef struct obs_weak_encoder obs_weak_encoder_t;
@@ -74,6 +75,7 @@ typedef struct obs_weak_service obs_weak_service_t;
 #include "obs-service.h"
 #include "obs-audio-controls.h"
 #include "obs-hotkey.h"
+#include "obs-control.h"
 
 /**
  * @file
@@ -615,7 +617,8 @@ EXPORT obs_encoder_t *obs_get_encoder_by_name(const char *name);
 
 /** Gets an service by its name. */
 EXPORT obs_service_t *obs_get_service_by_name(const char *name);
-
+/** gets a control by its name */
+EXPORT obs_control_t *obs_get_control_by_name(const char *name);
 enum obs_base_effect {
 	OBS_EFFECT_DEFAULT,         /**< RGB/YUV */
 	OBS_EFFECT_DEFAULT_RECT,    /**< RGB/YUV (using texture_rect) */

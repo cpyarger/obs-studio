@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="ListWidget">
+    <file>cposc-light.svg</file>
+    <file>cposc-light2.svg</file>
+    <file>hotkeys-light.svg</file>
+    <file>midi-light.svg</file>
+  </qresource>
+</RCC>
