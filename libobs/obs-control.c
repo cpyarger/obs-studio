@@ -64,7 +64,8 @@ struct obs_control_info *get_control_info2(const char *unversioned_id,
 
 
 bool obs_control_init_context(struct obs_control *control, obs_data_t *settings,
-			     const char *name, 
+			      const char *name,
+			      obs_data_t *hotkey_data,
 			     bool private)
 {
 	if (!obs_context_data_init(&control->context, OBS_OBJ_TYPE_CONTROL,
@@ -126,7 +127,7 @@ obs_control_create_internal(const char *id, const char *name,
 
 	control->last_obs_ver = last_obs_ver;
 
-	if (!obs_control_init_context(control, settings, name,
+	if (!obs_control_init_context(control, settings, name,NULL,
 				     private))
 		goto fail;
 

@@ -237,28 +237,7 @@ struct obs_control_info {
 	 */
 	void (*free_type_data)(void *type_data);
 
-	bool (*audio_render)(void *data, uint64_t *ts_out,
-			     struct obs_control_audio_mix *audio_output,
-			     uint32_t mixers, size_t channels,
-			     size_t sample_rate);
 
-	/**
-	 * Called to enumerate all active and inactive controls being used
-	 * within this control.  If this callback isn't implemented,
-	 * enum_active_controls will be called instead.
-	 *
-	 * This is typically used if a control can have inactive child controls.
-	 *
-	 * @param  data           Filter data
-	 * @param  enum_callback  Enumeration callback
-	 * @param  param          User data to pass to callback
-	 */
-	void (*enum_all_controls)(void *data,
-				 obs_control_enum_proc_t enum_callback,
-				 void *param);
-
-	void (*transition_start)(void *data);
-	void (*transition_stop)(void *data);
 
 	/**
 	 * Gets the default settings for this control
@@ -280,14 +259,14 @@ struct obs_control_info {
 	 */
 	obs_properties_t *(*get_properties2)(void *data, void *type_data);
 
-	bool (*audio_mix)(void *data, uint64_t *ts_out,
-			  struct audio_output_data *audio_output,
-			  size_t channels, size_t sample_rate);
 
 	/** Icon type for the control */
 	enum obs_icon_type icon_type;
 
-
+	
+	void (*enum_all_controls)(void *data,
+				  obs_control_enum_proc_t enum_callback,
+				  void *param);
 	/* version-related stuff */
 	uint32_t version; /* increment if needed to specify a new version */
 	const char *unversioned_id; /* set internally, don't set manually */
@@ -295,6 +274,8 @@ struct obs_control_info {
 
 EXPORT void obs_register_control_s(const struct obs_control_info *info,
 				  size_t size);
+
+
 
 /**
  * Registers a control definition to the current obs context.  This should be

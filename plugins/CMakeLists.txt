@@ -82,5 +82,5 @@ add_subdirectory(obs-text)
 add_subdirectory(rtmp-services)
 add_subdirectory(text-freetype2)
 #add_subdirectory(obs-midi)
-add_subdirectory(test-controls)
+#add_subdirectory(test-controls)
 

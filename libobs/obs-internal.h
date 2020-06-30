@@ -73,6 +73,8 @@ static inline bool obs_object_valid(const void *obj, const char *f,
 
 #define obs_ptr_valid(ptr, func) obs_object_valid(ptr, func, #ptr)
 #define obs_source_valid obs_ptr_valid
+#define obs_control_valid obs_ptr_valid
+
 #define obs_output_valid obs_ptr_valid
 #define obs_encoder_valid obs_ptr_valid
 #define obs_service_valid obs_ptr_valid
@@ -809,20 +811,22 @@ static inline void obs_source_dosignal(struct obs_source *source,
 		signal_handler_signal(source->context.signals, signal_source,
 				      &data);
 }
+extern bool obs_control_init_context(struct obs_control *control,
+				     obs_data_t *settings, const char *name,
+				     obs_data_t *hotkey_data,
+				     bool private);
 static inline void obs_control_dosignal(struct obs_control *control,
 				       const char *signal_obs,
 				       const char *signal_control)
 {
 	struct calldata data;
 	uint8_t stack[128];
-
 	calldata_init_fixed(&data, stack, sizeof(stack));
 	calldata_set_ptr(&data, "control", control);
 	if (signal_obs && !control->context.private)
 		signal_handler_signal(obs->signals, signal_obs, &data);
 	if (signal_control)
-		signal_handler_signal(control->context.signals, signal_control,
-				      &data);
+		signal_handler_signal(control->context.signals, signal_control,  &data);
 }
 /* maximum timestamp variance in nanoseconds */
 #define MAX_TS_VAR 2000000000ULL
@@ -924,12 +928,7 @@ struct obs_control {
 	/* used to temporarily disable controls if needed */
 	bool enabled;
 
-	/* filters */
-	struct obs_control *filter_parent;
-	struct obs_control *filter_target;
-	DARRAY(struct obs_control *) filters;
-	pthread_mutex_t filter_mutex;
-	
+
 
 	obs_data_t *private_settings;
 };
