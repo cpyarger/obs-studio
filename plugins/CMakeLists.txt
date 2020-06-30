@@ -4,6 +4,7 @@ if(DISABLE_PLUGINS)
 	return()
 endif()
 
+
 if(WIN32)
 	option(BUILD_CA_ENCODER "Build CoreAudio encoder module" ON)
 	if (BUILD_CA_ENCODER)
@@ -80,6 +81,6 @@ add_subdirectory(obs-transitions)
 add_subdirectory(obs-text)
 add_subdirectory(rtmp-services)
 add_subdirectory(text-freetype2)
-add_subdirectory(obs-midi)
-
+#add_subdirectory(obs-midi)
+add_subdirectory(test-controls)
 

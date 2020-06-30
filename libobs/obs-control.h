@@ -27,12 +27,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+enum obs_control_type {
+	OBS_CONTROL_TYPE_INPUT,
+	OBS_CONTROL_TYPE_OUTPUT,
+};
 	struct obs_control_info {
 		/* required */
 		const char* id;
 
 		const char* (*get_name)(void* type_data);
+		enum obs_control_type type;
 		void* (*create)(obs_data_t* settings, obs_control_t* service);
 		void (*destroy)(void* data);
 

@@ -345,7 +345,7 @@ struct obs_core_data {
 	struct obs_output *first_output;
 	struct obs_encoder *first_encoder;
 	struct obs_service *first_service;
-
+	struct obs_control *first_control;
 	pthread_mutex_t sources_mutex;
 	pthread_mutex_t displays_mutex;
 	pthread_mutex_t outputs_mutex;
@@ -353,6 +353,8 @@ struct obs_core_data {
 	pthread_mutex_t services_mutex;
 	pthread_mutex_t audio_sources_mutex;
 	pthread_mutex_t draw_callbacks_mutex;
+	pthread_mutex_t controls_mutex;
+
 	DARRAY(struct draw_callback) draw_callbacks;
 	DARRAY(struct tick_callback) tick_callbacks;
 
@@ -413,6 +415,8 @@ struct obs_core {
 	DARRAY(struct obs_service_info) service_types;
 	DARRAY(struct obs_modal_ui) modal_ui_callbacks;
 	DARRAY(struct obs_modeless_ui) modeless_ui_callbacks;
+
+	DARRAY(struct obs_control_info) control_types;
 
 	signal_handler_t *signals;
 	proc_handler_t *procs;

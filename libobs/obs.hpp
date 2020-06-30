@@ -26,26 +26,19 @@
 template<typename T, void addref(T), void release(T)> class OBSRef;
 
 using OBSSource = OBSRef<obs_source_t *, obs_source_addref, obs_source_release>;
+using OBSControl = OBSRef<obs_control_t *, obs_control_addref, obs_control_release>;
 using OBSScene = OBSRef<obs_scene_t *, obs_scene_addref, obs_scene_release>;
-using OBSSceneItem =
-	OBSRef<obs_sceneitem_t *, obs_sceneitem_addref, obs_sceneitem_release>;
+using OBSSceneItem = OBSRef<obs_sceneitem_t *, obs_sceneitem_addref, obs_sceneitem_release>;
 using OBSData = OBSRef<obs_data_t *, obs_data_addref, obs_data_release>;
-using OBSDataArray = OBSRef<obs_data_array_t *, obs_data_array_addref,
-			    obs_data_array_release>;
+using OBSDataArray = OBSRef<obs_data_array_t *, obs_data_array_addref,obs_data_array_release>;
 using OBSOutput = OBSRef<obs_output_t *, obs_output_addref, obs_output_release>;
-using OBSEncoder =
-	OBSRef<obs_encoder_t *, obs_encoder_addref, obs_encoder_release>;
-using OBSService =
-	OBSRef<obs_service_t *, obs_service_addref, obs_service_release>;
-
-using OBSWeakSource = OBSRef<obs_weak_source_t *, obs_weak_source_addref,
-			     obs_weak_source_release>;
-using OBSWeakOutput = OBSRef<obs_weak_output_t *, obs_weak_output_addref,
-			     obs_weak_output_release>;
-using OBSWeakEncoder = OBSRef<obs_weak_encoder_t *, obs_weak_encoder_addref,
-			      obs_weak_encoder_release>;
-using OBSWeakService = OBSRef<obs_weak_service_t *, obs_weak_service_addref,
-			      obs_weak_service_release>;
+using OBSEncoder = OBSRef<obs_encoder_t *, obs_encoder_addref, obs_encoder_release>;
+using OBSService = OBSRef<obs_service_t *, obs_service_addref, obs_service_release>;
+using OBSWeakSource = OBSRef<obs_weak_source_t *, obs_weak_source_addref, obs_weak_source_release>;
+using OBSWeakControl = OBSRef<obs_weak_control_t *, obs_weak_control_addref, obs_weak_control_release>;
+using OBSWeakOutput = OBSRef<obs_weak_output_t *, obs_weak_output_addref, obs_weak_output_release>;
+using OBSWeakEncoder = OBSRef<obs_weak_encoder_t *, obs_weak_encoder_addref, obs_weak_encoder_release>;
+using OBSWeakService = OBSRef<obs_weak_service_t *, obs_weak_service_addref, obs_weak_service_release>;
 
 template<typename T, void addref(T), void release(T)> class OBSRef {
 	T val;
@@ -91,7 +84,8 @@ public:
 
 	friend OBSSource OBSGetStrongRef(obs_weak_source_t *weak);
 	friend OBSWeakSource OBSGetWeakRef(obs_source_t *source);
-
+	friend OBSControl OBSGetStrongRef(obs_weak_control_t *weak);
+	friend OBSWeakControl OBSGetWeakRef(obs_control_t *control);
 	friend OBSOutput OBSGetStrongRef(obs_weak_output_t *weak);
 	friend OBSWeakOutput OBSGetWeakRef(obs_output_t *output);
 
@@ -112,7 +106,16 @@ inline OBSWeakSource OBSGetWeakRef(obs_source_t *source)
 	return {obs_source_get_weak_source(source),
 		OBSWeakSource::TakeOwnership()};
 }
+inline OBSControl OBSGetStrongRef(obs_weak_control_t *weak)
+{
+	return {obs_weak_control_get_control(weak), OBSControl::TakeOwnership()};
+}
 
+inline OBSWeakControl OBSGetWeakRef(obs_control_t *control)
+{
+	return {obs_control_get_weak_control(control),
+		OBSWeakControl::TakeOwnership()};
+}
 inline OBSOutput OBSGetStrongRef(obs_weak_output_t *weak)
 {
 	return {obs_weak_output_get_output(weak), OBSOutput::TakeOwnership()};

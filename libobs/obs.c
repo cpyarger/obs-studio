@@ -1246,6 +1246,13 @@ bool obs_enum_source_types(size_t idx, const char **id)
 	*id = obs->source_types.array[idx].id;
 	return true;
 }
+bool obs_enum_control_types(size_t idx, const char **id)
+{
+	if (idx >= obs->control_types.num)
+		return false;
+	*id = obs->control_types.array[idx].id;
+	return true;
+}
 
 bool obs_enum_input_types(size_t idx, const char **id)
 {
@@ -1480,6 +1487,31 @@ void obs_enum_sources(bool (*enum_proc)(void *, obs_source_t *), void *param)
 
 	pthread_mutex_unlock(&obs->data.sources_mutex);
 }
+void obs_enum_controls(bool (*enum_proc)(void *, obs_control_t *), void *param)
+{
+	obs_control_t *control;
+
+	pthread_mutex_lock(&obs->data.controls_mutex);
+	control = obs->data.first_control;
+
+	while (control) {
+		obs_control_t *next_control =
+			(obs_control_t *)control->context.next;
+
+		if (strcmp(control->info.id, group_info.id) == 0 &&
+		    !enum_proc(param, control)) {
+			break;
+		} else if (control->info.type == OBS_CONTROL_TYPE_INPUT &&
+			   !control->context.private &&
+			   !enum_proc(param, control)) {
+			break;
+		}
+
+		control = next_control;
+	}
+
+	pthread_mutex_unlock(&obs->data.controls_mutex);
+}
 
 void obs_enum_scenes(bool (*enum_proc)(void *, obs_source_t *), void *param)
 {
@@ -1570,7 +1602,10 @@ static inline void *obs_source_addref_safe_(void *ref)
 {
 	return obs_source_get_ref(ref);
 }
-
+static inline void *obs_control_addref_safe_(void *ref)
+{
+	return obs_control_get_ref(ref);
+}
 static inline void *obs_output_addref_safe_(void *ref)
 {
 	return obs_output_get_ref(ref);
@@ -1597,7 +1632,12 @@ obs_source_t *obs_get_source_by_name(const char *name)
 				   &obs->data.sources_mutex,
 				   obs_source_addref_safe_);
 }
-
+obs_control_t *obs_get_control_by_name(const char *name)
+{
+	return get_context_by_name(&obs->data.first_control, name,
+				   &obs->data.controls_mutex,
+				   obs_control_addref_safe_);
+}
 obs_output_t *obs_get_output_by_name(const char *name)
 {
 	return get_context_by_name(&obs->data.first_output, name,

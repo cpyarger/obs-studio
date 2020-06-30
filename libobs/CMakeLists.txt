@@ -401,6 +401,7 @@ set(libobs_libobs_SOURCES
 	obs-properties.c
 	obs-data.c
 	obs-hotkey.c
+	obs-control.c
 	obs-hotkey-name-map.c
 	obs-module.c
 	obs-display.c

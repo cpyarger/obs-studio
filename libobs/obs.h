@@ -68,6 +68,7 @@ typedef struct obs_weak_source obs_weak_source_t;
 typedef struct obs_weak_output obs_weak_output_t;
 typedef struct obs_weak_encoder obs_weak_encoder_t;
 typedef struct obs_weak_service obs_weak_service_t;
+typedef struct obs_weak_control obs_weak_control_t;
 
 #include "obs-source.h"
 #include "obs-encoder.h"
@@ -600,6 +601,9 @@ EXPORT void obs_enum_encoders(bool (*enum_proc)(void *, obs_encoder_t *),
 /** Enumerates encoders */
 EXPORT void obs_enum_services(bool (*enum_proc)(void *, obs_service_t *),
 			      void *param);
+/**Enumerates Controls */
+EXPORT void obs_enum_controls(bool (*enum_proc)(void *, obs_control_t *),
+			     void *param);
 
 /**
  * Gets a source by its name.
@@ -873,6 +877,7 @@ EXPORT obs_source_t *obs_weak_source_get_source(obs_weak_source_t *weak);
 
 EXPORT bool obs_weak_source_references_source(obs_weak_source_t *weak,
 					      obs_source_t *source);
+
 
 /** Notifies all references that the source should be released */
 EXPORT void obs_source_remove(obs_source_t *source);
@@ -2230,8 +2235,81 @@ EXPORT void obs_source_frame_copy(struct obs_source_frame *dst,
 				  const struct obs_source_frame *src);
 
 /* ------------------------------------------------------------------------- */
-/* Get source icon type */
-EXPORT enum obs_icon_type obs_source_get_icon_type(const char *id);
+/* Get control icon type */
+EXPORT enum obs_icon_type obs_control_get_icon_type(const char *id);
+/* ------------------------------------------------------------------------- */
+/* Controls */
+
+/** Returns the translated display name of a control */
+EXPORT const char *obs_control_get_display_name(const char *id);
+
+/**
+ * Creates a control of the specified type with the specified settings.
+ *
+ *   The "control" context is used for anything related to presenting
+ * or modifying video/audio.  Use obs_control_release to release it.
+ */
+EXPORT obs_control_t *obs_control_create(const char *id, const char *name,
+				       obs_data_t *settings,
+				       obs_data_t *hotkey_data);
+
+EXPORT obs_control_t *obs_control_create_private(const char *id, const char *name,
+					       obs_data_t *settings);
+
+/* if control has OBS_control_DO_NOT_DUPLICATE output flag set, only returns a
+ * reference */
+EXPORT obs_control_t *obs_control_duplicate(obs_control_t *control,
+					  const char *desired_name,
+					  bool create_private);
+/**
+ * Adds/releases a reference to a control.  When the last reference is
+ * released, the control is destroyed.
+ */
+EXPORT void obs_control_addref(obs_control_t *control);
+EXPORT void obs_control_release(obs_control_t *control);
+
+EXPORT void obs_weak_control_addref(obs_weak_control_t *weak);
+EXPORT void obs_weak_control_release(obs_weak_control_t *weak);
+
+EXPORT obs_control_t *obs_control_get_ref(obs_control_t *control);
+EXPORT obs_weak_control_t *obs_control_get_weak_control(obs_control_t *control);
+EXPORT obs_control_t *obs_weak_control_get_control(obs_weak_control_t *weak);
+
+EXPORT bool obs_weak_control_references_control(obs_weak_control_t *weak,
+					      obs_control_t *control);
+
+/** Notifies all references that the control should be released */
+EXPORT void obs_control_remove(obs_control_t *control);
+
+/** Returns true if the control should be released */
+EXPORT bool obs_control_removed(const obs_control_t *control);
+
+/** Returns capability flags of a control */
+EXPORT uint32_t obs_control_get_output_flags(const obs_control_t *control);
+
+/** Returns capability flags of a control type */
+EXPORT uint32_t obs_get_control_output_flags(const char *id);
+
+/** Gets the default settings for a control type */
+EXPORT obs_data_t *obs_get_control_defaults(const char *id);
+
+/** Returns the property list, if any.  Free with obs_properties_destroy */
+EXPORT obs_properties_t *obs_get_control_properties(const char *id);
+
+/** Returns whether the control has custom properties or not */
+EXPORT bool obs_is_control_configurable(const char *id);
+
+EXPORT bool obs_control_configurable(const obs_control_t *control);
+
+/**
+ * Returns the properties list for a specific existing control.  Free with
+ * obs_properties_destroy
+ */
+EXPORT obs_properties_t *obs_control_properties(const obs_control_t *control);
+
+/** Updates settings for this control */
+EXPORT void obs_control_update(obs_control_t *control, obs_data_t *settings);
+
 
 #ifdef __cplusplus
 }
