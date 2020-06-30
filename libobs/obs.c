@@ -1908,11 +1908,45 @@ static obs_source_t *obs_load_source_type(obs_data_t *source_data)
 	return source;
 }
 
+static obs_control_t *obs_load_control_type(obs_data_t *control_data)
+{
+	obs_control_t *control;
+	const char *name = obs_data_get_string(control_data, "name");
+	const char *id = obs_data_get_string(control_data, "id");
+	const char *v_id = obs_data_get_string(control_data, "versioned_id");
+	obs_data_t *settings = obs_data_get_obj(control_data, "settings");
+	
+
+
+	if (!*v_id)
+		v_id = id;
+
+	
+
+	obs_data_set_default_bool(control_data, "enabled", true);
+	obs_control_set_enabled(control,
+			       obs_data_get_bool(control_data, "enabled"));
+
+	
+	obs_data_release(control->private_settings);
+	control->private_settings =
+		obs_data_get_obj(control_data, "private_settings");
+	if (!control->private_settings)
+		control->private_settings = obs_data_create();
+
+
+	obs_data_release(settings);
+
+	return control;
+}
 obs_source_t *obs_load_source(obs_data_t *source_data)
 {
 	return obs_load_source_type(source_data);
 }
-
+obs_control_t *obs_load_control(obs_data_t *control_data)
+{
+	return obs_load_control_type(control_data);
+}
 void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
 		      void *private_data)
 {
@@ -1964,6 +1998,37 @@ void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
 	da_free(sources);
 }
 
+obs_data_t *obs_save_control(obs_control_t *control)
+{
+	obs_data_t *control_data = obs_data_create();
+	obs_data_t *settings = obs_control_get_settings(control);
+	
+	const char *name = obs_control_get_name(control);
+	const char *id = control->info.unversioned_id;
+	const char *v_id = control->info.id;
+	bool enabled = obs_control_enabled(control);
+	
+
+	obs_control_save(control);
+	
+	obs_data_set_string(control_data, "name", name);
+	obs_data_set_string(control_data, "id", id);
+	obs_data_set_string(control_data, "versioned_id", v_id);
+	obs_data_set_obj(control_data, "settings", settings);
+	
+	obs_data_set_bool(control_data, "enabled", enabled);
+	
+	obs_data_set_obj(control_data, "private_settings",
+			 control->private_settings);
+
+	if (control->info.type == OBS_SOURCE_TYPE_TRANSITION)
+		obs_transition_save(control, control_data);
+
+	
+	obs_data_release(settings);
+
+	return control_data;
+}
 obs_data_t *obs_save_source(obs_source_t *source)
 {
 	obs_data_array_t *filters = obs_data_array_create();
@@ -2090,6 +2155,94 @@ obs_data_array_t *obs_save_sources(void)
 	return obs_save_sources_filtered(save_source_filter, NULL);
 }
 
+
+
+void obs_load_controls(obs_data_array_t *array, obs_load_control_cb cb,
+		      void *private_data)
+{
+	struct obs_core_data *data = &obs->data;
+	DARRAY(obs_control_t *) controls;
+	size_t count;
+	size_t i;
+
+	da_init(controls);
+
+	count = obs_data_array_count(array);
+	da_reserve(controls, count);
+
+	pthread_mutex_lock(&data->controls_mutex);
+
+	for (i = 0; i < count; i++) {
+		obs_data_t *control_data = obs_data_array_item(array, i);
+		obs_control_t *control = obs_load_control(control_data);
+
+		da_push_back(controls, &control);
+
+		obs_data_release(control_data);
+	}
+
+	/* tell controls that we want to load */
+	for (i = 0; i < controls.num; i++) {
+		obs_control_t *control = controls.array[i];
+		obs_data_t *control_data = obs_data_array_item(array, i);
+		if (control) {
+			obs_control_load(control);
+			if (cb)
+				cb(private_data, control);
+		}
+		obs_data_release(control_data);
+	}
+
+	for (i = 0; i < controls.num; i++)
+		obs_control_release(controls.array[i]);
+
+	pthread_mutex_unlock(&data->controls_mutex);
+
+	da_free(controls);
+}
+
+
+obs_data_array_t *obs_save_controls_filtered(obs_save_control_filter_cb cb,
+					    void *data_)
+{
+	struct obs_core_data *data = &obs->data;
+	obs_data_array_t *array;
+	obs_control_t *control;
+
+	array = obs_data_array_create();
+
+	pthread_mutex_lock(&data->controls_mutex);
+
+	control = data->first_control;
+
+	while (control) {
+		if (!control->context.private && !control->removed &&
+		    cb(data_, control)) {
+			obs_data_t *control_data = obs_save_control(control);
+
+			obs_data_array_push_back(array, control_data);
+			obs_data_release(control_data);
+		}
+
+		control = (obs_control_t *)control->context.next;
+	}
+
+	pthread_mutex_unlock(&data->controls_mutex);
+
+	return array;
+}
+
+static bool save_control_filter(void *data, obs_control_t *control)
+{
+	UNUSED_PARAMETER(data);
+	UNUSED_PARAMETER(control);
+	return true;
+}
+
+obs_data_array_t *obs_save_controls(void)
+{
+	return obs_save_controls_filtered(save_control_filter, NULL);
+}
 /* ensures that names are never blank */
 static inline char *dup_name(const char *name, bool private)
 {

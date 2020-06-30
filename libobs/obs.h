@@ -698,12 +698,49 @@ typedef bool (*obs_save_source_filter_cb)(void *data, obs_source_t *source);
 EXPORT obs_data_array_t *obs_save_sources_filtered(obs_save_source_filter_cb cb,
 						   void *data);
 
+/** Saves a control to settings data */
+EXPORT obs_data_t *obs_save_control(obs_control_t *control);
+
+/** Loads a control from settings data */
+EXPORT obs_control_t *obs_load_control(obs_data_t *data);
+
+/** Send a save signal to controls */
+EXPORT void obs_control_save(obs_control_t *control);
+
+/** Send a load signal to controls */
+EXPORT void obs_control_load(obs_control_t *control);
+
+typedef void (*obs_load_control_cb)(void *private_data, obs_control_t *control);
+
+/** Loads controls from a data array */
+EXPORT void obs_load_controls(obs_data_array_t *array, obs_load_control_cb cb,
+			     void *private_data);
+
+/** Saves controls to a data array */
+EXPORT obs_data_array_t *obs_save_controls(void);
+
+typedef bool (*obs_save_control_filter_cb)(void *data, obs_control_t *control);
+EXPORT obs_data_array_t *obs_save_controls_filtered(obs_save_control_filter_cb cb,
+						   void *data);
+EXPORT void obs_control_enum_active_controls(obs_control_t *control,
+					   obs_control_enum_proc_t enum_callback,
+					   void *param);
+
+/** Enumerates the entire active child control tree used by this control */
+EXPORT void obs_control_enum_active_tree(obs_control_t *control,
+					obs_control_enum_proc_t enum_callback,
+					void *param);
+
+/** Returns true if active, false if not */
+EXPORT bool obs_source_active(const obs_source_t *source);
+
 enum obs_obj_type {
 	OBS_OBJ_TYPE_INVALID,
 	OBS_OBJ_TYPE_SOURCE,
 	OBS_OBJ_TYPE_OUTPUT,
 	OBS_OBJ_TYPE_ENCODER,
 	OBS_OBJ_TYPE_SERVICE,
+	OBS_OBJ_TYPE_CONTROL
 };
 
 EXPORT enum obs_obj_type obs_obj_get_type(void *obj);
@@ -2236,7 +2273,7 @@ EXPORT void obs_source_frame_copy(struct obs_source_frame *dst,
 
 /* ------------------------------------------------------------------------- */
 /* Get control icon type */
-EXPORT enum obs_icon_type obs_control_get_icon_type(const char *id);
+EXPORT enum obs_icon_type obs_source_get_icon_type(const char *id);
 /* ------------------------------------------------------------------------- */
 /* Controls */
 
@@ -2283,12 +2320,6 @@ EXPORT void obs_control_remove(obs_control_t *control);
 
 /** Returns true if the control should be released */
 EXPORT bool obs_control_removed(const obs_control_t *control);
-
-/** Returns capability flags of a control */
-EXPORT uint32_t obs_control_get_output_flags(const obs_control_t *control);
-
-/** Returns capability flags of a control type */
-EXPORT uint32_t obs_get_control_output_flags(const char *id);
 
 /** Gets the default settings for a control type */
 EXPORT obs_data_t *obs_get_control_defaults(const char *id);

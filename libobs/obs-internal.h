@@ -579,14 +579,16 @@ struct audio_action {
 	};
 };
 
-struct obs_weak_source {
-	struct obs_weak_ref ref;
-	struct obs_source *source;
-};
+
 
 struct audio_cb_info {
 	obs_source_audio_capture_t callback;
 	void *param;
+};
+
+struct obs_weak_source {
+	struct obs_weak_ref ref;
+	struct obs_source *source;
 };
 
 struct obs_source {
@@ -784,8 +786,9 @@ extern obs_source_t *obs_source_create_set_last_ver(const char *id,
 						    obs_data_t *settings,
 						    obs_data_t *hotkey_data,
 						    uint32_t last_obs_ver);
-extern void obs_source_destroy(struct obs_source *source);
 
+extern void obs_source_destroy(struct obs_source *source);
+extern void obs_control_destroy(struct obs_control *control);
 enum view_type {
 	MAIN_VIEW,
 	AUX_VIEW,
@@ -806,7 +809,21 @@ static inline void obs_source_dosignal(struct obs_source *source,
 		signal_handler_signal(source->context.signals, signal_source,
 				      &data);
 }
+static inline void obs_control_dosignal(struct obs_control *control,
+				       const char *signal_obs,
+				       const char *signal_control)
+{
+	struct calldata data;
+	uint8_t stack[128];
 
+	calldata_init_fixed(&data, stack, sizeof(stack));
+	calldata_set_ptr(&data, "control", control);
+	if (signal_obs && !control->context.private)
+		signal_handler_signal(obs->signals, signal_obs, &data);
+	if (signal_control)
+		signal_handler_signal(control->context.signals, signal_control,
+				      &data);
+}
 /* maximum timestamp variance in nanoseconds */
 #define MAX_TS_VAR 2000000000ULL
 
@@ -868,8 +885,56 @@ extern void deinterlace_update_async_video(obs_source_t *source);
 extern void deinterlace_render(obs_source_t *s);
 
 /* ------------------------------------------------------------------------- */
-/* outputs  */
+/*Controls*/
 
+struct obs_weak_control {
+	struct obs_weak_ref ref;
+	struct obs_control *control;
+};
+
+struct obs_control {
+	struct obs_context_data context;
+	struct obs_control_info info;
+	struct obs_weak_control *control;
+
+	/* general exposed flags that can be set for the control */
+	uint32_t flags;
+	uint32_t default_flags;
+	uint32_t last_obs_ver;
+
+	/* indicates ownership of the info.id buffer */
+	bool owns_info_id;
+
+	/* signals to call the control update in the video thread */
+	bool defer_update;
+
+	/* ensures show/hide are only called once */
+	volatile long show_refs;
+
+	/* ensures activate/deactivate are only called once */
+	volatile long activate_refs;
+
+	/* used to indicate that the control has been removed and all
+	 * references to it should be released (not exactly how I would prefer
+	 * to handle things but it's the best option) */
+	bool removed;
+	bool active;
+	bool showing;
+
+	/* used to temporarily disable controls if needed */
+	bool enabled;
+
+	/* filters */
+	struct obs_control *filter_parent;
+	struct obs_control *filter_target;
+	DARRAY(struct obs_control *) filters;
+	pthread_mutex_t filter_mutex;
+	
+
+	obs_data_t *private_settings;
+};
+/* ------------------------------------------------------------------------- */
+/* outputs  */
 enum delay_msg {
 	DELAY_MSG_PACKET,
 	DELAY_MSG_START,
