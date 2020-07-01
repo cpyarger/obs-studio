@@ -1989,7 +1989,6 @@ void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
 		}
 		obs_data_release(source_data);
 	}
-
 	for (i = 0; i < sources.num; i++)
 		obs_source_release(sources.array[i]);
 
@@ -2021,8 +2020,7 @@ obs_data_t *obs_save_control(obs_control_t *control)
 	obs_data_set_obj(control_data, "private_settings",
 			 control->private_settings);
 
-	if (control->info.type == OBS_SOURCE_TYPE_TRANSITION)
-		obs_transition_save(control, control_data);
+	
 
 	
 	obs_data_release(settings);

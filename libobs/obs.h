@@ -2277,6 +2277,9 @@ EXPORT enum obs_icon_type obs_source_get_icon_type(const char *id);
 
 /** Returns the translated display name of a control */
 EXPORT const char *obs_control_get_display_name(const char *id);
+EXPORT obs_data_t *obs_control_get_settings(const obs_control_t *control);
+EXPORT bool obs_control_enabled(const obs_control_t *control);
+EXPORT void obs_control_set_enabled(obs_control_t *control, bool enabled);
 
 /**
  * Creates a control of the specified type with the specified settings.
@@ -2284,6 +2287,22 @@ EXPORT const char *obs_control_get_display_name(const char *id);
  *   The "control" context is used for anything related to presenting
  * or modifying video/audio.  Use obs_control_release to release it.
  */
+/** Gets the settings string for a source */
+EXPORT obs_data_t *obs_control_get_settings(const obs_control_t *control);
+
+/** Gets the name of a control */
+EXPORT const char *obs_control_get_name(const obs_control_t *control);
+
+/** Sets the name of a control */
+EXPORT void obs_control_set_name(obs_control_t *control, const char *name);
+
+/** Gets the control type */
+EXPORT enum obs_control_type obs_control_get_type(const obs_control_t *control);
+
+/** Gets the control identifier */
+EXPORT const char *obs_control_get_id(const obs_control_t *control);
+EXPORT const char *obs_control_get_unversioned_id(const obs_control_t *control);
+
 EXPORT obs_control_t *obs_control_create(const char *id, const char *name,
 				       obs_data_t *settings,
 				       obs_data_t *hotkey_data);

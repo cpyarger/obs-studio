@@ -103,7 +103,7 @@ static void obs_control_init_finalize(struct obs_control *control)
 
 static obs_control_t *
 obs_control_create_internal(const char *id, const char *name,
-			   obs_data_t *settings,
+			    obs_data_t *settings, obs_data_t *hotkey_data,
 			   bool private, uint32_t last_obs_ver)
 {
 	struct obs_control *control = bzalloc(sizeof(struct obs_control));
@@ -173,24 +173,24 @@ fail:
 }
 
 obs_control_t *obs_control_create(const char *id, const char *name,
-				obs_data_t *settings)
+				  obs_data_t *settings, obs_data_t *hotkey_data)
 {
-	return obs_control_create_internal(id, name, settings,
+	return obs_control_create_internal(id, name, settings, hotkey_data,
 					  false, LIBOBS_API_VER);
 }
 
 obs_control_t *obs_control_create_private(const char *id, const char *name,
 					obs_data_t *settings)
 {
-	return obs_control_create_internal(id, name, settings,  true,
-					  LIBOBS_API_VER);
+	return obs_control_create_internal(id, name, settings, NULL,  true,  LIBOBS_API_VER);
 }
 
 obs_control_t *obs_control_create_set_last_ver(const char *id, const char *name,
-					     obs_data_t *settings,
+					       obs_data_t *settings,
+					       obs_data_t *hotkey_data,
 					     uint32_t last_obs_ver)
 {
-	return obs_control_create_internal(id, name, settings,
+	return obs_control_create_internal(id, name, settings,hotkey_data,
 					  false, last_obs_ver);
 }
 
@@ -237,23 +237,6 @@ void obs_control_addref(obs_control_t *control)
 	obs_ref_addref(&control->control->ref);
 }
 
-void obs_control_release(obs_control_t *control)
-{
-	if (!obs) {
-		blog(LOG_WARNING, "Tried to release a control when the OBS "
-				  "core is shut down!");
-		return;
-	}
-
-	if (!control)
-		return;
-
-	obs_weak_control_t *controlv = control->control;
-	if (obs_ref_release(&controlv->ref)) {
-		obs_control_destroy(control);
-		obs_weak_control_release(control);
-	}
-}
 
 void obs_weak_control_addref(obs_weak_control_t *weak)
 {
