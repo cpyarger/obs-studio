@@ -512,6 +512,7 @@ EXPORT char *obs_module_get_config_path(obs_module_t *module, const char *file);
 
 /** Enumerates all source types (inputs, filters, transitions, etc).  */
 EXPORT bool obs_enum_source_types(size_t idx, const char **id);
+EXPORT bool obs_enum_control_types(size_t idx, const char **id);
 
 /**
  * Enumerates all available inputs source types.
@@ -738,7 +739,7 @@ enum obs_obj_type {
 	OBS_OBJ_TYPE_OUTPUT,
 	OBS_OBJ_TYPE_ENCODER,
 	OBS_OBJ_TYPE_SERVICE,
-	OBS_OBJ_TYPE_CONTROL
+	OBS_OBJ_TYPE_CONTROL,
 };
 
 EXPORT enum obs_obj_type obs_obj_get_type(void *obj);

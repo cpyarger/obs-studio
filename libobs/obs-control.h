@@ -168,66 +168,6 @@ struct obs_control_info {
 	void (*load)(void *data, obs_data_t *settings);
 
 	/**
-	 * Called when interacting with a control and a mouse-down or mouse-up
-	 * occurs.
-	 *
-	 * @param data         Control data
-	 * @param event        Mouse event properties
-	 * @param type         Mouse button pushed
-	 * @param mouse_up     Mouse event type (true if mouse-up)
-	 * @param click_count  Mouse click count (1 for single click, etc.)
-	 */
-	void (*mouse_click)(void *data, const struct obs_mouse_event *event,
-			    int32_t type, bool mouse_up, uint32_t click_count);
-	/**
-	 * Called when interacting with a control and a mouse-move occurs.
-	 *
-	 * @param data         Control data
-	 * @param event        Mouse event properties
-	 * @param mouse_leave  Mouse leave state (true if mouse left control)
-	 */
-	void (*mouse_move)(void *data, const struct obs_mouse_event *event,
-			   bool mouse_leave);
-
-	/**
-	 * Called when interacting with a control and a mouse-wheel occurs.
-	 *
-	 * @param data         Control data
-	 * @param event        Mouse event properties
-	 * @param x_delta      Movement delta in the horizontal direction
-	 * @param y_delta      Movement delta in the vertical direction
-	 */
-	void (*mouse_wheel)(void *data, const struct obs_mouse_event *event,
-			    int x_delta, int y_delta);
-	/**
-	 * Called when interacting with a control and gain focus/lost focus event
-	 * occurs.
-	 *
-	 * @param data         Control data
-	 * @param focus        Focus state (true if focus gained)
-	 */
-	void (*focus)(void *data, bool focus);
-
-	/**
-	 * Called when interacting with a control and a key-up or key-down
-	 * occurs.
-	 *
-	 * @param data         Control data
-	 * @param event        Key event properties
-	 * @param focus        Key event type (true if mouse-up)
-	 */
-	void (*key_click)(void *data, const struct obs_key_event *event,
-			  bool key_up);
-
-	/**
-	 * Called when the filter is removed from a control
-	 *
-	 * @param  data    Filter data
-	 * @param  control  Control that the filter being removed from
-	 */
-	void (*filter_remove)(void *data, obs_control_t *control);
-
-	/**
 	 * Private data associated with this entry
 	 */
 	void *type_data;

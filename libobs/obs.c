@@ -733,7 +733,11 @@ static const char *obs_signals[] = {
 	"void hotkey_register(ptr hotkey)",
 	"void hotkey_unregister(ptr hotkey)",
 	"void hotkey_bindings_changed(ptr hotkey)",
-
+	"void control_create(ptr control)",
+	"void control_destroy(ptr control)",
+	"void control_remove(ptr control)",
+	"void control_save(ptr control)",
+	"void control_load(ptr control)",
 	NULL,
 };
 
@@ -1947,8 +1951,7 @@ obs_control_t *obs_load_control(obs_data_t *control_data)
 {
 	return obs_load_control_type(control_data);
 }
-void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
-		      void *private_data)
+void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb, void *private_data)
 {
 	struct obs_core_data *data = &obs->data;
 	DARRAY(obs_source_t *) sources;
@@ -1995,6 +1998,49 @@ void obs_load_sources(obs_data_array_t *array, obs_load_source_cb cb,
 	pthread_mutex_unlock(&data->sources_mutex);
 
 	da_free(sources);
+}
+void obs_load_controls(obs_data_array_t *array, obs_load_control_cb cb,void *private_data)
+{
+	struct obs_core_data *data = &obs->data;
+	DARRAY(obs_control_t *) controls;
+	size_t count;
+	size_t i;
+
+	da_init(controls);
+
+	count = obs_data_array_count(array);
+	da_reserve(controls, count);
+
+	pthread_mutex_lock(&data->controls_mutex);
+
+	for (i = 0; i < count; i++) {
+		obs_data_t *control_data = obs_data_array_item(array, i);
+		obs_control_t *control = obs_load_control(control_data);
+
+		da_push_back(controls, &control);
+
+		obs_data_release(control_data);
+	}
+
+	/* tell controls that we want to load */
+	for (i = 0; i < controls.num; i++) {
+		obs_control_t *control = controls.array[i];
+		obs_data_t *control_data = obs_data_array_item(array, i);
+		if (control) {
+	
+			obs_control_load(control);
+			
+			if (cb)
+				cb(private_data, control);
+		}
+		obs_data_release(control_data);
+	}
+	for (i = 0; i < controls.num; i++)
+		obs_control_release(controls.array[i]);
+
+	pthread_mutex_unlock(&data->controls_mutex);
+
+	da_free(controls);
 }
 
 obs_data_t *obs_save_control(obs_control_t *control)
@@ -2110,8 +2156,7 @@ obs_data_t *obs_save_source(obs_source_t *source)
 	return source_data;
 }
 
-obs_data_array_t *obs_save_sources_filtered(obs_save_source_filter_cb cb,
-					    void *data_)
+obs_data_array_t *obs_save_sources_filtered(obs_save_source_filter_cb cb,  void *data_)
 {
 	struct obs_core_data *data = &obs->data;
 	obs_data_array_t *array;
@@ -2154,54 +2199,7 @@ obs_data_array_t *obs_save_sources(void)
 }
 
 
-
-void obs_load_controls(obs_data_array_t *array, obs_load_control_cb cb,
-		      void *private_data)
-{
-	struct obs_core_data *data = &obs->data;
-	DARRAY(obs_control_t *) controls;
-	size_t count;
-	size_t i;
-
-	da_init(controls);
-
-	count = obs_data_array_count(array);
-	da_reserve(controls, count);
-
-	pthread_mutex_lock(&data->controls_mutex);
-
-	for (i = 0; i < count; i++) {
-		obs_data_t *control_data = obs_data_array_item(array, i);
-		obs_control_t *control = obs_load_control(control_data);
-
-		da_push_back(controls, &control);
-
-		obs_data_release(control_data);
-	}
-
-	/* tell controls that we want to load */
-	for (i = 0; i < controls.num; i++) {
-		obs_control_t *control = controls.array[i];
-		obs_data_t *control_data = obs_data_array_item(array, i);
-		if (control) {
-			obs_control_load(control);
-			if (cb)
-				cb(private_data, control);
-		}
-		obs_data_release(control_data);
-	}
-
-	for (i = 0; i < controls.num; i++)
-		obs_control_release(controls.array[i]);
-
-	pthread_mutex_unlock(&data->controls_mutex);
-
-	da_free(controls);
-}
-
-
-obs_data_array_t *obs_save_controls_filtered(obs_save_control_filter_cb cb,
-					    void *data_)
+obs_data_array_t *obs_save_controls_filtered(obs_save_control_filter_cb cb, void *data_)
 {
 	struct obs_core_data *data = &obs->data;
 	obs_data_array_t *array;

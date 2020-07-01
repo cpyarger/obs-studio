@@ -173,7 +173,7 @@ fail:
 }
 
 obs_control_t *obs_control_create(const char *id, const char *name,
-				  obs_data_t *settings, obs_data_t *hotkey_data)
+				obs_data_t *settings, obs_data_t *hotkey_data)
 {
 	return obs_control_create_internal(id, name, settings, hotkey_data,
 					  false, LIBOBS_API_VER);
@@ -182,17 +182,19 @@ obs_control_t *obs_control_create(const char *id, const char *name,
 obs_control_t *obs_control_create_private(const char *id, const char *name,
 					obs_data_t *settings)
 {
-	return obs_control_create_internal(id, name, settings, NULL,  true,  LIBOBS_API_VER);
+	return obs_control_create_internal(id, name, settings, NULL, true,
+					  LIBOBS_API_VER);
 }
 
 obs_control_t *obs_control_create_set_last_ver(const char *id, const char *name,
-					       obs_data_t *settings,
-					       obs_data_t *hotkey_data,
+					     obs_data_t *settings,
+					     obs_data_t *hotkey_data,
 					     uint32_t last_obs_ver)
 {
-	return obs_control_create_internal(id, name, settings,hotkey_data,
+	return obs_control_create_internal(id, name, settings, hotkey_data,
 					  false, last_obs_ver);
 }
+
 
 
 void obs_control_destroy(struct obs_control *controlv)
@@ -253,6 +255,23 @@ void obs_weak_control_release(obs_weak_control_t *weak)
 
 	if (obs_weak_ref_release(&weak->ref))
 		bfree(weak);
+}
+void obs_control_release(obs_control_t *control)
+{
+	if (!obs) {
+		blog(LOG_WARNING, "Tried to release a control when the OBS "
+				  "core is shut down!");
+		return;
+	}
+
+	if (!control)
+		return;
+
+	obs_weak_control_t *controlz = control->control;
+	if (obs_ref_release(&controlz->ref)) {
+		obs_control_destroy(control);
+		obs_weak_control_release(control);
+	}
 }
 
 obs_control_t *obs_control_get_ref(obs_control_t *control)
@@ -415,36 +434,6 @@ void obs_control_update_properties(obs_control_t *control)
 	obs_control_dosignal(control, NULL, "update_properties");
 }
 
-void obs_control_send_mouse_click(obs_control_t *control,
-				 const struct obs_mouse_event *event,
-				 int32_t type, bool mouse_up,
-				 uint32_t click_count)
-{
-	if (!obs_control_valid(control, "obs_control_send_mouse_click"))
-		return;
-
-	
-		if (control->info.mouse_click) {
-			control->info.mouse_click(control->context.data, event,
-						 type, mouse_up, click_count);
-		}
-	
-}
-
-void obs_control_send_mouse_move(obs_control_t *control,
-				const struct obs_mouse_event *event,
-				bool mouse_leave)
-{
-	if (!obs_control_valid(control, "obs_control_send_mouse_move"))
-		return;
-
-	
-		if (control->info.mouse_move) {
-			control->info.mouse_move(control->context.data, event,
-						mouse_leave);
-		}
-	
-}
 
 
 
