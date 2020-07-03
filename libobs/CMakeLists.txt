@@ -401,7 +401,6 @@ set(libobs_libobs_SOURCES
 	obs-properties.c
 	obs-data.c
 	obs-hotkey.c
-	obs-control.c
 	obs-hotkey-name-map.c
 	obs-module.c
 	obs-display.c
@@ -424,7 +423,6 @@ set(libobs_libobs_HEADERS
 	obs-data.h
 	obs-interaction.h
 	obs-hotkey.h
-	obs-control.h
 	obs-hotkeys.h
 	obs-module.h
 	obs-scene.h

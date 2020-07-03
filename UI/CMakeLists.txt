@@ -12,7 +12,7 @@ if(BROWSER_AVAILABLE_INTERNAL)
 endif()
 
 add_subdirectory(obs-frontend-api)
-#add_subdirectory(obs-control-api)
+
 
 # ----------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ endif()
 include_directories(${FFMPEG_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(SYSTEM "obs-frontend-api")
-#include_directories(SYSTEM "obs-control-api")
+
 
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/libobs")
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/deps/libff")
@@ -268,7 +268,7 @@ set(obs_SOURCES
 	remote-text.cpp
 	audio-encoders.cpp
 	qt-wrappers.cpp
-	control-edit.cpp)
+	)
 
 set(obs_HEADERS
 	${obs_PLATFORM_HEADERS}
@@ -331,7 +331,7 @@ set(obs_HEADERS
 	audio-encoders.hpp
 	qt-wrappers.hpp
 	clickable-label.hpp
-	control-edit.hpp)
+	)
 
 set(obs_importers_HEADERS
 	importers/importers.hpp)
@@ -405,7 +405,7 @@ target_link_libraries(obs
 	${FFMPEG_LIBRARIES}
 	${LIBCURL_LIBRARIES}
 	${obs_PLATFORM_LIBRARIES})
-#	obs-control-api
+
 if (APPLE)
 	target_link_libraries(obs
 			Qt5::MacExtras)
