@@ -1928,8 +1928,7 @@ static obs_control_t *obs_load_control_type(obs_data_t *control_data)
 	
 
 	obs_data_set_default_bool(control_data, "enabled", true);
-	obs_control_set_enabled(control,
-			       obs_data_get_bool(control_data, "enabled"));
+	obs_control_set_enabled(control,obs_data_get_bool(control_data, "enabled"));
 
 	
 	obs_data_release(control->private_settings);

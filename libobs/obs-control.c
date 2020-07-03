@@ -88,7 +88,6 @@ extern char *find_libobs_data_file(const char *file);
 static bool obs_control_init(struct obs_control *control)
 {
 	pthread_mutexattr_t attr;
-
 	
 	return true;
 }
@@ -199,7 +198,6 @@ obs_control_t *obs_control_create_set_last_ver(const char *id, const char *name,
 
 void obs_control_destroy(struct obs_control *controlv)
 {
-	size_t i;
 
 	if (!obs_control_valid(controlv, "obs_control_destroy"))
 		return;

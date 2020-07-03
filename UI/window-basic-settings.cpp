@@ -49,6 +49,7 @@
 #include "control-edit.hpp"
 #include <util/platform.h>
 #include "ui-config.h"
+#include <callback/proc.h>
 
 #define ENCODER_HIDE_FLAGS \
 	(OBS_ENCODER_CAP_DEPRECATED | OBS_ENCODER_CAP_INTERNAL)
@@ -4491,10 +4492,12 @@ QListWidget OBSBasicSettings::getControlsList() {
 	return static_cast<QListWidget>(this);
 }
 
-int OBSBasicSettings::AddControlPage(QIcon icon, QString name,
-				     QWidget page) {
-	QListWidgetItem *newpage = new QListWidgetItem(icon, name);
+QAction *OBSBasicSettings::AddControlPage(QIcon *icon, QString *name, QWidget *page)
+{
+	QListWidgetItem *newpage = new QListWidgetItem(QIcon(*icon), QString(*name));
 	ui->ControlsListWidget->addItem(newpage);
-	int PageNumber = ui->ControlsStackedWidget->addWidget(&page);
-	return PageNumber;
+	int PageNumber = ui->ControlsStackedWidget->addWidget(page);
+	connect(this, SIGNAL(onControlChange),
+		this, SLOT(callback));
+	return NULL;
 }

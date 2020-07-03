@@ -385,5 +385,7 @@ public:
 	~OBSBasicSettings();
 	QListWidget getControlsList();
 	QStackedWidget GetControlsStack();
-	int AddControlPage(QIcon icon, QString name, QWidget page);
+	QAction *AddControlPage(QIcon *icon, QString *name, QWidget *page);
+signals:
+	void onControlChange(QString Change);
 };

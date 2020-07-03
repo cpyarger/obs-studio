@@ -30,7 +30,7 @@
 #include <util/cf-parser.h>
 #include <obs-config.h>
 #include <obs.hpp>
-
+#include <control-edit.hpp>
 #include <QGuiApplication>
 #include <QProxyStyle>
 #include <QScreen>

@@ -18,6 +18,8 @@
 #pragma once
 
 #include "obs.h"
+#include <callback/proc.h>
+
 
 /**
  * @file
@@ -45,11 +47,12 @@ enum obs_default_controls_types {
 	FRONTEND,
 };
 
-
 /** @} */
 
 typedef void (*obs_control_enum_proc_t)(obs_control_t *parent,
-				       obs_control_t *child, void *param);
+					
+					obs_control_t * child, void *param);
+//proc_handler_t control_proc = proc_handler_create();
 
 
 /**
@@ -97,7 +100,6 @@ struct obs_control_info {
 	 * from destroy
 	 */
 	void (*destroy)(void *data);
-
 
 	/* ----------------------------------------------------------------- */
 	/* Optional implementation */

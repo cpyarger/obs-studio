@@ -12,6 +12,7 @@ if(BROWSER_AVAILABLE_INTERNAL)
 endif()
 
 add_subdirectory(obs-frontend-api)
+#add_subdirectory(obs-control-api)
 
 # ----------------------------------------------------------------------------
 
@@ -81,6 +82,8 @@ endif()
 include_directories(${FFMPEG_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(SYSTEM "obs-frontend-api")
+#include_directories(SYSTEM "obs-control-api")
+
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/libobs")
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/deps/libff")
 include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/deps/json11")
@@ -398,10 +401,11 @@ target_link_libraries(obs
 	Qt5::Svg
 	Qt5::Xml
 	obs-frontend-api
+
 	${FFMPEG_LIBRARIES}
 	${LIBCURL_LIBRARIES}
 	${obs_PLATFORM_LIBRARIES})
-
+#	obs-control-api
 if (APPLE)
 	target_link_libraries(obs
 			Qt5::MacExtras)

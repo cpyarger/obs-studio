@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include <obs.h>
 #include <util/darray.h>
@@ -122,6 +123,7 @@ EXPORT void obs_frontend_add_tools_menu_item(const char *name,
 
 /* takes QDockWidget and returns QAction */
 EXPORT void *obs_frontend_add_dock(void *dock);
+EXPORT void *obs_frontend_add_control_window(void *icon, void *name,void *window);
 
 typedef void (*obs_frontend_event_cb)(enum obs_frontend_event event,
 				      void *private_data);

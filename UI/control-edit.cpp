@@ -22,9 +22,15 @@
 #include <obs-frontend-api/obs-frontend-api.h>
 #endif
 #include "control-edit.hpp"
-OBSBasicControl::OBSBasicControl(QIcon icon, QString name, QWidget *page )
+OBSBasicControl::OBSBasicControl()
 {
+	
+	//Add UI 
 }
 
 OBSBasicControl::~OBSBasicControl() {}
 
+int OBSBasicControl::AddControl(QIcon icon, QString name, QWidget *page) {
+	//OBSS->
+	return 0;
+}

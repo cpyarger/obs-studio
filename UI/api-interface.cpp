@@ -330,6 +330,12 @@ struct OBSStudioAPI : obs_frontend_callbacks {
 	{
 		return (void *)main->AddDockWidget((QDockWidget *)dock);
 	}
+	void *obs_frontend_add_control_window(void *icon, void *name, void *Window) override
+	{
+		return (void *)settings->AddControlPage(
+			(QIcon *)icon, (QString *)name, (QWidget *)Window);
+			//main->AddDockWidget((QWidget *)Window);
+	}
 
 	void obs_frontend_add_event_callback(obs_frontend_event_cb callback,
 					     void *private_data) override

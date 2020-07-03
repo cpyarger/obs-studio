@@ -16,8 +16,9 @@
 ******************************************************************************/
 
 #pragma once
-
 #include <QObject>
+#include <QIcon>
+#include <QWidget>
 #include <obs.h>
 
 
@@ -27,11 +28,14 @@ Q_OBJECT
 	
 
 public:
-	OBSBasicControl(QIcon icon, QString name, QWidget *page);
+OBSBasicControl();
 	~OBSBasicControl();
-	
-signals:
+QIcon icon;
+	QString name;
+QWidget page;
 	int AddControl(QIcon icon, QString name, QWidget *page);
+
+signals:
 	int ModuleLoaded(QIcon icon, QString name, QWidget *page);
 
 
