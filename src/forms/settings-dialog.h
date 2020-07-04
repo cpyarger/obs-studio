@@ -21,12 +21,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "ui_configwindow.h"
 #include "configwindow.h"
 #include "../midi-agent.h"
-
+namespace Ui {
+class SettingsDialog;
+}
 class SettingsDialog : public QWidget {
 	Q_OBJECT
 
 public:
-	SettingsDialog();
+	SettingsDialog(QWidget *parent = nullptr);
 	~SettingsDialog();
 	void setCheck(bool check);
 	void SetAvailableDevices();
@@ -49,3 +51,4 @@ private:
 	QMetaObject::Connection desconnect;
 	bool starting = true;
 };
+extern SettingsDialog *settings_dialog;

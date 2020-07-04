@@ -252,6 +252,7 @@ void events::FrontendEventHandler(enum obs_frontend_event event,
 void events::broadcastUpdate(const char *updateType,
 			     obs_data_t *additionalFields = nullptr)
 {
+	blog(1, "update -- %s",updateType);
 	std::optional<uint64_t> streamTime;
 	if (obs_frontend_streaming_active()) {
 		streamTime = std::make_optional(getStreamingTime());

@@ -33,10 +33,14 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "configwindow.h"
 #include <qdialogbuttonbox.h>
 #include <qcheckbox.h>
-
-SettingsDialog::SettingsDialog()
-	: ui(new Ui::SettingsDialog)
-{ /*
+#include <QWidget>
+SettingsDialog *settings_dialog = nullptr;
+SettingsDialog::SettingsDialog(QWidget *parent)
+	:QWidget(parent), ui(new Ui::SettingsDialog)
+{
+	ui->setupUi(this);
+	setVisible(
+		false); /* Invisible by default to prevent it from showing until Geometry is loaded */
 	connect(ui->list_midi_dev, &QListWidget::currentTextChanged, this,
 		&SettingsDialog::on_item_select);
 	connect(ui->check_enabled, &QCheckBox::stateChanged, this,
@@ -47,7 +51,7 @@ SettingsDialog::SettingsDialog()
 		&SettingsDialog::on_btn_configure_clicked);
 
 	SetAvailableDevices();
-	*/
+	
 }
 
 void SettingsDialog::ToggleShowHide()
