@@ -21,14 +21,19 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "ui_configwindow.h"
 #include "configwindow.h"
 #include "../midi-agent.h"
+#include <window-control.hpp>
 namespace Ui {
 class SettingsDialog;
 }
-class SettingsDialog : public QWidget {
+
+class SettingsDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	SettingsDialog(QWidget *parent = nullptr);
+	SettingsDialog(QDialog *parent = nullptr);
+	QIcon AddQIcon(QIcon *icon);
+	QString AddQSName(QString *name);
+	QWidget AddQPage(QWidget *page);
 	~SettingsDialog();
 	void setCheck(bool check);
 	void SetAvailableDevices();
@@ -43,8 +48,8 @@ public slots:
 	void selectOutput(QString item);
 
 private:
+	static OBSControlWidget *wid;
 	Ui::SettingsDialog *ui;
-
 	Ui::ConfigWindow *cwin;
 	bool hidedebugitems = true;
 	bool loadingdevices = false;

@@ -33,14 +33,15 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "configwindow.h"
 #include <qdialogbuttonbox.h>
 #include <qcheckbox.h>
-#include <QWidget>
+#include<QWidget>
+#include <window-control.hpp>
 SettingsDialog *settings_dialog = nullptr;
-SettingsDialog::SettingsDialog(QWidget *parent)
-	:QWidget(parent), ui(new Ui::SettingsDialog)
+
+SettingsDialog::SettingsDialog(QDialog *parent)
+	: ui(new Ui::SettingsDialog)
 {
-	ui->setupUi(this);
-	setVisible(
-		false); /* Invisible by default to prevent it from showing until Geometry is loaded */
+	wid = new OBSControlWidget(parent);
+	
 	connect(ui->list_midi_dev, &QListWidget::currentTextChanged, this,
 		&SettingsDialog::on_item_select);
 	connect(ui->check_enabled, &QCheckBox::stateChanged, this,
@@ -53,7 +54,20 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 	SetAvailableDevices();
 	
 }
-
+QIcon SettingsDialog::AddQIcon(QIcon *icon){
+	wid->AddIcon(icon);
+	return wid->icon;
+}
+QString SettingsDialog::AddQSName(QString *name)
+{
+	wid->AddName(name);
+	return wid->name;
+}
+QWidget SettingsDialog::AddQPage(QWidget *page)
+{
+	wid->AddPage(page);
+	return (QWidget)wid->page;
+}
 void SettingsDialog::ToggleShowHide()
 {
 

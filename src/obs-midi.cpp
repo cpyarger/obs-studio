@@ -14,7 +14,7 @@
 #include <iostream>
 #include <utility>
 #include "obs-midi.h"
-
+#include <window-control.hpp>
 #include "forms/settings-dialog.h"
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
@@ -43,12 +43,8 @@ ConfigPtr _config;
 DeviceManagerPtr _deviceManager;
 
 eventsPtr _eventsSystem;
-
-bool obs_module_load(void)
-{
-	blog(LOG_INFO, "MIDI LOADED ");
-
-	// Device Manager Setup
+void makePointers()
+{ // Device Manager Setup
 	_deviceManager = DeviceManagerPtr(new DeviceManager());
 
 	// Config Setup
@@ -57,28 +53,21 @@ bool obs_module_load(void)
 
 	// Signal Router Setup
 	_eventsSystem = eventsPtr(new events(_deviceManager));
-
-
-
-
-	return true;
 }
+
 void register_gui()
-{
+		{
 	obs_frontend_push_ui_translation(obs_module_get_string);
 
 	// UI SETUP
-	QMainWindow *mainWindow = (QMainWindow *)obs_frontend_get_main_window();
-	SettingsDialog *settingsDialog = new SettingsDialog(mainWindow);
-	const char *menuActionText = obs_module_text("OBS MIDI Settings");
-	QAction *menuAction =(QAction *)obs_frontend_add_tools_menu_qaction(menuActionText);
-	QObject::connect(menuAction, SIGNAL(triggered()), settingsDialog,SLOT(ToggleShowHide()));
-
-	QIcon *icon = new QIcon("./midi.svg");
-	QString *name = new QString("MIDI");
+	QDialog *sw = (QDialog *)obs_frontend_get_settings_window();
+	SettingsDialog *cont = new SettingsDialog(sw);
+	cont->AddQIcon((QIcon *)("./midi.svg"));
+	cont->AddQSName((QString *)("MIDI"));
+	cont->AddQPage(cont);
+	
 	//obs_frontend_add_control_window(icon, name, settingsDialog);
-	settings_dialog =
-		reinterpret_cast<SettingsDialog *>(obs_frontend_add_control_window(icon, name,settingsDialog));
+	obs_frontend_add_control_window(cont);
 	obs_frontend_pop_ui_translation();
 	// Setup event handler to start the server once OBS is ready
 	auto eventCallback = [](enum obs_frontend_event event, void *param) {
@@ -90,7 +79,16 @@ void register_gui()
 	obs_frontend_add_event_callback(
 		eventCallback, (void *)(obs_frontend_event_cb)eventCallback);
 }
-void obs_module_unload()
+
+
+bool obs_module_load(void)
+{
+	blog(LOG_INFO, "MIDI LOADED ");
+	makePointers();
+	register_gui();
+	return true;
+}
+ void obs_module_unload()
 {
 	_config.reset();
 	_eventsSystem.reset();

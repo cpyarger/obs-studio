@@ -54,15 +54,22 @@ if (APPLE)
 endif()
 
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+set(midi_ui
+        src/forms/settings-dialog.ui
+        src/forms/configwindow.ui)
 
+qt5_wrap_ui(midi_ui_headers ${midi_ui})
+#qt5_add_resources(midi_qrc_sources src/Forms/midi.qrc)
 include_directories(
 				"${LIBOBS_INCLUDE_DIR}/../UI/obs-frontend-api"
+
         SYSTEM
 				${Qt5Core_INCLUDES}
 				${Qt5Widgets_INCLUDES}
         "${CMAKE_SOURCE_DIR}/UI")
 
 set(obs-midi_SOURCES
+${midi_ui_headers}
   src/utils.cpp
 	src/config.cpp
 	src/midi-agent.cpp
@@ -90,6 +97,7 @@ list(APPEND obs-midi_HEADERS
 )
 
 add_library(obs-midi MODULE
+${midi_ui}
         ${obs-midi_SOURCES}
         ${obs-midi_HEADERS})
 if (${isAzure})
@@ -101,7 +109,8 @@ if(WIN32 OR LINUX)
 					${obs-midi_DEPS}
 					Qt5::Core
 					Qt5::Widgets
-					libobs)
+					libobs
+					window-control)
 	
 
 

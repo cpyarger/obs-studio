@@ -2,6 +2,7 @@
 #include <obs.hpp>
 #include <memory>
 #include <QObject>
+#include <window-control.hpp>
 void ___source_dummy_addref(obs_source_t *);
 void ___sceneitem_dummy_addref(obs_sceneitem_t *);
 void ___data_dummy_addref(obs_data_t *);
