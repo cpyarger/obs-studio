@@ -23,8 +23,9 @@
 #include <QPointer>
 #include <memory>
 #include <string>
+#include <libff/ff-util.h>	
 
-#include <libff/ff-util.h>
+
 
 #include <obs.hpp>
 
@@ -37,6 +38,7 @@ class QCheckBox;
 class QLabel;
 class OBSPropertiesView;
 class OBSHotkeyWidget;
+class OBSControlPage;
 
 #include "ui_OBSBasicSettings.h"
 
@@ -305,7 +307,7 @@ private:
 	QIcon GetControlsIcon() const;
 
 	int CurrentFLVTrack();
-
+	QStringList ControlsList;
 private slots:
 	void on_theme_activated(int idx);
 
@@ -373,6 +375,7 @@ private slots:
 	//void SetHotkeysIcon(const QIcon &icon);
 	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
+	
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -380,7 +383,7 @@ protected:
 public:
 	OBSBasicSettings(QWidget *parent);
 	~OBSBasicSettings();
-	QListWidget getControlsList();
+	QStringList getControlsList();
 	QStackedWidget GetControlsStack();
 	QString *AddControlPage(QIcon *icon, QString *name, QWidget *page);
 signals:

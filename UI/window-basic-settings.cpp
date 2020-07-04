@@ -4813,18 +4813,18 @@ int OBSBasicSettings::CurrentFLVTrack()
 
 	return 0;
 }
-QListWidget OBSBasicSettings::getControlsList()
+QStringList OBSBasicSettings::getControlsList()
 {
-	return static_cast<QListWidget>(this);
+	return ControlsList;
 }
 
 QString *OBSBasicSettings::AddControlPage(QIcon *icon, QString *name,
 					  QWidget *page)
 {
-	QListWidgetItem *newpage =
-		new QListWidgetItem(QIcon(*icon), QString(*name));
-	ui->ControlsListWidget->addItem(newpage);
-	int PageNumber = ui->ControlsStackedWidget->addWidget(page);
+	
+	//ui->ControlsListWidget->addItem(newpage);
+	ui->ControlsListWidget->addItem((QIcon(*icon), QString(*name)));
+	 ui->ControlsStackedWidget->addWidget(page);
 	connect(this, SIGNAL(onControlChange), this, SLOT(callback));
 	return name;
 }

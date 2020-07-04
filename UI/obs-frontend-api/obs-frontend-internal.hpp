@@ -70,6 +70,7 @@ struct obs_frontend_callbacks {
 	obs_frontend_remove_event_callback(obs_frontend_event_cb callback,
 					   void *private_data) = 0;
 
+
 	virtual obs_output_t *obs_frontend_get_streaming_output(void) = 0;
 	virtual obs_output_t *obs_frontend_get_recording_output(void) = 0;
 	virtual obs_output_t *obs_frontend_get_replay_buffer_output(void) = 0;
