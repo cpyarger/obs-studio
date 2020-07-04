@@ -2,7 +2,7 @@
 <ui version="4.0">
  <author>Christopher P Yarger</author>
  <class>SettingsDialog</class>
- <widget class="QDialog" name="SettingsDialog">
+ <widget class="QWidget" name="SettingsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -26,9 +26,7 @@
   <property name="windowTitle">
    <string>OBS MIDI Settings</string>
   </property>
-  <property name="modal">
-   <bool>true</bool>
-  </property>
+
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QSplitter" name="splitter">

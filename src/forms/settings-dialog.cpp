@@ -34,10 +34,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <qdialogbuttonbox.h>
 #include <qcheckbox.h>
 
-SettingsDialog::SettingsDialog(QWidget *parent)
-	: QDialog(parent, Qt::Dialog), ui(new Ui::SettingsDialog)
-{
-	ui->setupUi(this);
+SettingsDialog::SettingsDialog()
+	: ui(new Ui::SettingsDialog)
+{ /*
 	connect(ui->list_midi_dev, &QListWidget::currentTextChanged, this,
 		&SettingsDialog::on_item_select);
 	connect(ui->check_enabled, &QCheckBox::stateChanged, this,
@@ -48,6 +47,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 		&SettingsDialog::on_btn_configure_clicked);
 
 	SetAvailableDevices();
+	*/
 }
 
 void SettingsDialog::ToggleShowHide()

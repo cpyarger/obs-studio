@@ -22,11 +22,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "configwindow.h"
 #include "../midi-agent.h"
 
-class SettingsDialog : public QDialog {
+class SettingsDialog : public QWidget {
 	Q_OBJECT
 
 public:
-	SettingsDialog(QWidget *parent);
+	SettingsDialog();
 	~SettingsDialog();
 	void setCheck(bool check);
 	void SetAvailableDevices();
