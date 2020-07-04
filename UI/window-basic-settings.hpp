@@ -26,11 +26,11 @@
 #include <libff/ff-util.h>	
 
 
-
+#include<window-control.hpp>
 #include <obs.hpp>
 
 #include "auth-base.hpp"
-
+#include <window-control.hpp>
 class OBSBasic;
 class QAbstractButton;
 class QComboBox;
@@ -38,8 +38,7 @@ class QCheckBox;
 class QLabel;
 class OBSPropertiesView;
 class OBSHotkeyWidget;
-class OBSControlPage;
-
+class OBSControlWidget;
 #include "ui_OBSBasicSettings.h"
 
 #define VOLUME_METER_DECAY_FAST 23.53
@@ -99,12 +98,13 @@ class OBSBasicSettings : public QDialog {
 	//Q_PROPERTY(QIcon hotkeysIcon READ GetHotkeysIcon WRITE SetHotkeysIcon   DESIGNABLE true)
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
-	Q_PROPERTY(QIcon controlsIcon READ GetControlsIcon WRITE SetControlsIcon
+	Q_PROPERTY(QIcon controlsIcon READ GetHotkeysIcon WRITE SetControlsIcon
 			   DESIGNABLE true)				  
 private:
 	OBSBasic *main;
 
 	std::unique_ptr<Ui::OBSBasicSettings> ui;
+	QList<QPointer<OBSControlWidget>> controlsWidgets;
 
 	std::shared_ptr<Auth> auth;
 
@@ -385,7 +385,7 @@ public:
 	~OBSBasicSettings();
 	QStringList getControlsList();
 	QStackedWidget GetControlsStack();
-	QString *AddControlPage(QIcon *icon, QString *name, QWidget *page);
+	QString *AddControlPage(OBSControlWidget *control);
 signals:
 	void onControlChange(QString Change);
 };

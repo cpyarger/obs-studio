@@ -1,12 +1,20 @@
 #pragma once
 
 #include <QWidget>
-
-class OBSControlWidget : public QWidget {
-	Q_OBJECT
+#include <QIcon>
+#include <QString>
+#include <QDialog>
+class OBSControlWidget : public QDialog
+{
 
 public:
-	inline OBScontrol(QWidget* parent = nullptr) : QWidget(parent) {}
+	OBSControlWidget(QDialog *parent = nullptr);
+	~OBSControlWidget();
+	void AddPage(QWidget *Page = nullptr);
+	void AddIcon(QIcon *Icon = nullptr);
+	void AddName(QString *Name = nullptr);
+	QWidget *page;
+	QIcon icon;
+	QString name;
 
-	virtual void closeEvent(QCloseEvent* event);
 };

@@ -35,7 +35,7 @@
 #include <QStandardItemModel>
 #include <QSpacerItem>
 #include <QListWidget>
-
+#include <window-control.hpp>
 #include "audio-encoders.hpp"
 #include "hotkey-edit.hpp"
 #include "source-label.hpp"
@@ -4818,13 +4818,10 @@ QStringList OBSBasicSettings::getControlsList()
 	return ControlsList;
 }
 
-QString *OBSBasicSettings::AddControlPage(QIcon *icon, QString *name,
-					  QWidget *page)
+QString *OBSBasicSettings::AddControlPage(OBSControlWidget* Widget)
 {
-	
-	//ui->ControlsListWidget->addItem(newpage);
-	ui->ControlsListWidget->addItem((QIcon(*icon), QString(*name)));
-	 ui->ControlsStackedWidget->addWidget(page);
-	connect(this, SIGNAL(onControlChange), this, SLOT(callback));
-	return name;
+	ui->ControlsListWidget->addItem((Widget->icon,Widget->name));
+	ui->ControlsStackedWidget->addWidget(Widget->page);
+	//connect(this, SIGNAL(onControlChange), this, SLOT(callback));
+	return (QString *)("works");
 }

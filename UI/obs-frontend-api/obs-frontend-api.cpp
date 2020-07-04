@@ -291,11 +291,9 @@ void *obs_frontend_add_dock(void *dock)
 {
 	return !!callbacks_valid() ? c->obs_frontend_add_dock(dock) : nullptr;
 }
-void *obs_frontend_add_control_window(void *icon, void *name, void *window)
+void *obs_frontend_add_control_window(void *control)
 {
-	return !!callbacks_valid()
-		       ? c->obs_frontend_add_control_window(icon, name, window)
-		       : nullptr;
+	return !!callbacks_valid() ? c->obs_frontend_add_control_window(control) : nullptr;
 }
 void obs_frontend_add_event_callback(obs_frontend_event_cb callback,
 				     void *private_data)
