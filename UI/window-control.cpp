@@ -1,8 +1,7 @@
 #include <window-control.hpp>
-#include <obs-app.hpp>
 
-OBSControlWidget::OBSControlWidget(QDialog *parent ): QDialog(parent){
-}
+
+OBSControlWidget::OBSControlWidget(QDialog *parent ){}
 OBSControlWidget::~OBSControlWidget() {}
 
 
