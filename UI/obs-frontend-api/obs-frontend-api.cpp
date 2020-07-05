@@ -291,10 +291,26 @@ void *obs_frontend_add_dock(void *dock)
 {
 	return !!callbacks_valid() ? c->obs_frontend_add_dock(dock) : nullptr;
 }
-void *obs_frontend_add_control_window(void *control)
+void *obs_frontend_add_control_window(void *icon, void *name, void *page)
 {
-	return !!callbacks_valid() ? c->obs_frontend_add_control_window(control) : nullptr;
+	return !!callbacks_valid() ? c->obs_frontend_add_control_window( icon, name, page) : nullptr;
 }
+void *obs_frontend_get_control_icons(void)
+{
+	return !!callbacks_valid()
+		       ? c->obs_frontend_get_control_icons()
+		       : nullptr;
+};
+void *obs_frontend_get_control_names(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_control_names()
+		       : nullptr;
+};
+void *obs_frontend_get_control_pages(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_control_pages()
+		       : nullptr;
+};
 void obs_frontend_add_event_callback(obs_frontend_event_cb callback,
 				     void *private_data)
 {

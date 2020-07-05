@@ -385,7 +385,8 @@ public:
 	~OBSBasicSettings();
 	QStringList getControlsList();
 	QStackedWidget GetControlsStack();
-	QString *AddControlPage(OBSControlWidget *control);
+	void loadControlWindows();
+	QString AddControlPage(QIcon icon, QString name, QWidget page);
 signals:
 	void onControlChange(QString Change);
 };

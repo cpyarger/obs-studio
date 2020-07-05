@@ -32,14 +32,16 @@
 #include <QVariant>
 #include <QTreeView>
 #include <QScreen>
+#include <QString>
+#include <QIcon>
+#include <QWidget>
 #include <QStandardItemModel>
 #include <QSpacerItem>
 #include <QListWidget>
-#include <window-control.hpp>
 #include "audio-encoders.hpp"
 #include "hotkey-edit.hpp"
 #include "source-label.hpp"
-#include "obs-app.hpp"
+#include <obs-app.hpp>
 #include "platform.hpp"
 #include "properties-view.hpp"
 #include "qt-wrappers.hpp"
@@ -47,7 +49,11 @@
 #include "window-basic-settings.hpp"
 #include "window-basic-main-outputs.hpp"
 #include "window-projector.hpp"
-
+#if __has_include(<obs-frontend-api.h>)
+#include <obs-frontend-api.h>
+#else
+#include <obs-frontend-api/obs-frontend-api.h>
+#endif
 #include <util/platform.h>
 #include "ui-config.h"
 
@@ -827,6 +833,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	QValidator *validator = new QRegExpValidator(rx, this);
 	ui->baseResolution->lineEdit()->setValidator(validator);
 	ui->outputResolution->lineEdit()->setValidator(validator);
+	loadControlWindows();
 }
 
 OBSBasicSettings::~OBSBasicSettings()
@@ -4817,11 +4824,25 @@ QStringList OBSBasicSettings::getControlsList()
 {
 	return ControlsList;
 }
-
-QString *OBSBasicSettings::AddControlPage(OBSControlWidget* Widget)
-{
-	ui->ControlsListWidget->addItem((Widget->icon,Widget->name));
-	ui->ControlsStackedWidget->addWidget(Widget->page);
+void OBSBasicSettings::loadControlWindows() {
+	QList<QString> *Names = (QList<QString> *)obs_frontend_get_control_names();
+	QList<QIcon> *Icons = (QList<QIcon> *)obs_frontend_get_control_icons();
+	QList<QWidget> *Pages = (QList<QWidget> *)obs_frontend_get_control_pages();
+	int loopsize = Names->size();
+	for (int i = 0; i < loopsize; i++) {
+		ui->ControlsListWidget->addItem((Icons->at(i), Names->at(i)));
+		//AddControlPage(Icons->at(i), Names->at(i),Pages->at(i));
+	}
+	
+}
+QString OBSBasicSettings::AddControlPage(QIcon icon, QString name,
+					 QWidget page)
+{ //const QIcon i = *icon;
+	//item->setIcon(i);
+	//blog(1, name.toStdString().c_str());
+	ui->ControlsListWidget->addItem((icon, name));
+	//ui->ControlsListWidget->addItem(item);
+	//ui->ControlsStackedWidget->addWidget(page);
 	//connect(this, SIGNAL(onControlChange), this, SLOT(callback));
-	return (QString *)("works");
+	return (QString)("works");
 }

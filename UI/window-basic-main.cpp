@@ -7698,7 +7698,13 @@ QAction *OBSBasic::AddDockWidget(QDockWidget *dock)
 
 	return action;
 }
-
+void *OBSBasic::AddControlPage(QIcon *icon, QString *name, QWidget *page)
+{	
+	ControlIcons.append(icon);
+	ControlNames.append(name);
+	ControlPages.append(page);
+	return (QString *)"Hello World";
+};
 OBSBasic *OBSBasic::Get()
 {
 	return reinterpret_cast<OBSBasic *>(App()->GetMainWindow());

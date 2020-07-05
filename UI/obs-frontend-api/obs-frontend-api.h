@@ -120,8 +120,11 @@ EXPORT void obs_frontend_add_tools_menu_item(const char *name,
 
 /* takes QDockWidget and returns QAction */
 EXPORT void *obs_frontend_add_dock(void *dock);
-EXPORT void *obs_frontend_add_control_window(void *control);
-
+EXPORT void *obs_frontend_add_control_window( void *icon,
+					     void *name, void *page);
+EXPORT void *obs_frontend_get_control_icons(void);
+EXPORT void *obs_frontend_get_control_names(void);
+EXPORT void *obs_frontend_get_control_pages(void);
 typedef void (*obs_frontend_event_cb)(enum obs_frontend_event event,
 				      void *private_data);
 EXPORT void obs_frontend_add_event_callback(obs_frontend_event_cb callback,

@@ -60,7 +60,12 @@ struct obs_frontend_callbacks {
 						      void *private_data) = 0;
 
 	virtual void *obs_frontend_add_dock(void *dock) = 0;
-	virtual void *obs_frontend_add_control_window(void *control) = 0;
+	virtual void *obs_frontend_add_control_window( void *icon,
+						      void *name,
+						      void *page) = 0;
+	virtual void *obs_frontend_get_control_names(void) = 0;
+	virtual void *obs_frontend_get_control_pages(void) = 0;
+	virtual void *obs_frontend_get_control_icons(void) = 0;
 
 	virtual void
 	obs_frontend_add_event_callback(obs_frontend_event_cb callback,
