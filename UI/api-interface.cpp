@@ -330,15 +330,15 @@ struct OBSStudioAPI : obs_frontend_callbacks {
 	{
 		return (void *)main->AddDockWidget((QDockWidget *)dock);
 	}
-	void *obs_frontend_get_controls_icons(void) override 
+	void *obs_frontend_get_control_icons(void) override 
 	{
 		return (void *)main->getControlsIcons();
 	}
-	void *obs_frontend_get_controls_pages(void) override 
+	void *obs_frontend_get_control_pages(void) override 
 	{
 		return (void *)main->getControlsPages();
 	}
-	void *obs_frontend_get_controls_names(void) override 
+	void *obs_frontend_get_control_names(void) override 
 	{
 		return (void *)main->getControlsNames();
 	}

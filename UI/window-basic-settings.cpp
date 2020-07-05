@@ -4835,14 +4835,3 @@ void OBSBasicSettings::loadControlWindows() {
 	}
 	
 }
-QString OBSBasicSettings::AddControlPage(QIcon icon, QString name,
-					 QWidget page)
-{ //const QIcon i = *icon;
-	//item->setIcon(i);
-	//blog(1, name.toStdString().c_str());
-	ui->ControlsListWidget->addItem((icon, name));
-	//ui->ControlsListWidget->addItem(item);
-	//ui->ControlsStackedWidget->addWidget(page);
-	//connect(this, SIGNAL(onControlChange), this, SLOT(callback));
-	return (QString)("works");
-}
