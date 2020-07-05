@@ -353,6 +353,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	ui->setupUi(this);
 
 	main->EnableOutputs(false);
+	loadControlWindows();
 
 	PopulateAACBitrates({ui->simpleOutputABitrate, ui->advOutTrack1Bitrate,
 			     ui->advOutTrack2Bitrate, ui->advOutTrack3Bitrate,
@@ -833,7 +834,6 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	QValidator *validator = new QRegExpValidator(rx, this);
 	ui->baseResolution->lineEdit()->setValidator(validator);
 	ui->outputResolution->lineEdit()->setValidator(validator);
-	loadControlWindows();
 }
 
 OBSBasicSettings::~OBSBasicSettings()
@@ -4825,13 +4825,17 @@ QStringList OBSBasicSettings::getControlsList()
 	return ControlsList;
 }
 void OBSBasicSettings::loadControlWindows() {
-	QList<QString> *Names = (QList<QString> *)obs_frontend_get_control_names();
-	QList<QIcon> *Icons = (QList<QIcon> *)obs_frontend_get_control_icons();
-	QList<QWidget> *Pages = (QList<QWidget> *)obs_frontend_get_control_pages();
-	int loopsize = Names->size();
-	for (int i = 0; i < loopsize; i++) {
-		ui->ControlsListWidget->addItem((Icons->at(i), Names->at(i)));
-		//AddControlPage(Icons->at(i), Names->at(i),Pages->at(i));
-	}
 	
+	bool setter = false;
+	int loopsize = main->ControlNames.size();
+	for (int i = 0; i < loopsize; i++) {
+		ui->ControlsListWidget->addItem(new QListWidgetItem((QIcon)*main->ControlIcons.at(i),
+					    (QString)*main->ControlNames.at(i)));
+		ui->ControlsStackedWidget->addWidget(
+			(QWidget *)main->ControlPages.at(i));
+	
+	}
+	if (loopsize > 0) {
+		ui->ControlsStackedWidget->setCurrentIndex(0);
+	}
 }

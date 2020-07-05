@@ -7703,7 +7703,7 @@ void *OBSBasic::AddControlPage(QIcon *icon, QString *name, QWidget *page)
 	ControlIcons.append(icon);
 	ControlNames.append(name);
 	ControlPages.append(page);
-	return (QString *)"Hello World";
+	return (QString *)name;
 };
 OBSBasic *OBSBasic::Get()
 {
