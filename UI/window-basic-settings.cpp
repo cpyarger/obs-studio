@@ -839,6 +839,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 OBSBasicSettings::~OBSBasicSettings()
 {
 	delete ui->filenameFormatting->completer();
+	
 	main->EnableOutputs(true);
 
 	App()->UpdateHotkeyFocusSetting();
@@ -4828,14 +4829,17 @@ void OBSBasicSettings::loadControlWindows() {
 	
 	bool setter = false;
 	int loopsize = main->ControlNames.size();
-	for (int i = 0; i < loopsize; i++) {
-		ui->ControlsListWidget->addItem(new QListWidgetItem((QIcon)*main->ControlIcons.at(i),
-					    (QString)*main->ControlNames.at(i)));
-		ui->ControlsStackedWidget->addWidget(
-			(QWidget *)main->ControlPages.at(i));
-	
-	}
 	if (loopsize > 0) {
-		ui->ControlsStackedWidget->setCurrentIndex(0);
+		for (int i = 0; i < loopsize; i++) {
+			ui->ControlsListWidget->addItem(new QListWidgetItem(
+				(QIcon)*main->ControlIcons.at(i),
+				(QString)*main->ControlNames.at(i)));
+			ui->ControlsStackedWidget->addWidget(
+				(QWidget *)main->ControlPages.at(i));
+		}
+	
+	ui->ControlsStackedWidget->setCurrentIndex(0);
+	} else {
+		blog(1, "controls dont have any widgets");
 	}
 }

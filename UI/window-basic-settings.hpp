@@ -246,6 +246,11 @@ private slots:
 	void on_useAuth_toggled();
 
 private:
+	bool startup = true;
+	const QList<QIcon *> ControlIcons;
+	const QList<QString *> ControlNames;
+	const QList<QWidget *> ControlPages;
+	
 	/* output */
 	void LoadSimpleOutputSettings();
 	void LoadAdvOutputStreamingSettings();

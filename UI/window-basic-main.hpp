@@ -815,13 +815,12 @@ public:
 	QIcon GetSourceIcon(const char *id) const;
 	QIcon GetGroupIcon() const;
 	QIcon GetSceneIcon() const;
+	bool startup = true;
 	void *AddControlPage(QIcon *icon, QString *name, QWidget *page);
-	QList<QIcon *> ControlIcons;
+	QList<QIcon *>   ControlIcons;
 	QList<QString *> ControlNames;
 	QList<QWidget *> ControlPages;
-	void *getControlsIcons() { return (&ControlIcons); };
-	void *getControlsNames() { return (&ControlNames); };
-	void *getControlsPages() { return (&ControlPages); };
+
 	protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void changeEvent(QEvent *event) override;
