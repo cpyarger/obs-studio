@@ -845,6 +845,13 @@ OBSBasicSettings::~OBSBasicSettings()
 	App()->UpdateHotkeyFocusSetting();
 
 	EnableThreadedMessageBoxes(false);
+	int loopsize = main->ControlNames.size();
+	for (int i = 0; i < loopsize; i++) {
+
+		ui->ControlsStackedWidget->removeWidget(
+			main->ControlPages.at(i));
+		main->ControlPages.at(i)->setParent(nullptr);
+	}
 }
 
 void OBSBasicSettings::SaveCombo(QComboBox *widget, const char *section,
@@ -4829,6 +4836,7 @@ void OBSBasicSettings::loadControlWindows() {
 	
 	bool setter = false;
 	int loopsize = main->ControlNames.size();
+
 	if (loopsize > 0) {
 		for (int i = 0; i < loopsize; i++) {
 			ui->ControlsListWidget->addItem(new QListWidgetItem(
