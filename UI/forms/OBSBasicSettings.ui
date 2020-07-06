@@ -4786,18 +4786,42 @@
                   <widget class="QComboBox" name="CB_InputFilter">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                     <horstretch>0</horstretch>
+                     <horstretch>2</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>30</height>
+                     <height>45</height>
                     </size>
                    </property>
                   </widget>
                   <widget class="QLabel" name="label_45">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <horstretch>2</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>45</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Input Filter</string>
                    </property>
@@ -4805,29 +4829,96 @@
                   <widget class="QComboBox" name="CBOutputFilter">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                     <horstretch>0</horstretch>
+                     <horstretch>2</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
                    </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>30</height>
+                     <height>45</height>
                     </size>
                    </property>
                   </widget>
                   <widget class="QLabel" name="label_68">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <horstretch>2</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>45</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Output Filter</string>
                    </property>
                   </widget>
-                  <widget class="QLineEdit" name="SearchEdit"/>
+                  <widget class="QLineEdit" name="SearchEdit">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                     <horstretch>2</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>45</height>
+                    </size>
+                   </property>
+                  </widget>
                   <widget class="QLabel" name="label_69">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                     <horstretch>2</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>45</height>
+                    </size>
+                   </property>
                    <property name="text">
                     <string>Search</string>
                    </property>
                   </widget>
                   <widget class="QPushButton" name="ResetFilter">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -4855,14 +4946,32 @@
                   <layout class="QGridLayout" name="gridLayout_13">
                    <item row="0" column="0">
                     <widget class="QSplitter" name="splitter_8">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>95</height>
+                      </size>
+                     </property>
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
                      </property>
                      <widget class="QPushButton" name="pushButton_11">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                        <horstretch>2</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
+                      </property>
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
-                        <height>30</height>
+                        <height>45</height>
                        </size>
                       </property>
                       <property name="text">
@@ -4870,10 +4979,22 @@
                       </property>
                      </widget>
                      <widget class="QPushButton" name="pushButton_12">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                        <horstretch>2</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
+                      </property>
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
-                        <height>30</height>
+                        <height>45</height>
                        </size>
                       </property>
                       <property name="text">
@@ -4907,32 +5028,35 @@
                      <widget class="QComboBox" name="CBISelect_2">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                        <horstretch>0</horstretch>
+                        <horstretch>2</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>30</height>
+                       </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>16777215</width>
-                        <height>30</height>
+                        <height>45</height>
                        </size>
                       </property>
-                      <item>
-                       <property name="text">
-                        <string>Midi</string>
-                       </property>
-                      </item>
                       <item>
                        <property name="text">
                         <string>Hotkeys</string>
                        </property>
                       </item>
-                      <item>
-                       <property name="text">
-                        <string>OSC</string>
-                       </property>
-                      </item>
                      </widget>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="Line" name="line_2">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
                     </widget>
                    </item>
                    <item row="2" column="0">
@@ -4940,137 +5064,6 @@
                      <property name="currentIndex">
                       <number>0</number>
                      </property>
-                     <widget class="QWidget" name="page_10">
-                      <layout class="QGridLayout" name="gridLayout_9">
-                       <item row="0" column="0">
-                        <widget class="QSplitter" name="splitter_9">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <widget class="QLabel" name="label_72">
-                          <property name="text">
-                           <string>Device</string>
-                          </property>
-                         </widget>
-                         <widget class="QComboBox" name="comboBox_3">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <item>
-                           <property name="text">
-                            <string>Xtouch Compact 1</string>
-                           </property>
-                          </item>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QSplitter" name="splitter_10">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <widget class="QLabel" name="label_73">
-                          <property name="text">
-                           <string>Message Type</string>
-                          </property>
-                         </widget>
-                         <widget class="QComboBox" name="comboBox_5">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <item>
-                           <property name="text">
-                            <string>Control Change</string>
-                           </property>
-                          </item>
-                          <item>
-                           <property name="text">
-                            <string>Note On</string>
-                           </property>
-                          </item>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
-                        <widget class="QSplitter" name="splitter_11">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <widget class="QLabel" name="label_85">
-                          <property name="text">
-                           <string>Channel</string>
-                          </property>
-                         </widget>
-                         <widget class="QLCDNumber" name="lcdNumber_5">
-                          <property name="maximumSize">
-                           <size>
-                            <width>16777215</width>
-                            <height>30</height>
-                           </size>
-                          </property>
-                          <property name="intValue" stdset="0">
-                           <number>3</number>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item row="1" column="1">
-                        <widget class="QSplitter" name="splitter_12">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <widget class="QLabel" name="label_86">
-                          <property name="text">
-                           <string>Note/control</string>
-                          </property>
-                         </widget>
-                         <widget class="QLCDNumber" name="lcdNumber_3">
-                          <property name="maximumSize">
-                           <size>
-                            <width>16777215</width>
-                            <height>30</height>
-                           </size>
-                          </property>
-                          <property name="intValue" stdset="0">
-                           <number>11</number>
-                          </property>
-                         </widget>
-                        </widget>
-                       </item>
-                       <item row="2" column="0">
-                        <widget class="QPushButton" name="pushButton_8">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>30</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Listen One</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QPushButton" name="pushButton_9">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>30</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Listen Many</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
                      <widget class="QWidget" name="Hotkeys_2">
                       <layout class="QGridLayout" name="gridLayout_10">
                        <item row="0" column="0">
@@ -5091,13 +5084,6 @@
                      </widget>
                     </widget>
                    </item>
-                   <item row="1" column="0">
-                    <widget class="Line" name="line_2">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                    </widget>
-                   </item>
                   </layout>
                  </widget>
                 </item>
@@ -5115,25 +5101,19 @@
                      <property name="currentIndex">
                       <number>0</number>
                      </property>
-                     <widget class="QWidget" name="page_11">
+                     <widget class="QWidget" name="OBSOutputActions">
                       <layout class="QGridLayout" name="gridLayout_12">
                        <item row="0" column="0">
-                        <widget class="QSplitter" name="splitter_14">
+                        <widget class="QSplitter" name="splitter_16">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
-                         <widget class="QLabel" name="label_84">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
+                         <widget class="QLabel" name="label_88">
                           <property name="text">
-                           <string>Action</string>
+                           <string>Section</string>
                           </property>
                          </widget>
-                         <widget class="QComboBox" name="comboBox_4">
+                         <widget class="QComboBox" name="CB_OBS_Section_Selector">
                           <property name="maximumSize">
                            <size>
                             <width>16777215</width>
@@ -5142,40 +5122,167 @@
                           </property>
                           <item>
                            <property name="text">
-                            <string>SetMute</string>
+                            <string>Frontend</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Scenes</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Sources</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Filters</string>
+                           </property>
+                          </item>
+                          <item>
+                           <property name="text">
+                            <string>Outputs</string>
                            </property>
                           </item>
                          </widget>
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QSplitter" name="splitter_13">
+                        <widget class="QSplitter" name="splitter_14">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
-                         <widget class="QLabel" name="label_87">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
+                         <widget class="QStackedWidget" name="SW_OBS_Sections">
+                          <property name="currentIndex">
+                           <number>2</number>
                           </property>
-                          <property name="text">
-                           <string>Scene</string>
-                          </property>
-                         </widget>
-                         <widget class="QComboBox" name="comboBox_10">
-                          <property name="maximumSize">
-                           <size>
-                            <width>16777215</width>
-                            <height>30</height>
-                           </size>
-                          </property>
-                          <item>
-                           <property name="text">
-                            <string>Desktop Audio 1</string>
-                           </property>
-                          </item>
+                          <widget class="QWidget" name="Frontend">
+                           <layout class="QGridLayout" name="gridLayout_15">
+                            <item row="0" column="0">
+                             <widget class="QSplitter" name="splitter_17">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <widget class="QLabel" name="label_84">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="text">
+                                <string>Action</string>
+                               </property>
+                              </widget>
+                              <widget class="QComboBox" name="comboBox_4">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                                 <horstretch>2</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>30</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>16777215</width>
+                                 <height>30</height>
+                                </size>
+                               </property>
+                               <item>
+                                <property name="text">
+                                 <string>Start Streaming</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Stop Streaming</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Toggle Start/Stop Streaming</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Start Recording</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Stop Recording</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Pause Recording</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Unpause Recording</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Start Replay Buffer</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Stop Replay Buffer</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Enable Preview</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Disable Preview</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Studio Mode</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Transition</string>
+                                </property>
+                               </item>
+                               <item>
+                                <property name="text">
+                                 <string>Reset Stats</string>
+                                </property>
+                               </item>
+                              </widget>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                          <widget class="QWidget" name="Scenes">
+                           <layout class="QGridLayout" name="gridLayout_16">
+                            <item row="0" column="0">
+                             <widget class="QSplitter" name="splitter_13">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                          <widget class="QWidget" name="Sources"/>
+                          <widget class="QWidget" name="Filters"/>
+                          <widget class="QWidget" name="Outputs"/>
                          </widget>
                         </widget>
                        </item>
@@ -5201,9 +5308,21 @@
                       <widget class="QComboBox" name="CB_OutputSelect">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                         <horstretch>0</horstretch>
+                         <horstretch>2</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>30</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>45</height>
+                        </size>
                        </property>
                        <item>
                         <property name="text">
@@ -6729,6 +6848,38 @@
     <hint type="destinationlabel">
      <x>399</x>
      <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CB_OBS_Section_Selector</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SW_OBS_Sections</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>815</x>
+     <y>413</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>764</x>
+     <y>485</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CB_OutputSelect</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>SW_OutputActions</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>831</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>764</x>
+     <y>478</y>
     </hint>
    </hints>
   </connection>

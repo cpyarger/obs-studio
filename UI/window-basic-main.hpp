@@ -820,7 +820,13 @@ public:
 	QList<QIcon *>   ControlIcons;
 	QList<QString *> ControlNames;
 	QList<QWidget *> ControlPages;
-
+	void *AddInputControl(QString *name, QWidget *page);
+	QList<QString *> InputNames;
+	QList<QWidget *> InputPages;
+	void *AddOutputControl(QString *name, QWidget *page);
+	
+	QList<QString *> OutputNames;
+	QList<QWidget *> OutputPages;
 	protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void changeEvent(QEvent *event) override;

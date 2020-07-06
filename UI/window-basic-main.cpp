@@ -7698,13 +7698,7 @@ QAction *OBSBasic::AddDockWidget(QDockWidget *dock)
 
 	return action;
 }
-void *OBSBasic::AddControlPage(QIcon *icon, QString *name, QWidget *page)
-{
-	ControlIcons.append(icon);
-	ControlNames.append(name);
-	ControlPages.append(page);
-	return (QString* )name;
-};
+
 OBSBasic *OBSBasic::Get()
 {
 	return reinterpret_cast<OBSBasic *>(App()->GetMainWindow());
@@ -8038,3 +8032,22 @@ void OBSBasic::UpdateProjectorAlwaysOnTop(bool top)
 	for (size_t i = 0; i < projectors.size(); i++)
 		SetAlwaysOnTop(projectors[i], top);
 }
+void *OBSBasic::AddControlPage(QIcon *icon, QString *name, QWidget *page)
+{
+	ControlIcons.append(icon);
+	ControlNames.append(name);
+	ControlPages.append(page);
+	return (QString *)name;
+};
+void *OBSBasic::AddInputControl( QString *name, QWidget *page)
+{
+	InputNames.append(name);
+	InputPages.append(page);
+	return (QString *)name;
+};
+void *OBSBasic::AddOutputControl(QString *name, QWidget *page)
+{
+	OutputNames.append(name);
+	OutputPages.append(page);
+	return (QString *)name;
+};

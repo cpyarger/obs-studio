@@ -4834,11 +4834,12 @@ QStringList OBSBasicSettings::getControlsList()
 }
 void OBSBasicSettings::loadControlWindows() {
 	
-	bool setter = false;
-	int loopsize = main->ControlNames.size();
+	int controlloopsize = main->ControlNames.size();
+	int inputloopsize = main->InputNames.size();
+	int outputloopsize = main->OutputNames.size();
 
-	if (loopsize > 0) {
-		for (int i = 0; i < loopsize; i++) {
+	if (controlloopsize > 0) {
+		for (int i = 0; i < controlloopsize; i++) {
 			ui->ControlsListWidget->addItem(new QListWidgetItem(
 				(QIcon)*main->ControlIcons.at(i),
 				(QString)*main->ControlNames.at(i)));
@@ -4848,6 +4849,29 @@ void OBSBasicSettings::loadControlWindows() {
 	
 	ui->ControlsStackedWidget->setCurrentIndex(0);
 	} else {
-		blog(1, "controls dont have any widgets");
+		blog(1, "control doesnt have any configuration window widgets");
+	}
+	if (inputloopsize > 0) {
+		for (int i = 0; i < inputloopsize; i++) {
+			ui->CBISelect_2->addItem((QString)*main->InputNames.at(i));
+
+			ui->InputStack_2->addWidget(
+				(QWidget *)main->InputPages.at(i));
+		}
+	} else {
+		blog(1, "control doesnt have any configuration window widgets");
+	}
+	if (outputloopsize > 0) {
+		for (int i = 0; i < outputloopsize; i++) {
+			ui->CB_OutputSelect->addItem(
+				(QString)*main->OutputNames.at(i));
+
+			ui->SW_OutputActions->addWidget(
+				(QWidget *)main->OutputPages.at(i));
+		}
+	} else {
+		blog(1, "control doesnt have any configuration window widgets");
 	}
 }
+
+
