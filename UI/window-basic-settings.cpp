@@ -846,13 +846,30 @@ OBSBasicSettings::~OBSBasicSettings()
 
 	EnableThreadedMessageBoxes(false);
 	int loopsize = main->ControlNames.size();
+	int Iloopsize = main->InputNames.size();
+	int Oloopsize = main->OutputNames.size();
+
+
 	for (int i = 0; i < loopsize; i++) {
 
 		ui->ControlsStackedWidget->removeWidget(
 			main->ControlPages.at(i));
 		main->ControlPages.at(i)->setParent(nullptr);
 	}
+	for (int i = 0; i < Iloopsize; i++) {
+
+		ui->InputStack_2->removeWidget(
+			main->InputPages.at(i));
+		main->InputPages.at(i)->setParent(nullptr);
+	}
+	for (int i = 0; i < Oloopsize; i++) {
+
+		ui->SW_OutputActions->removeWidget(
+			main->OutputPages.at(i));
+		main->OutputPages.at(i)->setParent(nullptr);
+	}
 }
+
 
 void OBSBasicSettings::SaveCombo(QComboBox *widget, const char *section,
 				 const char *value)
