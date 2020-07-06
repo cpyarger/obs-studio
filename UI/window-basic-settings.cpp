@@ -580,7 +580,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 		connect(toggleAero, &QAbstractButton::toggled, this,
 			&OBSBasicSettings::ToggleDisableAero);
 	}
-
+	ui->ControlsListWidget->setCurrentRow(0);
 #define PROCESS_PRIORITY(val)                                                \
 	{                                                                    \
 		"Basic.Settings.Advanced.General.ProcessPriority."##val, val \
@@ -858,13 +858,13 @@ OBSBasicSettings::~OBSBasicSettings()
 	}
 	for (int i = 0; i < Iloopsize; i++) {
 
-		ui->InputStack_2->removeWidget(
+		ui->sw_input_widgets->removeWidget(
 			main->InputPages.at(i));
 		main->InputPages.at(i)->setParent(nullptr);
 	}
 	for (int i = 0; i < Oloopsize; i++) {
 
-		ui->SW_OutputActions->removeWidget(
+		ui->sw_output_widgets->removeWidget(
 			main->OutputPages.at(i));
 		main->OutputPages.at(i)->setParent(nullptr);
 	}
@@ -4870,21 +4870,18 @@ void OBSBasicSettings::loadControlWindows() {
 	}
 	if (inputloopsize > 0) {
 		for (int i = 0; i < inputloopsize; i++) {
-			ui->CBISelect_2->addItem((QString)*main->InputNames.at(i));
-
-			ui->InputStack_2->addWidget(
-				(QWidget *)main->InputPages.at(i));
+			ui->cb_input_select->addItem((QString)*main->InputNames.at(i));
+			ui->cb_input_filter->addItem((QString)*main->InputNames.at(i));
+			ui->sw_input_widgets->addWidget((QWidget *)main->InputPages.at(i));
 		}
 	} else {
 		blog(1, "control doesnt have any configuration window widgets");
 	}
 	if (outputloopsize > 0) {
 		for (int i = 0; i < outputloopsize; i++) {
-			ui->CB_OutputSelect->addItem(
-				(QString)*main->OutputNames.at(i));
-
-			ui->SW_OutputActions->addWidget(
-				(QWidget *)main->OutputPages.at(i));
+			ui->cb_output_select->addItem((QString)*main->OutputNames.at(i));
+			ui->cb_output_filter->addItem((QString)*main->OutputNames.at(i));
+			ui->sw_output_widgets->addWidget((QWidget *)main->OutputPages.at(i));
 		}
 	} else {
 		blog(1, "control doesnt have any configuration window widgets");
