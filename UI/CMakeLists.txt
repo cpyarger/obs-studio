@@ -266,7 +266,8 @@ set(obs_SOURCES
 	source-label.cpp
 	remote-text.cpp
 	audio-encoders.cpp
-	qt-wrappers.cpp)
+	qt-wrappers.cpp
+	mapper.cpp)
 
 set(obs_HEADERS
 	${obs_PLATFORM_HEADERS}
@@ -330,7 +331,8 @@ set(obs_HEADERS
 	remote-text.hpp
 	audio-encoders.hpp
 	qt-wrappers.hpp
-	clickable-label.hpp)
+	clickable-label.hpp
+	mapper.hpp)
 
 set(obs_importers_HEADERS
 	importers/importers.hpp)

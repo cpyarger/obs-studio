@@ -40,7 +40,8 @@ class OBSPropertiesView;
 class OBSHotkeyWidget;
 class OBSControlWidget;
 #include "ui_OBSBasicSettings.h"
-
+#include "mapper.hpp"
+#include "obs-frontend-api.h"
 #define VOLUME_METER_DECAY_FAST 23.53
 #define VOLUME_METER_DECAY_MEDIUM 11.76
 #define VOLUME_METER_DECAY_SLOW 8.57
@@ -107,6 +108,8 @@ private:
 	QList<QPointer<OBSControlWidget>> controlsWidgets;
 
 	std::shared_ptr<Auth> auth;
+	ControlMapper *mapper;
+	
 
 	bool generalChanged = false;
 	bool stream1Changed = false;
@@ -247,7 +250,6 @@ private slots:
 
 private:
 	bool startup = true;
-
 	/* output */
 	void LoadSimpleOutputSettings();
 	void LoadAdvOutputStreamingSettings();
@@ -313,7 +315,7 @@ private:
 private slots:
 	void on_theme_activated(int idx);
 
-	void on_listWidget_itemSelectionChanged();
+	void on_treeWidget_itemSelectionChanged();
 	void on_buttonBox_clicked(QAbstractButton *button);
 
 	void on_service_currentIndexChanged(int idx);
@@ -377,7 +379,9 @@ private slots:
 	//void SetHotkeysIcon(const QIcon &icon);
 	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
-	
+	void SettingListSelectionChanged();
+	void HideMultipleControlsWidgets();
+	void ShowMultipleControlsWidgets();
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -390,7 +394,8 @@ public:
 	QString AddControlPage(QIcon icon, QString name, QWidget page);
 	QString AddInputControl(QString name, QWidget page);
 	QString AddOutputControl(QString name, QWidget page);
-
+	
 signals:
 	void onControlChange(QString Change);
+	
 };

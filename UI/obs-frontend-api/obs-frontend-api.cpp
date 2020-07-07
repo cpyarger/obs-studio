@@ -62,6 +62,11 @@ void *obs_frontend_get_main_window(void)
 	return !!callbacks_valid() ? c->obs_frontend_get_main_window()
 				   : nullptr;
 }
+void *obs_frontend_get_mapper(void)
+{
+	return !!callbacks_valid() ? c->obs_frontend_get_mapper()
+				   : nullptr;
+}
 void *obs_frontend_get_settings_window(void)
 {
 	return !!callbacks_valid() ? c->obs_frontend_get_settings_window()

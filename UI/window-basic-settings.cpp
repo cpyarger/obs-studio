@@ -37,7 +37,7 @@
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QSpacerItem>
-#include <QListWidget>
+#include <QtreeWidget>
 #include "audio-encoders.hpp"
 #include "hotkey-edit.hpp"
 #include "source-label.hpp"
@@ -360,7 +360,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 			     ui->advOutTrack4Bitrate, ui->advOutTrack5Bitrate,
 			     ui->advOutTrack6Bitrate});
 
-	ui->listWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+	ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	/* clang-format off */
 	HookWidget(ui->language,             COMBO_CHANGED,  GENERAL_CHANGED);
@@ -580,7 +580,6 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 		connect(toggleAero, &QAbstractButton::toggled, this,
 			&OBSBasicSettings::ToggleDisableAero);
 	}
-	ui->ControlsListWidget->setCurrentRow(0);
 #define PROCESS_PRIORITY(val)                                                \
 	{                                                                    \
 		"Basic.Settings.Advanced.General.ProcessPriority."##val, val \
@@ -778,8 +777,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 		SLOT(AdvReplayBufferChanged()));
 	connect(ui->advRBSecMax, SIGNAL(valueChanged(int)), this,
 		SLOT(AdvReplayBufferChanged()));
-	connect(ui->listWidget, SIGNAL(currentRowChanged(int)), this,
-		SLOT(SimpleRecordingEncoderChanged()));
+	
 
 	// Get Bind to IP Addresses
 	obs_properties_t *ppts = obs_get_output_properties("rtmp_output");
@@ -834,8 +832,38 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	QValidator *validator = new QRegExpValidator(rx, this);
 	ui->baseResolution->lineEdit()->setValidator(validator);
 	ui->outputResolution->lineEdit()->setValidator(validator);
+
+	connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this,
+		SLOT(SettingListSelectionChanged()));
+	
 }
 
+void OBSBasicSettings::SettingListSelectionChanged()
+{
+	
+	blog(1, "listchanged--%s -- %i -- %i ",
+	     ui->treeWidget->currentItem()->data(1,0).toString()
+		     .toStdString()
+		     .c_str(),
+	     ui->treeWidget->currentIndex().column(),
+	     ui->treeWidget->indexOfTopLevelItem(ui->treeWidget->currentItem()));
+	switch (ui->treeWidget->indexOfTopLevelItem(
+		ui->treeWidget->currentItem())){
+	case -1:
+		ui->settingsPages->setCurrentIndex(5);
+		ui->ControlsStackedWidget->setCurrentIndex(
+			ui->treeWidget->currentIndex().row()+1);
+		break;
+	case 5:
+		ui->settingsPages->setCurrentIndex(5);
+		ui->ControlsStackedWidget->setCurrentIndex(0);
+		break;
+	default:
+		ui->settingsPages->setCurrentIndex(ui->treeWidget->currentIndex().row());
+		break;
+	}
+	
+}
 OBSBasicSettings::~OBSBasicSettings()
 {
 	delete ui->filenameFormatting->completer();
@@ -3669,9 +3697,10 @@ void OBSBasicSettings::on_theme_activated(int idx)
 	App()->SetTheme(currT.toUtf8().constData());
 }
 
-void OBSBasicSettings::on_listWidget_itemSelectionChanged()
+void OBSBasicSettings::on_treeWidget_itemSelectionChanged()
 {
-	int row = ui->listWidget->currentRow();
+	int row = ui->treeWidget->indexOfTopLevelItem(
+		ui->treeWidget->currentItem());
 
 	if (loading || row == pageIndex)
 		return;
@@ -4794,38 +4823,43 @@ QIcon OBSBasicSettings::GetAdvancedIcon() const
 
 void OBSBasicSettings::SetGeneralIcon(const QIcon &icon)
 {
-	ui->listWidget->item(0)->setIcon(icon);
+	ui->treeWidget->topLevelItem(0)->setIcon(0, icon);
+	
 }
 
 void OBSBasicSettings::SetStreamIcon(const QIcon &icon)
 {
-	ui->listWidget->item(1)->setIcon(icon);
+	
+	ui->treeWidget->topLevelItem(1)->setIcon(0, icon);
+	
+	
+	
 }
 
 void OBSBasicSettings::SetOutputIcon(const QIcon &icon)
 {
-	ui->listWidget->item(2)->setIcon(icon);
+	ui->treeWidget->topLevelItem(2)->setIcon(0, icon);
 }
 
 void OBSBasicSettings::SetAudioIcon(const QIcon &icon)
 {
-	ui->listWidget->item(3)->setIcon(icon);
+	ui->treeWidget->topLevelItem(3)->setIcon(0, icon);
 }
 
 void OBSBasicSettings::SetVideoIcon(const QIcon &icon)
 {
-	ui->listWidget->item(4)->setIcon(icon);
+	ui->treeWidget->topLevelItem(4)->setIcon(0, icon);
 }
 
 //void OBSBasicSettings::SetHotkeysIcon(const QIcon &icon)
 void OBSBasicSettings::SetControlsIcon(const QIcon &icon)
 {
-	ui->listWidget->item(5)->setIcon(icon);
+	ui->treeWidget->topLevelItem(5)->setIcon(0, icon);
 }
 
 void OBSBasicSettings::SetAdvancedIcon(const QIcon &icon)
 {
-	ui->listWidget->item(6)->setIcon(icon);
+	ui->treeWidget->topLevelItem(6)->setIcon(0, icon);
 }
 
 int OBSBasicSettings::CurrentFLVTrack()
@@ -4851,22 +4885,29 @@ QStringList OBSBasicSettings::getControlsList()
 }
 void OBSBasicSettings::loadControlWindows() {
 	
+
+	
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
 
 	if (controlloopsize > 0) {
 		for (int i = 0; i < controlloopsize; i++) {
-			ui->ControlsListWidget->addItem(new QListWidgetItem(
-				(QIcon)*main->ControlIcons.at(i),
-				(QString)*main->ControlNames.at(i)));
+			QTreeWidgetItem *child = new QTreeWidgetItem();
+			child->setText(0, (QString)*main->ControlNames.at(i));
+			child->setIcon(0, (QIcon)*main->ControlIcons.at(i));
+
+			ui->treeWidget->topLevelItem(5)->addChild(child);
+			
 			ui->ControlsStackedWidget->addWidget(
 				(QWidget *)main->ControlPages.at(i));
 		}
 	
-	ui->ControlsStackedWidget->setCurrentIndex(0);
+
 	} else {
+		ui->FiltersSplitter->hide();
 		blog(1, "control doesnt have any configuration window widgets");
+
 	}
 	if (inputloopsize > 0) {
 		for (int i = 0; i < inputloopsize; i++) {
@@ -4875,6 +4916,7 @@ void OBSBasicSettings::loadControlWindows() {
 			ui->sw_input_widgets->addWidget((QWidget *)main->InputPages.at(i));
 		}
 	} else {
+		ui->splitter_input->hide();
 		blog(1, "control doesnt have any configuration window widgets");
 	}
 	if (outputloopsize > 0) {
@@ -4884,8 +4926,22 @@ void OBSBasicSettings::loadControlWindows() {
 			ui->sw_output_widgets->addWidget((QWidget *)main->OutputPages.at(i));
 		}
 	} else {
+		ui->output_splitter->hide();
 		blog(1, "control doesnt have any configuration window widgets");
 	}
 }
 
 
+void OBSBasicSettings::HideMultipleControlsWidgets() {
+
+	ui->FiltersSplitter->hide();
+	ui->output_splitter->hide();
+	ui->splitter_input->hide();
+}
+void OBSBasicSettings::ShowMultipleControlsWidgets()
+{
+
+	ui->FiltersSplitter->show();
+	ui->output_splitter->show();
+	ui->splitter_input->show();
+}
