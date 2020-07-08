@@ -23,8 +23,13 @@
 #include <QPointer>
 #include <memory>
 #include <string>
+<<<<<<< HEAD
 #include <libff/ff-util.h>
 #include <QStringList>
+=======
+#include <libff/ff-util.h>	
+
+>>>>>>> parent of eea36547... pre bringing over new hotkeys code
 
 #include<window-control.hpp>
 #include <obs.hpp>
@@ -100,7 +105,7 @@ class OBSBasicSettings : public QDialog {
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
 	Q_PROPERTY(QIcon controlsIcon READ GetHotkeysIcon WRITE SetControlsIcon
-			   DESIGNABLE true)
+			   DESIGNABLE true)				  
 private:
 	OBSBasic *main;
 
@@ -109,6 +114,7 @@ private:
 
 	std::shared_ptr<Auth> auth;
 	ControlMapper *mapper;
+	
 
 	bool generalChanged = false;
 	bool stream1Changed = false;
@@ -397,6 +403,7 @@ public:
 	QString AddControlPage(QIcon icon, QString name, QWidget page);
 	QString AddInputControl(QString name, QWidget page);
 	QString AddOutputControl(QString name, QWidget page);
+<<<<<<< HEAD
 
 	//bits involving obs specific output widget
 	QHBoxLayout *MakeComboPair(QString label, QStringList entries);
@@ -435,6 +442,9 @@ public:
  private slots:
 	void obs_type_select(int);
 
+=======
+	
+>>>>>>> parent of eea36547... pre bringing over new hotkeys code
 signals:
 	void onControlChange(QString Change);
 
