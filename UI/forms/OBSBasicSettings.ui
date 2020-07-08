@@ -32,6 +32,13 @@
    <string>Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -3772,8 +3779,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>555</width>
-              <height>469</height>
+              <width>723</width>
+              <height>527</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_50">
@@ -4632,6 +4639,145 @@
             </property>
             <widget class="QWidget" name="MappingPage">
              <layout class="QGridLayout" name="gridLayout_2">
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="SearchEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                  <horstretch>2</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="ResetFilter">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Clear Filters</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_69">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                  <horstretch>2</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Search</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="3">
+               <widget class="QTableWidget" name="tableWidget">
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
+                </property>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <attribute name="horizontalHeaderCascadingSectionResizes">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="horizontalHeaderMinimumSectionSize">
+                 <number>150</number>
+                </attribute>
+                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="verticalHeaderStretchLastSection">
+                 <bool>false</bool>
+                </attribute>
+                <row>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </row>
+                <column>
+                 <property name="text">
+                  <string>Input Plugin</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Input String</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Output Plugin</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Output String</string>
+                 </property>
+                </column>
+                <item row="0" column="0">
+                 <property name="text">
+                  <string>Hotkeys</string>
+                 </property>
+                </item>
+                <item row="0" column="1">
+                 <property name="text">
+                  <string>CTRL+F12</string>
+                 </property>
+                </item>
+                <item row="0" column="2">
+                 <property name="text">
+                  <string>OBS</string>
+                 </property>
+                </item>
+                <item row="0" column="3">
+                 <property name="text">
+                  <string>Set Scene, Scene 1</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
               <item row="0" column="0" colspan="3">
                <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
                 <property name="spacing">
@@ -4754,175 +4900,90 @@
                 </item>
                </layout>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_69">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                  <horstretch>2</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>150</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Search</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="SearchEdit">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                  <horstretch>2</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>25</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QPushButton" name="ResetFilter">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Clear Filters</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" colspan="3">
-               <widget class="QTableWidget" name="tableWidget">
-                <property name="sizeAdjustPolicy">
-                 <enum>QAbstractScrollArea::AdjustToContents</enum>
-                </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <attribute name="horizontalHeaderCascadingSectionResizes">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="horizontalHeaderMinimumSectionSize">
-                 <number>150</number>
-                </attribute>
-                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                 <bool>false</bool>
-                </attribute>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="verticalHeaderStretchLastSection">
-                 <bool>false</bool>
-                </attribute>
-                <row>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </row>
-                <column>
-                 <property name="text">
-                  <string>Input Plugin</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Input String</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Output Plugin</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Output String</string>
-                 </property>
-                </column>
-                <item row="0" column="0">
-                 <property name="text">
-                  <string>Hotkeys</string>
-                 </property>
-                </item>
-                <item row="0" column="1">
-                 <property name="text">
-                  <string>CTRL+F12</string>
-                 </property>
-                </item>
-                <item row="0" column="2">
-                 <property name="text">
-                  <string>OBS</string>
-                 </property>
-                </item>
-                <item row="0" column="3">
-                 <property name="text">
-                  <string>Set Scene, Scene 1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
               <item row="3" column="0" colspan="3">
-               <layout class="QHBoxLayout" name="BottomSection" stretch="10,10,1">
-                <property name="sizeConstraint">
-                 <enum>QLayout::SetNoConstraint</enum>
+               <layout class="QHBoxLayout" name="BottomSection" stretch="10,0,10,0,2">
+                <property name="spacing">
+                 <number>0</number>
                 </property>
-                <item alignment="Qt::AlignTop">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetMinAndMaxSize</enum>
+                </property>
+                <item>
                  <widget class="QFrame" name="InputFrame">
                   <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                   <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_4">
-                   <item row="0" column="0" alignment="Qt::AlignHCenter">
-                    <widget class="QLabel" name="label_70">
-                     <property name="text">
-                      <string>Input</string>
+                   <item row="3" column="0">
+                    <widget class="QStackedWidget" name="sw_input_widgets">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="Line" name="line_2">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>100</height>
+                      </size>
                      </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
+                     <widget class="QWidget" name="Hotkeys_2">
+                      <widget class="QPushButton" name="pushButton_10">
+                       <property name="geometry">
+                        <rect>
+                         <x>9</x>
+                         <y>71</y>
+                         <width>75</width>
+                         <height>23</height>
+                        </rect>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>25</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Listen</string>
+                       </property>
+                      </widget>
+                      <widget class="QLineEdit" name="lineEdit_2">
+                       <property name="geometry">
+                        <rect>
+                         <x>90</x>
+                         <y>71</y>
+                         <width>133</width>
+                         <height>20</height>
+                        </rect>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>25</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>CTRL+ALT+F12</string>
+                       </property>
+                      </widget>
+                     </widget>
                     </widget>
                    </item>
                    <item row="1" column="0">
                     <widget class="QSplitter" name="splitter_input">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
@@ -4958,78 +5019,61 @@
                      </widget>
                     </widget>
                    </item>
-                   <item row="3" column="0">
-                    <widget class="QStackedWidget" name="sw_input_widgets">
+                   <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignTop">
+                    <widget class="QLabel" name="label_70">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>100</height>
-                      </size>
+                     <property name="text">
+                      <string>Input</string>
                      </property>
-                     <property name="currentIndex">
-                      <number>0</number>
+                     <property name="alignment">
+                      <set>Qt::AlignHCenter|Qt::AlignTop</set>
                      </property>
-                     <widget class="QWidget" name="Hotkeys_2">
-                      <layout class="QGridLayout" name="gridLayout_10">
-                       <item row="0" column="0">
-                        <widget class="QPushButton" name="pushButton_10">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>25</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Listen</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="lineEdit_2">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>25</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>CTRL+ALT+F12</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
                     </widget>
                    </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item alignment="Qt::AlignTop">
-                 <widget class="QFrame" name="frame_output">
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_11">
-                   <item row="2" column="1">
-                    <widget class="Line" name="line">
+                   <item row="2" column="0" alignment="Qt::AlignTop">
+                    <widget class="Line" name="line_2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_3">
+                  <property name="frameShadow">
+                   <enum>QFrame::Plain</enum>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="frame_output">
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_11">
                    <item row="1" column="1">
                     <widget class="QSplitter" name="splitter_output">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -5047,14 +5091,20 @@
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
-                      <widget class="QLabel" name="label_77">
+                      <widget class="QLabel" name="label_output_select">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>Output</string>
                        </property>
                       </widget>
                       <widget class="QComboBox" name="cb_output_select">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -5082,22 +5132,28 @@
                    </item>
                    <item row="3" column="1">
                     <widget class="QStackedWidget" name="sw_output_widgets">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="currentIndex">
                       <number>0</number>
                      </property>
                      <widget class="QWidget" name="OBSOutputActions">
-                      <layout class="QGridLayout" name="gridLayout_12">
-                       <item row="0" column="0">
+                      <layout class="QGridLayout" name="gridLayout_12" rowstretch="1,10">
+                       <item row="0" column="0" alignment="Qt::AlignTop">
                         <widget class="QSplitter" name="splitter_16">
                          <property name="orientation">
                           <enum>Qt::Horizontal</enum>
                          </property>
-                         <widget class="QLabel" name="label_88">
+                         <widget class="QLabel" name="label_obs_selection">
                           <property name="text">
                            <string>Section</string>
                           </property>
                          </widget>
-                         <widget class="QComboBox" name="CB_OBS_Section_Selector">
+                         <widget class="QComboBox" name="cb_obs_selector">
                           <property name="maximumSize">
                            <size>
                             <width>16777215</width>
@@ -5133,158 +5189,59 @@
                         </widget>
                        </item>
                        <item row="1" column="0">
-                        <widget class="QSplitter" name="splitter_14">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                        <layout class="QVBoxLayout" name="layout_obs_action">
+                         <property name="sizeConstraint">
+                          <enum>QLayout::SetMinAndMaxSize</enum>
                          </property>
-                         <widget class="QStackedWidget" name="SW_OBS_Sections">
-                          <property name="currentIndex">
-                           <number>0</number>
-                          </property>
-                          <widget class="QWidget" name="Frontend">
-                           <layout class="QGridLayout" name="gridLayout_15">
-                            <item row="0" column="0">
-                             <widget class="QSplitter" name="splitter_17">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                              <widget class="QLabel" name="label_84">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Action</string>
-                               </property>
-                              </widget>
-                              <widget class="QComboBox" name="comboBox_4">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                                 <horstretch>2</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>0</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="maximumSize">
-                                <size>
-                                 <width>16777215</width>
-                                 <height>25</height>
-                                </size>
-                               </property>
-                               <item>
-                                <property name="text">
-                                 <string>Start Streaming</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Stop Streaming</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Toggle Start/Stop Streaming</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Start Recording</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Stop Recording</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Pause Recording</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Unpause Recording</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Start Replay Buffer</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Stop Replay Buffer</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Enable Preview</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Disable Preview</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Studio Mode</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Transition</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Reset Stats</string>
-                                </property>
-                               </item>
-                              </widget>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                          <widget class="QWidget" name="Scenes">
-                           <layout class="QGridLayout" name="gridLayout_16">
-                            <item row="0" column="0">
-                             <widget class="QSplitter" name="splitter_13">
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                          <widget class="QWidget" name="Sources"/>
-                          <widget class="QWidget" name="Filters"/>
-                          <widget class="QWidget" name="Outputs"/>
-                         </widget>
-                        </widget>
+                        </layout>
                        </item>
                       </layout>
                      </widget>
                     </widget>
                    </item>
-                   <item row="0" column="1" alignment="Qt::AlignHCenter">
+                   <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignTop">
                     <widget class="QLabel" name="label_72">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
                       <string>Output</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1" alignment="Qt::AlignTop">
+                    <widget class="Line" name="line">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
                   </layout>
                  </widget>
                 </item>
-                <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                <item>
+                 <widget class="Line" name="line_4">
+                  <property name="frameShadow">
+                   <enum>QFrame::Plain</enum>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QFrame" name="ControlsFrame">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -5293,7 +5250,7 @@
                    </sizepolicy>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
+                   <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
@@ -6196,13 +6153,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -6789,6 +6739,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>btn_delete_control</sender>
+   <signal>clicked()</signal>
+   <receiver>FiltersSplitter</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>211</x>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>477</x>
+     <y>86</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>cb_input_select</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>sw_input_widgets</receiver>
@@ -6801,22 +6767,6 @@
     <hint type="destinationlabel">
      <x>399</x>
      <y>317</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>CB_OBS_Section_Selector</sender>
-   <signal>currentIndexChanged(int)</signal>
-   <receiver>SW_OBS_Sections</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>815</x>
-     <y>413</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>764</x>
-     <y>485</y>
     </hint>
    </hints>
   </connection>
@@ -6839,22 +6789,6 @@
   <connection>
    <sender>btn_delete_control</sender>
    <signal>clicked()</signal>
-   <receiver>output_splitter</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>211</x>
-     <y>473</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>764</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_delete_control</sender>
-   <signal>clicked()</signal>
    <receiver>splitter_input</receiver>
    <slot>hide()</slot>
    <hints>
@@ -6871,16 +6805,16 @@
   <connection>
    <sender>btn_delete_control</sender>
    <signal>clicked()</signal>
-   <receiver>FiltersSplitter</receiver>
+   <receiver>output_splitter</receiver>
    <slot>hide()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>211</x>
-     <y>326</y>
+     <y>473</y>
     </hint>
     <hint type="destinationlabel">
-     <x>477</x>
-     <y>86</y>
+     <x>764</x>
+     <y>366</y>
     </hint>
    </hints>
   </connection>

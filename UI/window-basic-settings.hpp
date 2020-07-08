@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 #include <libff/ff-util.h>	
-
+#include <QStringList>
 
 #include<window-control.hpp>
 #include <obs.hpp>
@@ -100,7 +100,7 @@ class OBSBasicSettings : public QDialog {
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
 	Q_PROPERTY(QIcon controlsIcon READ GetHotkeysIcon WRITE SetControlsIcon
-			   DESIGNABLE true)				  
+			   DESIGNABLE true)
 private:
 	OBSBasic *main;
 
@@ -109,7 +109,6 @@ private:
 
 	std::shared_ptr<Auth> auth;
 	ControlMapper *mapper;
-	
 
 	bool generalChanged = false;
 	bool stream1Changed = false;
@@ -394,6 +393,43 @@ public:
 	QString AddControlPage(QIcon icon, QString name, QWidget page);
 	QString AddInputControl(QString name, QWidget page);
 	QString AddOutputControl(QString name, QWidget page);
+
+	//bits involving obs specific output widget
+	QHBoxLayout *MakeComboPair(QString label, QStringList entries);
+	QStringList FrontendActions = {"Start Streaming",
+					"Stop Streaming",
+					"Toggle Start/Stop Streaming",
+					"Start Recording",
+					"Stop Recording",
+					"Pause Recording",
+					"Unpause Recording",
+					"Start Replay Buffer",
+					"Stop Replay Buffer",
+					"Enable Preview",
+					"Disable Preview",
+					"Studio Mode",
+					"Transition",
+					"Reset Stats"};
+	QStringList Scenes;
+	QStringList GetScenes();
+	QStringList Sources;
+	QStringList GetSources();
+	QStringList Filters;
+	QStringList GetFilters();
+	QStringList Outputs;
+	QStringList GetOutputs();
+	void ClearActions();
+	using encoders_elem_t =
+		std::tuple<OBSEncoder, QPointer<QLabel>, QPointer<QWidget>>;
+	using outputs_elem_t =
+		std::tuple<OBSOutput, QPointer<QLabel>, QPointer<QWidget>>;
+	using services_elem_t =
+		std::tuple<OBSService, QPointer<QLabel>, QPointer<QWidget>>;
+	using sources_elem_t =
+		std::tuple<OBSSource, QPointer<QLabel>, QPointer<QWidget>>;
+	std::vector<sources_elem_t> filters;
+ private slots:
+	void obs_type_select(int);
 	
 signals:
 	void onControlChange(QString Change);

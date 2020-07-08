@@ -34,6 +34,8 @@
 #include <QScreen>
 #include <QString>
 #include <QIcon>
+#include <QHBoxLayout>
+#include <QLayoutItem>
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QSpacerItem>
@@ -687,6 +689,8 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 			      ReloadAudioSources, this);
 	channelChanged.Connect(obs_get_signal_handler(), "channel_change",
 			       ReloadAudioSources, this);
+
+	connect(ui->cb_obs_selector, SIGNAL(currentIndexChanged(int)), this, SLOT(obs_type_select(int)));
 	/*
 	auto ReloadHotkeys = [](void *data, calldata_t *) {
 		auto settings = static_cast<OBSBasicSettings *>(data);
@@ -835,6 +839,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 
 	connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this,
 		SLOT(SettingListSelectionChanged()));
+	obs_type_select(0);
 	
 }
 
@@ -4884,9 +4889,6 @@ QStringList OBSBasicSettings::getControlsList()
 	return ControlsList;
 }
 void OBSBasicSettings::loadControlWindows() {
-	
-
-	
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4944,4 +4946,95 @@ void OBSBasicSettings::ShowMultipleControlsWidgets()
 	ui->FiltersSplitter->show();
 	ui->output_splitter->show();
 	ui->splitter_input->show();
+}
+void OBSBasicSettings::ClearActions()
+{
+	QObjectList items = ui->layout_obs_action->children();
+	items.empty();
+
+	//for (int i = 0; i < items.size(); i++) {
+		
+	//}
+	//}
+
+}
+void OBSBasicSettings::obs_type_select(int selection)
+{
+	switch (selection) {
+	case 0:
+		// Frontend
+		ClearActions();
+		
+		ui->layout_obs_action->addLayout(MakeComboPair( "Actions",
+			      FrontendActions),1);
+		//ui->layout_obs_action->insertLayout(0,);
+		break;
+	case 1:
+		ClearActions();
+		ui->layout_obs_action->addLayout(
+			MakeComboPair("Scene", GetScenes()), 1);
+		//Scenes
+		break;
+	case 2:
+		//Sources
+		break;
+	case 3:
+		//Filters
+		break;
+	case 4:
+		//Outputs
+		break;
+	};
+}
+QHBoxLayout *OBSBasicSettings::MakeComboPair( QString label, QStringList entries)
+{
+	QHBoxLayout *hbox = new QHBoxLayout(NULL);
+	hbox->setObjectName("hbox");
+	QComboBox *combo= new QComboBox(hbox->widget());
+	combo->addItems(entries);
+	
+	QLabel *lab=new QLabel(label);
+	
+	hbox->addWidget(lab,0,Qt::AlignTop);
+	hbox->addWidget(combo);
+	hbox->setAlignment(Qt::AlignTop);
+	//hbox.addItem();
+	//hbox.addWidget;
+	
+	return hbox;
+}
+
+QStringList OBSBasicSettings::GetScenes()
+{
+	Scenes.clear();
+	obs_frontend_source_list sceneList = {};
+	obs_frontend_get_scenes(&sceneList);
+	
+	obs_data_array_t *scenes = obs_data_array_create();
+	for (size_t i = 0; i < sceneList.sources.num; i++) {
+		obs_source_t *scene = sceneList.sources.array[i];
+		auto x = obs_source_get_name(scene);
+		Scenes.append(x);
+	}
+
+	obs_frontend_source_list_free(&sceneList);
+	return Scenes;
+}
+
+QStringList OBSBasicSettings::GetSources()
+{
+	Sources.clear();
+	return Sources;
+}
+
+QStringList OBSBasicSettings::GetFilters()
+{
+	Filters.clear();
+	return Filters;
+}
+
+QStringList OBSBasicSettings::GetOutputs()
+{
+	Outputs.clear();
+	return Outputs;
 }
