@@ -23,18 +23,9 @@
 #include <QPointer>
 #include <memory>
 #include <string>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 #include <libff/ff-util.h>
 #include <QStringList>
-=======
-#include <libff/ff-util.h>
-
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
-=======
-#include <libff/ff-util.h>
-
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
 
 #include<window-control.hpp>
 #include <obs.hpp>
