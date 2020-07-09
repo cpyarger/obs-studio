@@ -110,7 +110,7 @@ class OBSBasicSettings : public QDialog {
 	Q_PROPERTY(QIcon advancedIcon READ GetAdvancedIcon WRITE SetAdvancedIcon
 			   DESIGNABLE true)
 	Q_PROPERTY(QIcon controlsIcon READ GetHotkeysIcon WRITE SetControlsIcon
-			   DESIGNABLE true)				  
+			   DESIGNABLE true)
 private:
 	OBSBasic *main;
 
@@ -119,7 +119,7 @@ private:
 
 	std::shared_ptr<Auth> auth;
 	ControlMapper *mapper;
-	
+
 
 	bool generalChanged = false;
 	bool stream1Changed = false;
@@ -410,6 +410,7 @@ public:
 	QString AddOutputControl(QString name, QWidget page);
 <<<<<<< HEAD
 <<<<<<< HEAD
+
 
 	//bits involving obs specific output widget
 	QHBoxLayout *MakeComboPair(QString label, QStringList entries);
