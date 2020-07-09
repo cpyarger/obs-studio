@@ -777,7 +777,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 		SLOT(AdvReplayBufferChanged()));
 	connect(ui->advRBSecMax, SIGNAL(valueChanged(int)), this,
 		SLOT(AdvReplayBufferChanged()));
-	
+
 
 	// Get Bind to IP Addresses
 	obs_properties_t *ppts = obs_get_output_properties("rtmp_output");
@@ -835,12 +835,12 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 
 	connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this,
 		SLOT(SettingListSelectionChanged()));
-	
+
 }
 
 void OBSBasicSettings::SettingListSelectionChanged()
 {
-	
+
 	blog(1, "listchanged--%s -- %i -- %i ",
 	     ui->treeWidget->currentItem()->data(1,0).toString()
 		     .toStdString()
@@ -862,12 +862,12 @@ void OBSBasicSettings::SettingListSelectionChanged()
 		ui->settingsPages->setCurrentIndex(ui->treeWidget->currentIndex().row());
 		break;
 	}
-	
+
 }
 OBSBasicSettings::~OBSBasicSettings()
 {
 	delete ui->filenameFormatting->completer();
-	
+
 	main->EnableOutputs(true);
 
 	App()->UpdateHotkeyFocusSetting();
@@ -5019,7 +5019,7 @@ QIcon OBSBasicSettings::GetHotkeysIcon() const
 QIcon OBSBasicSettings::GetControlsIcon() const
 {
 		return controlsIcon;
-	
+
 }
 QIcon OBSBasicSettings::GetAdvancedIcon() const
 {
@@ -5029,16 +5029,16 @@ QIcon OBSBasicSettings::GetAdvancedIcon() const
 void OBSBasicSettings::SetGeneralIcon(const QIcon &icon)
 {
 	ui->treeWidget->topLevelItem(0)->setIcon(0, icon);
-	
+
 }
 
 void OBSBasicSettings::SetStreamIcon(const QIcon &icon)
 {
-	
+
 	ui->treeWidget->topLevelItem(1)->setIcon(0, icon);
-	
-	
-	
+
+
+
 }
 
 void OBSBasicSettings::SetOutputIcon(const QIcon &icon)
@@ -5089,9 +5089,9 @@ QStringList OBSBasicSettings::getControlsList()
 	return ControlsList;
 }
 void OBSBasicSettings::loadControlWindows() {
-	
 
-	
+
+
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -5103,11 +5103,11 @@ void OBSBasicSettings::loadControlWindows() {
 			child->setIcon(0, (QIcon)*main->ControlIcons.at(i));
 
 			ui->treeWidget->topLevelItem(5)->addChild(child);
-			
+
 			ui->ControlsStackedWidget->addWidget(
 				(QWidget *)main->ControlPages.at(i));
 		}
-	
+
 
 	} else {
 		ui->FiltersSplitter->hide();

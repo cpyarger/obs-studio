@@ -28,11 +28,11 @@
 #include <libff/ff-util.h>
 #include <QStringList>
 =======
-#include <libff/ff-util.h>	
+#include <libff/ff-util.h>
 
 >>>>>>> parent of eea36547... pre bringing over new hotkeys code
 =======
-#include <libff/ff-util.h>	
+#include <libff/ff-util.h>
 
 >>>>>>> parent of eea36547... pre bringing over new hotkeys code
 
@@ -408,9 +408,6 @@ public:
 	QString AddControlPage(QIcon icon, QString name, QWidget page);
 	QString AddInputControl(QString name, QWidget page);
 	QString AddOutputControl(QString name, QWidget page);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 
 	//bits involving obs specific output widget
 	QHBoxLayout *MakeComboPair(QString label, QStringList entries);
@@ -449,11 +446,6 @@ public:
  private slots:
 	void obs_type_select(int);
 
-=======
-=======
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
-	
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
 signals:
 	void onControlChange(QString Change);
 
