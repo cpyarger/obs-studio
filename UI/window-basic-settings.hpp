@@ -23,18 +23,9 @@
 #include <QPointer>
 #include <memory>
 #include <string>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 #include <libff/ff-util.h>
 #include <QStringList>
-=======
-#include <libff/ff-util.h>
-
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
-=======
-#include <libff/ff-util.h>
-
->>>>>>> parent of eea36547... pre bringing over new hotkeys code
 
 #include<window-control.hpp>
 #include <obs.hpp>
@@ -246,8 +237,33 @@ private:
 	void OnOAuthStreamKeyConnected();
 	void OnAuthConnected();
 	QString lastService;
-	int prevLangIndex;
-	bool prevBrowserAccel;
+
+	QTabWidget *tabs;
+	QLabel *noHotkeys;
+	QWidget *hotkeysFrontend;
+	QWidget *hotkeysScenes;
+	QWidget *hotkeysSources;
+	QWidget *hotkeysFilters;
+	QWidget *hotkeysOutputs;
+	QWidget *hotkeysEncoders;
+	QWidget *hotkeysServices;
+
+	QComboBox *scenesCombo;
+	QComboBox *sourcesCombo;
+	QComboBox *filtersSourceCombo;
+	QComboBox *filtersCombo;
+	QComboBox *outputsCombo;
+	QComboBox *encodersCombo;
+	QComboBox *servicesCombo;
+
+	QLabel *sceneLabel;
+	QLabel *sourceLabel;
+	QLabel *filtersSourceLabel;
+	QLabel *outputLabel;
+	QLabel *encoderLabel;
+	QLabel *serviceLabel;
+
+
 private slots:
 	void UpdateServerList();
 	void UpdateKeyLink();
@@ -325,7 +341,21 @@ private:
 	QIcon GetControlsIcon() const;
 
 	int CurrentFLVTrack();
+
 	QStringList ControlsList;
+
+
+	using encoders_elem_t =
+		std::tuple<OBSEncoder, QPointer<QLabel>, QPointer<QWidget>>;
+	using outputs_elem_t =
+		std::tuple<OBSOutput, QPointer<QLabel>, QPointer<QWidget>>;
+	using services_elem_t =
+		std::tuple<OBSService, QPointer<QLabel>, QPointer<QWidget>>;
+	using sources_elem_t =
+		std::tuple<OBSSource, QPointer<QLabel>, QPointer<QWidget>>;
+	std::vector<sources_elem_t> filters;
+
+
 private slots:
 	void on_theme_activated(int idx);
 
