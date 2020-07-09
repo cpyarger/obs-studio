@@ -3081,6 +3081,84 @@ void OBSBasicSettings::HotkeysComboChanged(const QString &text)
 		}
 	}
 }
+
+void OBSBasicSettings::HotkeysTabChanged(int tab)
+{
+	switch (tab) {
+	case 0:
+		break;
+	case 1:
+		HotkeysComboChanged(scenesCombo->currentText());
+		break;
+	case 2:
+		HotkeysComboChanged(sourcesCombo->currentText());
+		break;
+	case 3:
+		FiltersSourceComboChanged(filtersCombo->currentText());
+		break;
+	case 4:
+		HotkeysComboChanged(outputsCombo->currentText());
+		break;
+	case 5:
+		HotkeysComboChanged(encodersCombo->currentText());
+		break;
+	case 6:
+		HotkeysComboChanged(servicesCombo->currentText());
+		break;
+	}
+}
+
+void OBSBasicSettings::FiltersSourceComboChanged(const QString &text)
+{
+	OBSSource parent = obs_get_source_by_name(QT_TO_UTF8(text));
+
+	if (!parent)
+		return;
+
+	for (const auto &filter : filters) {
+		OBSSource parent_ = obs_filter_get_parent(get<0>(filter));
+
+		auto label = get<1>(filter);
+		auto widget = get<2>(filter);
+
+		if (parent == parent_) {
+			widget->show();
+			label->show();
+		} else {
+			widget->hide();
+			label->hide();
+		}
+	}
+
+	obs_source_release(parent);
+}
+
+void OBSBasicSettings::HotkeysComboChanged(const QString &text)
+{
+	QFormLayout *layout =
+		qobject_cast<QFormLayout *>(tabs->currentWidget()->layout());
+
+	if (!layout)
+		return;
+
+	for (int i = 0; i < layout->count(); i++) {
+		OBSHotkeyWidget *w = qobject_cast<OBSHotkeyWidget *>(
+			layout->itemAt(i)->widget());
+
+		if (!w)
+			continue;
+
+		QString name = w->property("name").value<QString>();
+
+		if (name == text) {
+			w->show();
+			layout->labelForField(w)->show();
+		} else {
+			w->hide();
+			layout->labelForField(w)->hide();
+		}
+	}
+}
 */
 void OBSBasicSettings::LoadSettings(bool changedOnly)
 {
