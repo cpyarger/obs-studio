@@ -39,9 +39,10 @@ class QCheckBox;
 class QLabel;
 class OBSPropertiesView;
 class OBSControlWidget;
-
+class OBSActionsWidget;
 #include "ui_OBSBasicSettings.h"
 #include "mapper.hpp"
+#include "obs-actions-widget.hpp"
 #include "obs-frontend-api.h"
 #define VOLUME_METER_DECAY_FAST 23.53
 #define VOLUME_METER_DECAY_MEDIUM 11.76
@@ -234,30 +235,7 @@ private:
 	void OnAuthConnected();
 	QString lastService;
 
-	QStackedWidget *tabs;
-	QLabel *noHotkeys;
-	QWidget *hotkeysFrontend;
-	QWidget *hotkeysScenes;
-	QWidget *hotkeysSources;
-	QWidget *hotkeysFilters;
-	QWidget *hotkeysOutputs;
-	QWidget *hotkeysEncoders;
-	QWidget *hotkeysServices;
-
-	QComboBox *scenesCombo;
-	QComboBox *sourcesCombo;
-	QComboBox *filtersSourceCombo;
-	QComboBox *filtersCombo;
-	QComboBox *outputsCombo;
-	QComboBox *encodersCombo;
-	QComboBox *servicesCombo;
-
-	QLabel *sceneLabel;
-	QLabel *sourceLabel;
-	QLabel *filtersSourceLabel;
-	QLabel *outputLabel;
-	QLabel *encoderLabel;
-	QLabel *serviceLabel;
+	
 
 
 private slots:
@@ -302,7 +280,6 @@ private:
 	void SaveOutputSettings();
 	void SaveAudioSettings();
 	void SaveVideoSettings();
-	void SaveHotkeySettings();
 	void SaveAdvancedSettings();
 	void SaveSettings();
 
@@ -336,12 +313,7 @@ private:
 	int CurrentFLVTrack();
 
 	QStringList ControlsList;
-	QStringList filters;
-	QStringList encoders;
-	QStringList outputs;
-	QStringList services;
-	QStringList scenes;
-	QStringList sources;
+
 
 
 private slots:
@@ -409,8 +381,7 @@ private slots:
 	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
 	void SettingListSelectionChanged();
-	void HideMultipleControlsWidgets();
-	void ShowMultipleControlsWidgets();
+
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -421,29 +392,12 @@ public:
 	QStringList getControlsList();
 	void loadControlWindows();
 
-	//bits involving obs specific output widget
-
-	QStringList FrontendActions = {"Start Streaming",
-					"Stop Streaming",
-					"Toggle Start/Stop Streaming",
-					"Start Recording",
-					"Stop Recording",
-					"Pause Recording",
-					"Unpause Recording",
-					"Start Replay Buffer",
-					"Stop Replay Buffer",
-					"Enable Preview",
-					"Disable Preview",
-					"Studio Mode",
-					"Transition",
-					"Reset Stats"};
 
 
 
- private slots:
-	void obs_type_select(int);
-
+OBSActionsWidget *obsaw = new OBSActionsWidget();
+ 
 signals:
 	void onControlChange(QString Change);
-
+	
 };

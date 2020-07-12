@@ -348,7 +348,8 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	ui->setupUi(this);
-
+	ui->sw_output_widgets->addWidget(obsaw);
+	ui->cb_output_select->addItem("OBS");
 	main->EnableOutputs(false);
 	loadControlWindows();
 
@@ -832,7 +833,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 
 	connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this,
 		SLOT(SettingListSelectionChanged()));
-
+	
 }
 
 void OBSBasicSettings::SettingListSelectionChanged()
@@ -4534,7 +4535,6 @@ QStringList OBSBasicSettings::getControlsList()
 void OBSBasicSettings::loadControlWindows() {
 
 
-
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4578,133 +4578,3 @@ void OBSBasicSettings::loadControlWindows() {
 		blog(1, "control doesnt have any configuration window widgets");
 	}
 }
-
-
-void OBSBasicSettings::HideMultipleControlsWidgets() {
-
-	ui->FiltersSplitter->hide();
-	ui->output_splitter->hide();
-	ui->splitter_input->hide();
-}
-void OBSBasicSettings::ShowMultipleControlsWidgets()
-{
-
-	ui->FiltersSplitter->show();
-	ui->output_splitter->show();
-	ui->splitter_input->show();
-}
-void OBSBasicSettings::obs_type_select(int selection)
-{
-	switch (selection) {
-	case 0:
-		// Frontend
-		//ClearActions();
-
-		//ui->layout_obs_action->addLayout(
-		//MakeComboPair("Actions", FrontendActions), 1);
-		//ui->layout_obs_action->insertLayout(0,);
-		break;
-	case 1:
-		//ClearActions();
-		//ui->layout_obs_action->addLayout(
-		//MakeComboPair("Scene", GetScenes()), 1);
-		//Scenes
-		break;
-	case 2:
-		//Sources
-		break;
-	case 3:
-		//Filters
-		break;
-	case 4:
-		//Outputs
-		break;
-	};
-}
-
-
-
-
-
-#define TRUNCATE_TEXT_LENGTH 80
-
-/*
-void OBSBasicSettings::LoadHotkeySettings(){
-	
-
-	
-
-	auto newFormLayout = [](QLabel *label = nullptr,
-				QComboBox *combo = nullptr) {
-		QFormLayout *form = new QFormLayout();
-		form->setVerticalSpacing(0);
-		form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-		form->setLabelAlignment(Qt::AlignRight | Qt::AlignTrailing |
-					Qt::AlignVCenter);
-
-		if (label && combo)
-			form->addRow(label, combo);
-
-		return form;
-	};
-
-	tabs = new QStackedWidget();
-
-	sceneLabel = new QLabel(QTStr("Basic.Scene"));
-	sourceLabel = new QLabel(QTStr("Source"));
-	filtersSourceLabel = new QLabel(QTStr("Source"));
-	outputLabel = new QLabel(QTStr("Basic.Settings.Output"));
-	encoderLabel = new QLabel(QTStr("Basic.Settings.Output.Encoder"));
-	serviceLabel = new QLabel(QTStr("Basic.AutoConfig.StreamPage.Service"));
-
-	sceneLabel->setStyleSheet("font-weight: bold;");
-	sourceLabel->setStyleSheet("font-weight: bold;");
-	filtersSourceLabel->setStyleSheet("font-weight: bold;");
-	outputLabel->setStyleSheet("font-weight: bold;");
-	encoderLabel->setStyleSheet("font-weight: bold;");
-	serviceLabel->setStyleSheet("font-weight: bold;");
-
-	scenesCombo = new QComboBox();
-	sourcesCombo = new QComboBox();
-	filtersCombo = new QComboBox();
-	outputsCombo = new QComboBox();
-	encodersCombo = new QComboBox();
-	servicesCombo = new QComboBox();
-
-	QFormLayout *hotkeysFrontendLayout = newFormLayout();
-	QFormLayout *hotkeysScenesLayout =
-		newFormLayout(sceneLabel, scenesCombo);
-	QFormLayout *hotkeysSourcesLayout =
-		newFormLayout(sourceLabel, sourcesCombo);
-	QFormLayout *hotkeysFiltersLayout =
-		newFormLayout(filtersSourceLabel, filtersCombo);
-	QFormLayout *hotkeysOutputsLayout =
-		newFormLayout(outputLabel, outputsCombo);
-	QFormLayout *hotkeysEncodersLayout =
-		newFormLayout(encoderLabel, encodersCombo);
-	QFormLayout *hotkeysServicesLayout =
-		newFormLayout(serviceLabel, servicesCombo);
-
-	hotkeysFrontend = new QWidget();
-	hotkeysScenes = new QWidget();
-	hotkeysSources = new QWidget();
-	hotkeysFilters = new QWidget();
-	hotkeysOutputs = new QWidget();
-	hotkeysEncoders = new QWidget();
-	hotkeysServices = new QWidget();
-
-	hotkeysFrontend->setLayout(hotkeysFrontendLayout);
-	hotkeysScenes->setLayout(hotkeysScenesLayout);
-	hotkeysSources->setLayout(hotkeysSourcesLayout);
-	hotkeysFilters->setLayout(hotkeysFiltersLayout);
-	hotkeysOutputs->setLayout(hotkeysOutputsLayout);
-	hotkeysEncoders->setLayout(hotkeysEncodersLayout);
-	hotkeysServices->setLayout(hotkeysServicesLayout);
-
-
-
-	
-
-}
-
-*/
