@@ -109,9 +109,7 @@ public:
 	~OBSActionsWidget();
 
 private:
-	QSplitter *MakeComboPair(QWidget *parent, QString label, QStringList items);
-	void ClearActions();
-	void AddToList(QString item, QString name);
+
 	QGridLayout *layout;
 	QStringList SL_filters = {};
 	QStringList encoders = {};
@@ -150,7 +148,7 @@ private:
 	QStringList GetScenes();
 	QStringList *items;
 	QString sceneName;
-	
+	bool switching = false;
 private slots:
 	QStringList GetSources(QString scene);
 	void obs_type_select(int);

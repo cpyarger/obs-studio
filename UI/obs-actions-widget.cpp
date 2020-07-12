@@ -43,38 +43,9 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)), this, SLOT(GetFilters(QString)));
 }
 OBSActionsWidget::~OBSActionsWidget() {
-	//delete ui;
+	delete ui;
 }
-void OBSActionsWidget::ClearActions()
-{
 
-	int size = ui->widget_obs_output->children().size();
-	if (size > 0) {
-		QLayoutItem *child;
-		while ((child = layout->takeAt(0)) != nullptr) {
-			delete child->widget(); // delete the widget
-			delete child;           // delete the layout item
-		}
-		delete layout;
-	}
-}
-QSplitter *OBSActionsWidget::MakeComboPair(QWidget *parent, QString label, QStringList items)
-{
-	
-	QSplitter *splitter = new QSplitter(parent);
-	splitter->setObjectName(QStringLiteral("splitter"));
-	splitter->setOrientation(Qt::Horizontal);
-	
-	
-	splitter->setFixedHeight(25);
-	QLabel *labels = new QLabel(splitter);
-	labels->setText(label);
-	QComboBox *combo = new QComboBox(splitter);
-	combo->addItems(items);
-	combo->setFixedHeight(25);
-	combo->setObjectName(label);
-	return splitter;
-}
 QStringList OBSActionsWidget::GetSources(QString scene)
 {
 
@@ -90,24 +61,12 @@ QStringList OBSActionsWidget::GetSources(QString scene)
 
 	}
 	SL_sources.sort();
+	if (!switching) {
+		ui->cb_obs_output_source->addItems(SL_sources);
 	
-	ui->cb_obs_output_source->addItems(SL_sources);
+	}
 	obs_data_array_release(arrayref);
 	return SL_sources;
-}
-void OBSActionsWidget::AddToList(QString list, QString name) {
-	if (list == "filter") {
-		SL_filters.append(name);
-	} else if (list == "scene") {
-		if (!SL_sources.contains(name)) {
-			SL_sources.append(name);
-		}
-		
-	} else if (list == "input") {
-		if (!SL_sources.contains(name)) {
-			SL_sources.append(name);
-		}
-	}
 }
 QStringList OBSActionsWidget::GetScenes()
 {
@@ -122,6 +81,7 @@ QStringList OBSActionsWidget::GetScenes()
 	return SL_scenes;
 }
 QStringList OBSActionsWidget::GetFilters(QString source) {
+	
 	ui->cb_obs_output_filter->clear();
 	SL_filters.clear();
 
@@ -131,12 +91,14 @@ QStringList OBSActionsWidget::GetFilters(QString source) {
 	OBSDataAutoRelease z=	 obs_data_array_item(y, i);
 	SL_filters.append(QString(obs_data_get_string(z, "name")));
 	}
-	ui->cb_obs_output_filter->addItems(SL_filters);
-
+	if (!switching) {
+		ui->cb_obs_output_filter->addItems(SL_filters);
+	}
 	return SL_filters;
 }
 void OBSActionsWidget::obs_type_select(int selection)
 {
+	switching = true;
 	ui->splitter_obs_output_action->hide();
 	ui->splitter_obs_output_extra_1->hide();
 	ui->splitter_obs_output_extra_2->hide();
@@ -168,7 +130,7 @@ void OBSActionsWidget::obs_type_select(int selection)
 	case 2:
 		//Sources
 		ui->cb_obs_output_scene->addItems(GetScenes());
-		GetSources(ui->cb_obs_output_scene->currentText());
+		ui->cb_obs_output_source->addItems(GetSources(ui->cb_obs_output_scene->currentText()));
 		ui->cb_obs_output_action->clear();
 		ui->cb_obs_output_action->addItems(sceneActions);
 		ui->splitter_obs_output_scene->show();
@@ -178,38 +140,27 @@ void OBSActionsWidget::obs_type_select(int selection)
 	case 3:
 		//Filters
 		ui->cb_obs_output_scene->addItems(GetScenes());
-		GetSources(ui->cb_obs_output_scene->currentText());
+		ui->cb_obs_output_source->addItems(GetSources(ui->cb_obs_output_scene->currentText()));
 		ui->cb_obs_output_action->clear();
-		GetFilters(ui->cb_obs_output_source->currentText());
+		ui->cb_obs_output_filter->addItems(GetFilters(ui->cb_obs_output_source->currentText()));
 		ui->cb_obs_output_action->addItems(filterActions);
 		ui->splitter_obs_output_scene->show();
 		ui->splitter_obs_output_action->show();
 		ui->splitter_obs_output_source->show();
 		ui->splitter_obs_output_filter->show();
-
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Scene", SL_scenes));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Source", SL_sources));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Filter", filters));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Action", filterActions));
 		break;
 	case 4:
 		//Outputs
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Output", outputs));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Action", outputActions));
 		break;
 	case 5:
 		//Encoders
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Encoder", encoders));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Action", encoderActions));
 		break;
 	case 6:
-
 		//Services
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Service", services));
-	//	layout->addWidget(MakeComboPair(ui->Widget, "Action", serviceActions));
+
 		break;
 	};
-	//ui->widget_obs_output->setLayout(layout);
+	switching = false;
 	
 }
 
@@ -229,38 +180,7 @@ void OBSActionsWidget::obs_type_select(int selection)
 
 
 
-float Utils::mapper(int x)
 
-{
-	float in_min = 0;
-	float in_max = 127;
-	float out_min = 0;
-	float out_max = 1;
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-int Utils::mapper2(double x)
-
-{
-	double in_min = 0;
-	double in_max = 1;
-	double out_min = 0;
-	double out_max = 127;
-	return ((x - in_min) * (out_max - out_min) / (in_max - in_min) +
-		out_min);
-}
-
-bool Utils::is_number(const std::string &s)
-{
-	std::string::const_iterator it = s.begin();
-	while (it != s.end() && std::isdigit(*it))
-		++it;
-	return !s.empty() && it == s.end();
-}
-bool Utils::inrange(int low, int high, int x)
-{
-
-	return ((x - low) <= (high - low));
-}
 
 const QHash<obs_bounds_type, QString> boundTypeNames = {
 	{OBS_BOUNDS_STRETCH, "OBS_BOUNDS_STRETCH"},
@@ -640,11 +560,10 @@ OBSDataArrayAutoRelease Utils::GetSceneArray (QString name) {
 
 		OBSDataAutoRelease scdata = obs_data_create();
 		auto x = obs_sceneitem_get_source(item);
-		auto sdata = GetSceneData(x);
+		OBSDataAutoRelease sdata = GetSceneData(x);
 		
 		obs_data_set_string(scdata, "name", obs_data_get_string(sdata, "name"));
 		obs_data_array_push_back(sceneArray, scdata);
-		obs_data_release(sdata);
 
 		return true;
 	};
@@ -703,7 +622,7 @@ OBSDataArrayAutoRelease Utils::GetSourceArray()
 		obs_data_set_string(sourceData, "type", typeString.toUtf8());
 
 		obs_data_array_push_back(sourcesArray, sourceData);
-		obs_scene_release(scene);
+		//obs_scene_release(scene);
 		return true;
 	};
 	obs_enum_sources(sourceEnumProc, sourcesArray);
