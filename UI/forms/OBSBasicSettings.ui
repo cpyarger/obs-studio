@@ -133,7 +133,7 @@
         <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>5</number>
        </property>
        <widget class="QWidget" name="generalPage">
         <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -4936,11 +4936,6 @@
                         <height>25</height>
                        </size>
                       </property>
-                      <item>
-                       <property name="text">
-                        <string>Hotkeys</string>
-                       </property>
-                      </item>
                      </widget>
                     </widget>
                    </item>
@@ -4966,38 +4961,8 @@
                       </size>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>-1</number>
                      </property>
-                     <widget class="QWidget" name="Hotkeys_2">
-                      <layout class="QGridLayout" name="gridLayout_10">
-                       <item row="0" column="0">
-                        <widget class="QPushButton" name="pushButton_10">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>25</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>Listen</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="lineEdit_2">
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>25</height>
-                          </size>
-                         </property>
-                         <property name="text">
-                          <string>CTRL+ALT+F12</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
                     </widget>
                    </item>
                    <item row="2" column="0">

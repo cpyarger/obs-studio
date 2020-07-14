@@ -268,7 +268,8 @@ set(obs_SOURCES
 	audio-encoders.cpp
 	qt-wrappers.cpp
 	mapper.cpp
-	obs-actions-widget.cpp)
+	obs-actions-widget.cpp
+	obs-hotkeys-widget.cpp)
 
 set(obs_HEADERS
 	${obs_PLATFORM_HEADERS}
@@ -334,7 +335,8 @@ set(obs_HEADERS
 	qt-wrappers.hpp
 	clickable-label.hpp
 	mapper.hpp
-	obs-actions-widget.hpp)
+	obs-actions-widget.hpp
+	obs-hotkeys-widget.hpp)
 
 set(obs_importers_HEADERS
 	importers/importers.hpp)
@@ -368,7 +370,8 @@ set(obs_UI
 	forms/OBSRemux.ui
 	forms/OBSImporter.ui
 	forms/OBSAbout.ui
-	forms/OBSActionsWidget.ui)
+	forms/OBSActionsWidget.ui
+	forms/OBSHotkeysWidget.ui)
 
 set(obs_QRC
 	forms/obs.qrc)

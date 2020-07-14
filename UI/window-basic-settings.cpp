@@ -350,6 +350,8 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	ui->setupUi(this);
 	ui->sw_output_widgets->addWidget(obsaw);
 	ui->cb_output_select->addItem("OBS");
+	ui->sw_input_widgets->addWidget(obshw);
+	ui->cb_input_select->addItem("Hotkeys");
 	main->EnableOutputs(false);
 	loadControlWindows();
 
@@ -894,6 +896,8 @@ OBSBasicSettings::~OBSBasicSettings()
 			main->OutputPages.at(i));
 		main->OutputPages.at(i)->setParent(nullptr);
 	}
+	delete obshw;
+	delete obsaw;
 }
 
 

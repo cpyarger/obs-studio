@@ -149,6 +149,9 @@ private:
 	QStringList *items;
 	QString sceneName;
 	bool switching = false;
+	bool DoMap(QString map);
+public slots:
+	bool MapCall(QString plugin, QString map);
 private slots:
 	QStringList GetSources(QString scene);
 	void obs_type_select(int);

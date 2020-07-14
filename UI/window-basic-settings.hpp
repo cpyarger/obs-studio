@@ -43,6 +43,7 @@ class OBSActionsWidget;
 #include "ui_OBSBasicSettings.h"
 #include "mapper.hpp"
 #include "obs-actions-widget.hpp"
+#include "obs-hotkeys-widget.hpp"
 #include "obs-frontend-api.h"
 #define VOLUME_METER_DECAY_FAST 23.53
 #define VOLUME_METER_DECAY_MEDIUM 11.76
@@ -396,7 +397,7 @@ public:
 
 
 OBSActionsWidget *obsaw = new OBSActionsWidget();
- 
+OBSHotkeysWidget *obshw = new OBSHotkeysWidget();
 signals:
 	void onControlChange(QString Change);
 	

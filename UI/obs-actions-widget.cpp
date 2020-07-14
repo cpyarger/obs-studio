@@ -45,7 +45,22 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 OBSActionsWidget::~OBSActionsWidget() {
 	delete ui;
 }
+bool OBSActionsWidget::MapCall(QString plugin, QString map)
+{
+	if (plugin == "OBS") {
+		return DoMap(map);
+	} else {
+		return false;
+	}
+}
+	bool OBSActionsWidget::DoMap(QString map)
+{
+		//make map into data array
+		//pull action from data array
+		//map action based on actionsMap
 
+	return false;
+}
 QStringList OBSActionsWidget::GetSources(QString scene)
 {
 
