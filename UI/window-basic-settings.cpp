@@ -354,7 +354,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	ui->cb_input_select->addItem("Hotkeys");
 	main->EnableOutputs(false);
 	loadControlWindows();
-
+	
 	PopulateAACBitrates({ui->simpleOutputABitrate, ui->advOutTrack1Bitrate,
 			     ui->advOutTrack2Bitrate, ui->advOutTrack3Bitrate,
 			     ui->advOutTrack4Bitrate, ui->advOutTrack5Bitrate,
@@ -899,7 +899,18 @@ OBSBasicSettings::~OBSBasicSettings()
 	delete obshw;
 	delete obsaw;
 }
+QString OBSBasicSettings::MakeMap() {
+	// emit get input, emit getoutput, then grab string values and add to ui
+	
+	QString inputplugin = ui->cb_input_select->currentText(); 
+	
+	QString outputplugin= ui->cb_output_select->currentText();
+	
+	return QString("{InputPlugin:'" + inputplugin + "',InputAction:'" +
+		       inputaction + "',OutputPlugin:'" + outputplugin +
+		       "',OutputAction:'" + outputaction + "'}");
 
+}
 
 void OBSBasicSettings::SaveCombo(QComboBox *widget, const char *section,
 				 const char *value)
@@ -4537,8 +4548,11 @@ QStringList OBSBasicSettings::getControlsList()
 	return ControlsList;
 }
 void OBSBasicSettings::loadControlWindows() {
-
-
+//
+	//ui->widgets
+	//ui->bottomWidgets->hide();
+	ui->bottom_widgets->hide();
+	ui->btn_obs_save_control->hide();
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4568,8 +4582,17 @@ void OBSBasicSettings::loadControlWindows() {
 			ui->sw_input_widgets->addWidget((QWidget *)main->InputPages.at(i));
 		}
 	} else {
+		
 		ui->splitter_input->hide();
-		blog(1, "control doesnt have any configuration window widgets");
+		ui->tableWidget->hideColumn(0);
+		ui->label_70->setText("Hotkeys");
+		
+		ui->btn_obs_add_control->setText("Add Hotkey");
+		ui->btn_obs_delete_control->setText("Remove Hotkey");
+		ui->btn_obs_save_control->setText("Save Hotkey");
+		ui->tableWidget->setHorizontalHeaderLabels(QStringList{QString("null"), QString("Hotkeys"),
+				    QString("null"), QString("Action")});
+		blog(1, "doesnt have any input widgets");
 	}
 	if (outputloopsize > 0) {
 		for (int i = 0; i < outputloopsize; i++) {
@@ -4579,6 +4602,7 @@ void OBSBasicSettings::loadControlWindows() {
 		}
 	} else {
 		ui->output_splitter->hide();
-		blog(1, "control doesnt have any configuration window widgets");
+		ui->tableWidget->hideColumn(2);
+		blog(1, "doesnt have any output widgets");
 	}
 }

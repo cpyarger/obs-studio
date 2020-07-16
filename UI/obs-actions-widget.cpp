@@ -63,7 +63,7 @@ bool OBSActionsWidget::MapCall(QString plugin, QString map)
 }
 QStringList OBSActionsWidget::GetSources(QString scene)
 {
-
+	
 	SL_sources.clear();
 	ui->cb_obs_output_source->clear();
 	auto arrayref = Utils::GetSceneArray(scene);

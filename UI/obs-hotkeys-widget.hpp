@@ -53,7 +53,7 @@ public:
 	QString hotkeycombo;
 	QString ReturnCombo();
 
-	protected:
+protected:
 	void keyPressEvent(QKeyEvent *event) override;
 #ifdef __APPLE__
 	void keyReleaseEvent(QKeyEvent *event) override;

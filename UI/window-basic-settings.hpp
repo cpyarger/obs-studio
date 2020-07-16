@@ -382,7 +382,7 @@ private slots:
 	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
 	void SettingListSelectionChanged();
-
+	QString MakeMap();
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -392,6 +392,8 @@ public:
 	~OBSBasicSettings();
 	QStringList getControlsList();
 	void loadControlWindows();
+	QString inputaction;
+	QString outputaction;
 
 
 

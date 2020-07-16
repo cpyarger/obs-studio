@@ -22,6 +22,7 @@ static inline bool operator==(const obs_key_combination_t &c1,
 OBSHotkeysWidget::OBSHotkeysWidget() : ui(new Ui::OBSHotkeysWidget)
 {
 	ui->setupUi(this);
+	InitSignalHandler();
 }
 OBSHotkeysWidget::~OBSHotkeysWidget() {
 	delete ui;
