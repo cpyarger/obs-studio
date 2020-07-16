@@ -4547,12 +4547,29 @@ QStringList OBSBasicSettings::getControlsList()
 {
 	return ControlsList;
 }
-void OBSBasicSettings::loadControlWindows() {
-//
+void OBSBasicSettings::FilterTable(QString filter) {
+	for (int i = 0; i <  ui->tableWidget->rowCount(); ++i) {
+		bool match = false;
+		for (int j = 0; j < ui->tableWidget->columnCount(); ++j) {
+			QTableWidgetItem *item = ui->tableWidget->item(i, j);
+			if (item->text().contains(filter,Qt::CaseInsensitive)) {
+				match = true;
+				break;
+			}
+		}
+		ui->tableWidget->setRowHidden(i, !match);
+	}
+}
+void OBSBasicSettings::loadControlWindows()
+{
+	//
 	//ui->widgets
 	//ui->bottomWidgets->hide();
 	ui->bottom_widgets->hide();
 	ui->btn_obs_save_control->hide();
+	
+	connect(ui->SearchEdit, SIGNAL(textChanged(QString)), this,
+		SLOT(FilterTable(QString)));
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();

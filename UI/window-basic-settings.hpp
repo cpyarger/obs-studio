@@ -383,6 +383,7 @@ private slots:
 	void SetAdvancedIcon(const QIcon &icon);
 	void SettingListSelectionChanged();
 	QString MakeMap();
+	void FilterTable(QString filter);
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -394,6 +395,7 @@ public:
 	void loadControlWindows();
 	QString inputaction;
 	QString outputaction;
+	
 
 
 

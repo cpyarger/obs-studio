@@ -3,6 +3,8 @@
 #include <QPointer>
 #include <memory>
 #include <string>
+
+
 #include <vector>
 #include <QtCore/QString>
 #include <QtWidgets/QSpinBox>
@@ -117,34 +119,53 @@ private:
 	QStringList services = {};
 	QStringList SL_scenes = {};
 	QStringList SL_sources = {};
-	QStringList FrontendActions = {"Start Streaming",
-				       "Stop Streaming",
-				       "Toggle Start/Stop Streaming",
-				       "Start Recording",
-				       "Stop Recording",
-				       "Pause Recording",
-				       "Unpause Recording",
-				       "Start Replay Buffer",
-				       "Stop Replay Buffer",
-				       "Enable Preview",
-				       "Disable Preview",
-				       "Studio Mode",
-				       "Transition",
-				       "Reset Stats"};
-	QStringList filterActions = {
-					"Enable Source Filter",
+	QStringList FrontendActions = {	"Start Streaming",
+					"Stop Streaming",
+					"Toggle Start/Stop Streaming",
+					"Start Recording",
+					"Stop Recording",
+					"Pause Recording",
+					"Unpause Recording",
+					"Start Replay Buffer",
+					"Stop Replay Buffer",
+					"Enable Preview",
+					"Disable Preview",
+					"Studio Mode",
+					"Transition",
+					"Reset Stats"};
+
+	QStringList filterActions = {	"Enable Source Filter",
 					"Disable Source Filter",
 					"Set Gain Filter",
 					"Toggle Source Filter"};
-	QStringList encoderActions = {};
-	QStringList outputActions = {};
-	QStringList serviceActions = {};
-	QStringList sceneActions = {};
-	QStringList sourceActions = {
-					"Take Source ScreenShot",
-					"Toggle Mute ",
-					"Set Volume"
-	};
+
+	QStringList sceneActions = {	"Reset Scene Item",
+					"Set Scene Item Render",
+					"Set Scene Item Position",
+					"Set Scene Item Transform",
+					"Set Scene Item Crop",
+					"Set Current Scene",
+					"Set Scene Transition Override",
+					"Set Current Transition"};
+
+	QStringList sourceActions = {	"Set Volume",
+					"Set Mute",
+					"Toggle Mute",
+					"Set Source Name",
+					"Set Sync Offset",
+					"Set Source Settings",
+					"Set Source Filter Visibility",
+					"Set Audio Monitor Type",
+					"Take Source Screenshot"};
+
+	QStringList mediaActions = {	"Play/Pause Media",
+					"Restart Media",
+					"Stop Media",
+					"Next Media",
+					"Previous Media",
+					"Set Media Time",
+					"Scrub Media"};
+
 	QStringList GetScenes();
 	QStringList *items;
 	QString sceneName;
@@ -154,10 +175,13 @@ public slots:
 	bool MapCall(QString plugin, QString map);
 private slots:
 	QStringList GetSources(QString scene);
-	void obs_type_select(int);
+	void obs_actions_filter_select(int);
 	QStringList GetFilters(QString Source);
-
+	void obs_actions_select(QString action);
 
 private:
 	Ui::OBSActionsWidget *ui;
-};
+
+	
+	
+	};

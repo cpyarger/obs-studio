@@ -6,9 +6,10 @@
 #include <obs-data.h>
 #include <string>
 #include <map>
+#include <functional>
 #include <iostream>
 #include <utility>
-#include <map>
+
 #include <inttypes.h>
 #include <QtCore/QDir>
 #include <QtCore/QUrl>
@@ -34,16 +35,181 @@ void ___data_item_release(obs_data_item_t *dataItem)
 
 OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	ui->setupUi(this);
-	this->obs_type_select(0);
+	ui->splitter_obs_output_extra_1->hide();
+	ui->splitter_obs_output_extra_2->hide();
+	ui->splitter_obs_output_extra_3->hide();
+	ui->splitter_obs_output_extra_4->hide();
+	ui->splitter_obs_output_extra_5->hide();
+	ui->splitter_obs_output_filter->hide();
+	ui->splitter_obs_output_scene->hide();
+	ui->splitter_obs_output_source->hide();
+	this->obs_actions_filter_select(0);
 	connect(ui->cb_obs_action, SIGNAL(currentIndexChanged(int)), this,
-		SLOT(obs_type_select(int)));
+		SLOT(obs_actions_filter_select(int)));
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
 		this, SLOT(GetSources(QString)));
+	connect(ui->cb_obs_output_action, SIGNAL(currentTextChanged(QString)), this, SLOT(obs_actions_select(QString)));
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)), this, SLOT(GetSources(QString)));
 	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)), this, SLOT(GetFilters(QString)));
 }
 OBSActionsWidget::~OBSActionsWidget() {
 	delete ui;
+}
+void OBSActionsWidget::obs_actions_select(QString action)
+{
+	ui->splitter_obs_output_extra_1->hide();
+	ui->splitter_obs_output_extra_2->hide();
+	ui->splitter_obs_output_extra_3->hide();
+	ui->splitter_obs_output_extra_4->hide();
+	ui->splitter_obs_output_extra_5->hide();
+	ui->splitter_obs_output_filter->hide();
+	ui->splitter_obs_output_scene->hide();
+	ui->splitter_obs_output_source->hide();
+	std::map<QString,
+		 std::function<void(QString action, Ui::OBSActionsWidget * wid,
+				    OBSActionsWidget * here)>>
+		funcMap = {{"Set Current Scene",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    wid->cb_obs_output_scene->addItems(
+					    here->GetScenes());
+				    wid->splitter_obs_output_scene->show();
+			    }},
+			   {"Start Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Toggle Start/Stop Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Start Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Pause Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Unpause Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Start Replay Buffer",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Replay Buffer",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Enable Preview",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Disable Preview",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Studio Mode",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Transition",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Reset Stats",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+				    //source
+			   {"Enable Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Disable Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Gain Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Toggle Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Reset Scene Item",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Scene Item Render",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Scene Item Position",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Scene Item Transform",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Scene Item Crop",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Current Scene",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Scene Transition Override",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Current Transition",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Volume",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Mute",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Toggle Mute",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Source Name",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Sync Offset",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Source Settings",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Source Filter Visibility",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Audio Monitor Type",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Take Source Screenshot",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Play/Pause Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Restart Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Next Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Previous Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Media Time",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Scrub Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}}
+
+	};
+	try {
+		funcMap[action](action, ui, this);
+	} catch (std::exception &e) {
+		blog(LOG_DEBUG, "error %s", e.what());
+
+	}
 }
 bool OBSActionsWidget::MapCall(QString plugin, QString map)
 {
@@ -111,74 +277,43 @@ QStringList OBSActionsWidget::GetFilters(QString source) {
 	}
 	return SL_filters;
 }
-void OBSActionsWidget::obs_type_select(int selection)
+void OBSActionsWidget::obs_actions_filter_select(int selection)
 {
 	switching = true;
-	ui->splitter_obs_output_action->hide();
-	ui->splitter_obs_output_extra_1->hide();
-	ui->splitter_obs_output_extra_2->hide();
-	ui->splitter_obs_output_extra_3->hide();
-	ui->splitter_obs_output_extra_4->hide();
-	ui->splitter_obs_output_extra_5->hide();
-	ui->splitter_obs_output_filter->hide();
-	ui->splitter_obs_output_scene->hide();
-	ui->splitter_obs_output_source->hide();
+
+	ui->cb_obs_output_action->clear();
 	switch (selection) {
-	case 0:
-		
-		// Frontend
-		ui->cb_obs_output_action->clear();
-		ui->cb_obs_output_action->addItems(FrontendActions);
-		ui->splitter_obs_output_action->show();
-		break;
-	case 1:
-		// Scenes
-		ui->cb_obs_output_scene->addItems(GetScenes());
-
-		ui->cb_obs_output_action->clear();
-		ui->cb_obs_output_action->addItems(sceneActions);
-		ui->splitter_obs_output_scene->show();
-		
-		ui->splitter_obs_output_action->show();
-		
-		break;
-	case 2:
-		//Sources
-		ui->cb_obs_output_scene->addItems(GetScenes());
-		ui->cb_obs_output_source->addItems(GetSources(ui->cb_obs_output_scene->currentText()));
-		ui->cb_obs_output_action->clear();
-		ui->cb_obs_output_action->addItems(sceneActions);
-		ui->splitter_obs_output_scene->show();
-		ui->splitter_obs_output_action->show();
-		ui->splitter_obs_output_source->show();
-		break;
-	case 3:
-		//Filters
-		ui->cb_obs_output_scene->addItems(GetScenes());
-		ui->cb_obs_output_source->addItems(GetSources(ui->cb_obs_output_scene->currentText()));
-		ui->cb_obs_output_action->clear();
-		ui->cb_obs_output_filter->addItems(GetFilters(ui->cb_obs_output_source->currentText()));
-		ui->cb_obs_output_action->addItems(filterActions);
-		ui->splitter_obs_output_scene->show();
-		ui->splitter_obs_output_action->show();
-		ui->splitter_obs_output_source->show();
-		ui->splitter_obs_output_filter->show();
-		break;
-	case 4:
-		//Outputs
-		break;
-	case 5:
-		//Encoders
-		break;
-	case 6:
-		//Services
-
-		break;
+		case 0:
+			//All filters
+			ui->cb_obs_output_action->addItems(FrontendActions);
+			ui->cb_obs_output_action->addItems(sceneActions);
+			ui->cb_obs_output_action->addItems(sourceActions);
+			ui->cb_obs_output_action->addItems(filterActions);
+			ui->cb_obs_output_action->addItems(mediaActions);
+		case 1:
+			// Frontend
+			ui->cb_obs_output_action->addItems(FrontendActions);
+			break;
+		case 2:
+			// Scenes
+			ui->cb_obs_output_action->addItems(sceneActions);
+			break;
+		case 3:
+			//Sources
+			ui->cb_obs_output_action->addItems(sourceActions);
+			break;
+		case 4:
+			//Filters
+			ui->cb_obs_output_action->addItems(filterActions);
+			break;
+		case 5:
+			//Media
+			ui->cb_obs_output_action->addItems(mediaActions);
+			break;
 	};
 	switching = false;
 	
 }
-
 
 
 
