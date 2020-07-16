@@ -4903,7 +4903,7 @@
                    <item>
                     <widget class="QFrame" name="InputFrame">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -4917,7 +4917,7 @@
                      <property name="maximumSize">
                       <size>
                        <width>300</width>
-                       <height>200</height>
+                       <height>400</height>
                       </size>
                      </property>
                      <property name="frameShape">
@@ -5025,7 +5025,7 @@
                    <item>
                     <widget class="QFrame" name="frame_output">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -5039,7 +5039,7 @@
                      <property name="maximumSize">
                       <size>
                        <width>300</width>
-                       <height>200</height>
+                       <height>400</height>
                       </size>
                      </property>
                      <property name="frameShape">

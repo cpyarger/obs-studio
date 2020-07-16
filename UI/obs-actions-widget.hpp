@@ -53,8 +53,8 @@ float mapper(int x);
 int mapper2(double x);
 bool is_number(const std::string &s);
 std::string getMidiMessageType(int in);
-std::vector<const char *> GetVideoSourceNames();
-std::vector<const char *> GetAudioSourceNames();
+QStringList GetMediaSourceNames();
+QStringList GetAudioSourceNames();
 
 QString nsToTimestamp(uint64_t ns);
 obs_data_array_t *StringListToArray(char **strings, const char *key);
