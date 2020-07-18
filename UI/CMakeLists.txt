@@ -267,6 +267,7 @@ set(obs_SOURCES
 	remote-text.cpp
 	audio-encoders.cpp
 	qt-wrappers.cpp
+	utils.cpp
 	mapper.cpp
 	obs-actions-widget.cpp
 	obs-hotkeys-widget.cpp)
@@ -334,6 +335,7 @@ set(obs_HEADERS
 	audio-encoders.hpp
 	qt-wrappers.hpp
 	clickable-label.hpp
+	utils.hpp
 	mapper.hpp
 	obs-actions-widget.hpp
 	obs-hotkeys-widget.hpp)

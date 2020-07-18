@@ -384,6 +384,9 @@ private slots:
 	void SettingListSelectionChanged();
 	QString MakeMap();
 	void FilterTable(QString filter);
+	void FilterTriggers(QString filter);
+	void FilterActions(QString filter);
+	void do_table_selection(int col, int row);
 
 protected:
 	virtual void closeEvent(QCloseEvent *event);
@@ -399,8 +402,10 @@ public:
 
 
 
-
-OBSActionsWidget *obsaw = new OBSActionsWidget();
+private:
+	QComboBox *TriggerFilter;
+	QComboBox *ActionsFilter;
+	OBSActionsWidget *obsaw = new OBSActionsWidget();
 OBSHotkeysWidget *obshw = new OBSHotkeysWidget();
 signals:
 	void onControlChange(QString Change);

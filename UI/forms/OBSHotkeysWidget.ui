@@ -26,28 +26,26 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="2" alignment="Qt::AlignVCenter">
+   <item row="0" column="0">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Clear</string>
+       <string> Hotkey:</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QKeySequenceEdit" name="keySequenceEdit"/>
+     <widget class="QPushButton" name="pushButton">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
         <height>25</height>
        </size>
       </property>
-      <property name="sizeIncrement">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
+      <property name="text">
+       <string>Clear</string>
       </property>
      </widget>
     </widget>
@@ -59,16 +57,16 @@
   <connection>
    <sender>pushButton</sender>
    <signal>clicked()</signal>
-   <receiver>lineEdit</receiver>
+   <receiver>keySequenceEdit</receiver>
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>76</x>
-     <y>159</y>
+     <x>334</x>
+     <y>146</y>
     </hint>
     <hint type="destinationlabel">
-     <x>270</x>
-     <y>159</y>
+     <x>174</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>

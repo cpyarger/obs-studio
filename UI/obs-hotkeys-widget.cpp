@@ -165,7 +165,7 @@ void OBSHotkeysWidget::RenderKey()
 	DStr str;
 	obs_key_combination_to_str(key, str);
 
-	ui->lineEdit->setText(QT_UTF8(str));
+//	ui->lineEdit->setText(QT_UTF8(str));
 }
 
 void OBSHotkeysWidget::ResetKey()

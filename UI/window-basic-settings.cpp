@@ -4560,20 +4560,57 @@ void OBSBasicSettings::FilterTable(QString filter) {
 		ui->tableWidget->setRowHidden(i, !match);
 	}
 }
+void OBSBasicSettings::FilterTriggers(QString filter)
+{
+	for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
+		bool match = false;
+		
+		QTableWidgetItem *item = ui->tableWidget->item(i, 0);
+		if (item->text().contains(filter,
+						Qt::CaseInsensitive)) {
+			match = true;
+			break;
+		}
+		
+		ui->tableWidget->setRowHidden(i, !match);
+	}
+}
+void OBSBasicSettings::FilterActions(QString filter)
+{
+	for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
+		bool match = false;
+	
+		QTableWidgetItem *item = ui->tableWidget->item(i, 2);
+		if (item->text().contains(filter,
+						Qt::CaseInsensitive)) {
+			match = true;
+			break;
+		}
+		
+		ui->tableWidget->setRowHidden(i, !match);
+	}
+}
 void OBSBasicSettings::loadControlWindows()
 {
-	//
+	ui->btn_obs_delete_control->hide();
 	//ui->widgets
 	//ui->bottomWidgets->hide();
 	ui->bottom_widgets->hide();
-	ui->btn_obs_save_control->hide();
-	
+	//ui->btn_obs_save_control->hide();
+	QTableWidgetItem *triggerfilter = new QTableWidgetItem();
+	TriggerFilter = new QComboBox();
+	ActionsFilter = new QComboBox;
+	QAction *newa = new QAction(TriggerFilter);
+
+	//ui->tableWidget->setVerticalHeaderItem(0,)
 	connect(ui->SearchEdit, SIGNAL(textChanged(QString)), this,
 		SLOT(FilterTable(QString)));
+	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
+		SLOT(do_table_selection(int, int)));
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
-
+	
 	if (controlloopsize > 0) {
 		for (int i = 0; i < controlloopsize; i++) {
 			QTreeWidgetItem *child = new QTreeWidgetItem();
@@ -4588,14 +4625,14 @@ void OBSBasicSettings::loadControlWindows()
 
 
 	} else {
-		ui->FiltersSplitter->hide();
+		//ui->FiltersSplitter->hide();
 		blog(1, "control doesnt have any configuration window widgets");
 
 	}
 	if (inputloopsize > 0) {
 		for (int i = 0; i < inputloopsize; i++) {
 			ui->cb_input_select->addItem((QString)*main->InputNames.at(i));
-			ui->cb_input_filter->addItem((QString)*main->InputNames.at(i));
+			TriggerFilter->addItem((QString)*main->InputNames.at(i));
 			ui->sw_input_widgets->addWidget((QWidget *)main->InputPages.at(i));
 		}
 	} else {
@@ -4605,8 +4642,8 @@ void OBSBasicSettings::loadControlWindows()
 		ui->label_70->setText("Hotkeys");
 		
 		ui->btn_obs_add_control->setText("Add Hotkey");
-		ui->btn_obs_delete_control->setText("Remove Hotkey");
-		ui->btn_obs_save_control->setText("Save Hotkey");
+		ui->btn_obs_delete_control->setText("Delete");
+		ui->btn_obs_save_control->setText("Save");
 		ui->tableWidget->setHorizontalHeaderLabels(QStringList{QString("null"), QString("Hotkeys"),
 				    QString("null"), QString("Action")});
 		blog(1, "doesnt have any input widgets");
@@ -4614,7 +4651,7 @@ void OBSBasicSettings::loadControlWindows()
 	if (outputloopsize > 0) {
 		for (int i = 0; i < outputloopsize; i++) {
 			ui->cb_output_select->addItem((QString)*main->OutputNames.at(i));
-			ui->cb_output_filter->addItem((QString)*main->OutputNames.at(i));
+			ActionsFilter->addItem((QString)*main->OutputNames.at(i));
 			ui->sw_output_widgets->addWidget((QWidget *)main->OutputPages.at(i));
 		}
 	} else {
@@ -4622,4 +4659,9 @@ void OBSBasicSettings::loadControlWindows()
 		ui->tableWidget->hideColumn(2);
 		blog(1, "doesnt have any output widgets");
 	}
+}
+void OBSBasicSettings::do_table_selection(int col, int row) {
+	//get row data, show edit elements.
+	ui->btn_obs_add_control->setDisabled(true);
+	ui->btn_obs_delete_control->show();
 }
