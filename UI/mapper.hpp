@@ -28,27 +28,43 @@ public:
 
 	ControlMapper();
 	~ControlMapper();
-	Mapping MakeMapping(QString inType, QString inAct, QString outType,
-			    QString OutAct);
-	bool SaveMapping(Mapping entry);
-	vector <Mapping> map;
+
+	bool DebugEnabled=true;
+	bool AlertsEnabled=false;
+
+	bool SettingsLoaded;
 	bool LoadMapping();
 	config_t* GetMappingStore();
-	QStringList MappingList;
-	QString CurrentInputString;
-	QString CurrentOutputString;
-	QString PreviousInputString;
-	QString PreviousOutputString;
+	
+	QString CurrentTriggerString="";
+	QString CurrentTriggerType="";
+	QString CurrentActionString="";
+	QString CurrentActionType="";
+
+	QString PreviousTriggerString;
+	QString PreviousTriggerType;
+	QString PreviousActionString;
+	QString PreviousActionType;
+	
 signals:
 	QString EventCall(QString input, QString inputAction, QString output,
 			  QString outputAction);
 
-public slots:
-	void updateInputString(QString inputstring);
-	void updateOutputString(QString outputstring);
+
+	void EditTrigger(QString TriggerType, QString TriggerString);
+	void EditAction(QString ActionType, QString TriggerType);
+	void AddRowToTable(QString TriggerType, QString TriggerString,
+			   QString ActionType, QString ActionString);
+public slots
+		:
+	void UpdateTrigger(QString type,QString string);
+	void UpdateAction(QString type,QString string);
+	bool SaveMapping();
 	QString BroadcastControlEvent(QString input, QString inputAction,
 				      QString output, QString outputAction);
 
 private:
-	static void OnFrontendEvent(enum obs_frontend_event event, void *param);
+	void SetDefaults();
+	config_t *MapConfig;
+	obs_data_array_t *MapArray;
 };

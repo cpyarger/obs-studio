@@ -4592,6 +4592,15 @@ void OBSBasicSettings::FilterActions(QString filter)
 }
 void OBSBasicSettings::loadControlWindows()
 {
+
+	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
+	ControlMapper *map = main->mapper;
+	connect(this, SIGNAL(EditAction(QString, QString)), map,
+		SIGNAL(EditAction(QString, QString)));
+	connect(this, SIGNAL(EditTrigger(QString, QString)), map,
+		SIGNAL(EditTrigger(QString, QString)));
+	connect(ui->btn_obs_save_control, SIGNAL(clicked()), map,
+		SLOT(SaveMapping()));
 	ui->btn_obs_delete_control->hide();
 	//ui->widgets
 	//ui->bottomWidgets->hide();
@@ -4607,10 +4616,12 @@ void OBSBasicSettings::loadControlWindows()
 		SLOT(FilterTable(QString)));
 	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
 		SLOT(do_table_selection(int, int)));
+	connect(map, SIGNAL(AddRowToTable(QString, QString, QString, QString)),
+		this, SLOT(AddRow(QString, QString, QString, QString)));
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
-	
+	map->LoadMapping();
 	if (controlloopsize > 0) {
 		for (int i = 0; i < controlloopsize; i++) {
 			QTreeWidgetItem *child = new QTreeWidgetItem();
@@ -4660,8 +4671,38 @@ void OBSBasicSettings::loadControlWindows()
 		blog(1, "doesnt have any output widgets");
 	}
 }
-void OBSBasicSettings::do_table_selection(int col, int row) {
+void OBSBasicSettings::do_table_selection(int row, int col) {
 	//get row data, show edit elements.
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
+	QString triggertype = ui->tableWidget->item(row, 0)->text();
+	QString triggerstring = ui->tableWidget->item(row,1)->text();
+	QString actiontype = ui->tableWidget->item(row, 2)->text();
+	QString actionstring = ui->tableWidget->item(row, 3)->text();
+	ui->cb_input_select->setCurrentText(triggertype);
+	ui->cb_output_select->setCurrentText(actiontype);
+	emit(EditAction(actiontype, actionstring));
+	emit(EditTrigger(triggertype, triggerstring));
+	blog(1, "basicSettings %s, %s, %s, %s ",
+	     triggertype.toStdString().c_str(),
+	     triggerstring.toStdString().c_str(),
+	     actiontype.toStdString().c_str(),
+	     actionstring.toStdString().c_str());
+}
+void SaveAction() {
+	ControlMapper *map = (ControlMapper*)obs_frontend_get_mapper();
+	map->SaveMapping();
+}
+void OBSBasicSettings::AddRow(QString TType, QString TString, QString AType,
+			      QString AString)
+{
+	int row = ui->tableWidget->rowCount();
+	ui->tableWidget->insertRow(row);
+	ui->tableWidget->setItem(row, 0, new QTableWidgetItem(TType.simplified()));
+	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(TString.simplified()));
+	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
+	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(AString.simplified()));
+}
+void OBSBasicSettings::DeleteRow(int row) {
+	ui->tableWidget->removeRow(row);
 }

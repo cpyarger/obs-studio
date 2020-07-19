@@ -38,7 +38,7 @@
 #include "window-projector.hpp"
 #include "window-basic-about.hpp"
 #include "auth-base.hpp"
-
+#include "mapper.hpp"
 #include <obs-frontend-internal.hpp>
 
 #include <util/platform.h>
@@ -165,6 +165,7 @@ class OBSBasic : public OBSMainWindow {
 	friend class ReplayBufferButton;
 	friend class ExtraBrowsersModel;
 	friend class ExtraBrowsersDelegate;
+	
 	friend struct OBSStudioAPI;
 
 	enum class MoveDir { Up, Down, Left, Right };
@@ -752,7 +753,7 @@ public:
 
 	void NewProject();
 	void LoadProject();
-
+	ControlMapper *mapper;
 	inline void GetDisplayRect(int &x, int &y, int &cx, int &cy)
 	{
 		x = previewX;

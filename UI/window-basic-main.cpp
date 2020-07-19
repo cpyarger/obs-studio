@@ -58,7 +58,7 @@
 #include "ui-validation.hpp"
 #include <fstream>
 #include <sstream>
-
+#include "mapper.hpp"
 #ifdef _WIN32
 #include "win-update/win-update.hpp"
 #include "windows.h"
@@ -407,6 +407,7 @@ OBSBasic::OBSBasic(QWidget *parent)
 		this,
 		SLOT(ScenesReordered(const QModelIndex &, int, int,
 				     const QModelIndex &, int)));
+	mapper = new ControlMapper();
 }
 
 static void SaveAudioDevice(const char *name, int channel, obs_data_t *parent,

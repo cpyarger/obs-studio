@@ -19,15 +19,14 @@
 #include "obs-actions-widget.hpp"
 #include <qdialogbuttonbox.h>
 #include <qcheckbox.h>
-#include<QWidget>
+#include <QWidget>
 #include <QMainWindow>
 #include "utils.hpp"
-
+#include "window-basic-main.hpp"
 
 OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	ui->setupUi(this);
 	/**************connect labels and comboboxes***************/
-
 
 	HidePair("extra_1");
 	HidePair("transition");
@@ -41,8 +40,11 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	ui->pb_override->hide();
 	ui->cb_obs_output_audio_source->addItems(Utils::GetAudioSourceNames());
 	ui->cb_obs_output_media_source->addItems(Utils::GetMediaSourceNames());
-
+	OBSBasic *main = (OBSBasic* )obs_frontend_get_main_window();
+	ControlMapper *map = main->mapper;
 	
+	connect(map, SIGNAL(EditAction(QString, QString)), this,
+		SLOT(EditAction(QString, QString)));
 	this->obs_actions_filter_select(0);
 	connect(ui->cb_obs_action, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(obs_actions_filter_select(int)));
@@ -52,9 +54,23 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)), this, SLOT(GetSources(QString)));
 	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)), this, SLOT(GetFilters(QString)));
 	connect(ui->check_advanced, SIGNAL(toggled(bool)), this, SLOT(check_advanced_switch(bool)));
-	
+
+	//connect all combos to on change
+	connect(ui->cb_obs_output_action, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_item, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_filter, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_transition, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_audio_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_media_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(this, SIGNAL(changed(QString, QString)), map,
+		SLOT(UpdateAction(QString, QString)));
+
 }
-OBSActionsWidget::~OBSActionsWidget() {
+
+OBSActionsWidget::~OBSActionsWidget()
+{
 	delete ui;
 }
 void OBSActionsWidget::ShowPair(QString Pair) {
@@ -549,3 +565,34 @@ void OBSActionsWidget::obs_actions_filter_select(int selection)
 
 
 
+void OBSActionsWidget::EditAction(QString type, QString actions) {
+if (type == "OBS") {
+		blog(1, "OBS Action Edit -- %s -- %s",type.toStdString().c_str(), actions.toStdString().c_str());
+	auto data = obs_data_create_from_json(actions.toStdString().c_str());
+		
+		ui->cb_obs_output_action->setCurrentText(
+		QString(obs_data_get_string(data, "action")));
+	ui->cb_obs_output_scene->setCurrentText(
+		QString(obs_data_get_string(data, "scene")));
+		ui->cb_obs_output_audio_source->setCurrentText(
+			QString(obs_data_get_string(data, "audio_source")));
+	blog(1, "EditAction-- widget -- %s",
+	     obs_data_get_string(data, "action"));
+	obs_data_release(data);
+}
+
+}
+void OBSActionsWidget::onChange() {
+	obs_data_t *data = obs_data_create();
+	obs_data_set_string(data, "action",ui->cb_obs_output_action->currentText().toStdString().c_str());
+	obs_data_set_string(data, "scene",ui->cb_obs_output_scene->currentText().toStdString().c_str());
+	obs_data_set_string(data, "source",ui->cb_obs_output_source->currentText().toStdString().c_str());
+	obs_data_set_string(data, "filter",ui->cb_obs_output_filter->currentText().toStdString().c_str());
+	obs_data_set_string(data, "transition",ui->cb_obs_output_transition->currentText().toStdString().c_str());
+	obs_data_set_string(data, "item",ui->cb_obs_output_item->currentText().toStdString().c_str());
+	obs_data_set_string(data, "audio_source",ui->cb_obs_output_audio_source->currentText().toStdString().c_str());
+	obs_data_set_string(data, "media_source",ui->cb_obs_output_media_source->currentText().toStdString().c_str());
+	emit(changed("OBS", QString(obs_data_get_json(data))));
+	obs_data_release(data);
+
+}

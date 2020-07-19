@@ -12,7 +12,7 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QSystemTrayIcon>
-
+#include <mapper.hpp>
 #include <obs.hpp>
 #include "ui_OBSActionsWidget.h"
 #include <QtWidgets/qwidget.h>
@@ -106,6 +106,11 @@ private slots:
 	QStringList GetFilters(QString Source);
 	void obs_actions_select(QString action);
 	void check_advanced_switch(bool state);
+	
+	void EditAction(QString ActionType, QString TriggerType);
+	void onChange();
+	signals:
+	void changed(QString type, QString change);
 
 private:
 	Ui::OBSActionsWidget *ui;

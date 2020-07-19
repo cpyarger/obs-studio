@@ -71,7 +71,7 @@ public slots:
 	void ReloadKeyLayout();
 	void ResetKey();
 	void ClearKey();
-
+	void EditTrigger(QString type, QString string);
 signals:
 	void KeyChanged(obs_key_combination_t);
 

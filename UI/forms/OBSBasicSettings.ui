@@ -4635,24 +4635,71 @@
              <number>0</number>
             </property>
             <widget class="QWidget" name="MappingPage">
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="0" column="5">
-               <widget class="QPushButton" name="ResetFilter">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                  <horstretch>1</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="1" column="0" colspan="6">
+               <widget class="QTableWidget" name="tableWidget">
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::AdjustToContents</enum>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>25</height>
-                 </size>
+                <property name="alternatingRowColors">
+                 <bool>true</bool>
                 </property>
-                <property name="text">
-                 <string>Clear Search</string>
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::SingleSelection</enum>
                 </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="gridStyle">
+                 <enum>Qt::SolidLine</enum>
+                </property>
+                <property name="sortingEnabled">
+                 <bool>true</bool>
+                </property>
+                <attribute name="horizontalHeaderCascadingSectionResizes">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="horizontalHeaderMinimumSectionSize">
+                 <number>100</number>
+                </attribute>
+                <attribute name="horizontalHeaderHighlightSections">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="horizontalHeaderStretchLastSection">
+                 <bool>true</bool>
+                </attribute>
+                <attribute name="verticalHeaderVisible">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="verticalHeaderCascadingSectionResizes">
+                 <bool>false</bool>
+                </attribute>
+                <attribute name="verticalHeaderStretchLastSection">
+                 <bool>false</bool>
+                </attribute>
+                <column>
+                 <property name="text">
+                  <string>Trigger  Type</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Trigger</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Action Type</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Action</string>
+                 </property>
+                </column>
                </widget>
               </item>
               <item row="0" column="2">
@@ -4683,6 +4730,19 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="4">
+               <spacer name="horizontalSpacer_28">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
               <item row="0" column="1">
                <spacer name="horizontalSpacer_27">
                 <property name="orientation">
@@ -4697,9 +4757,80 @@
                </spacer>
               </item>
               <item row="0" column="0">
-               <widget class="QPushButton" name="btn_obs_add_control">
+               <widget class="QFrame" name="frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <property name="lineWidth">
+                 <number>2</number>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <property name="leftMargin">
+                  <number>2</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>2</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>2</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>2</number>
+                 </property>
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="btn_obs_add_control">
+                   <property name="text">
+                    <string>Add Control</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="5">
+               <widget class="QPushButton" name="ResetFilter">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>1</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>Add Control</string>
+                 <string>Clear Search</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLineEdit" name="SearchEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                  <horstretch>2</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -5072,182 +5203,6 @@
                 </layout>
                </widget>
               </item>
-              <item row="0" column="3">
-               <widget class="QLineEdit" name="SearchEdit">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                  <horstretch>2</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>25</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="6">
-               <widget class="QTableWidget" name="tableWidget">
-                <property name="sizeAdjustPolicy">
-                 <enum>QAbstractScrollArea::AdjustToContents</enum>
-                </property>
-                <property name="alternatingRowColors">
-                 <bool>true</bool>
-                </property>
-                <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
-                </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <property name="gridStyle">
-                 <enum>Qt::SolidLine</enum>
-                </property>
-                <property name="sortingEnabled">
-                 <bool>true</bool>
-                </property>
-                <attribute name="horizontalHeaderCascadingSectionResizes">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="horizontalHeaderMinimumSectionSize">
-                 <number>100</number>
-                </attribute>
-                <attribute name="horizontalHeaderHighlightSections">
-                 <bool>false</bool>
-                </attribute>
-                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
-                </attribute>
-                <attribute name="verticalHeaderVisible">
-                 <bool>false</bool>
-                </attribute>
-                <attribute name="verticalHeaderCascadingSectionResizes">
-                 <bool>false</bool>
-                </attribute>
-                <attribute name="verticalHeaderStretchLastSection">
-                 <bool>false</bool>
-                </attribute>
-                <row>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>2</string>
-                 </property>
-                </row>
-                <row>
-                 <property name="text">
-                  <string>3</string>
-                 </property>
-                </row>
-                <column>
-                 <property name="text">
-                  <string>Trigger  Type</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Trigger</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Action Type</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Action</string>
-                 </property>
-                </column>
-                <item row="0" column="0">
-                 <property name="text">
-                  <string>Hotkeys</string>
-                 </property>
-                </item>
-                <item row="0" column="1">
-                 <property name="text">
-                  <string>CTRL+F12</string>
-                 </property>
-                </item>
-                <item row="0" column="2">
-                 <property name="text">
-                  <string>OBS</string>
-                 </property>
-                </item>
-                <item row="0" column="3">
-                 <property name="text">
-                  <string>Set Scene, Scene 1</string>
-                 </property>
-                </item>
-                <item row="1" column="0">
-                 <property name="text">
-                  <string>MIDI</string>
-                 </property>
-                </item>
-                <item row="1" column="1">
-                 <property name="text">
-                  <string>Device: Xtouch Mini, Channel 11, CC 1</string>
-                 </property>
-                </item>
-                <item row="1" column="2">
-                 <property name="text">
-                  <string>OBS</string>
-                 </property>
-                </item>
-                <item row="1" column="3">
-                 <property name="text">
-                  <string>Set Volume, Mic/Aux</string>
-                 </property>
-                </item>
-                <item row="2" column="0">
-                 <property name="text">
-                  <string>Hotkeys</string>
-                 </property>
-                </item>
-                <item row="2" column="1">
-                 <property name="text">
-                  <string>CTRL+F11</string>
-                 </property>
-                </item>
-                <item row="2" column="2">
-                 <property name="text">
-                  <string>MIDI</string>
-                 </property>
-                </item>
-                <item row="2" column="3">
-                 <property name="text">
-                  <string>Device: Xtouch Mini, Channel 11, CC 1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="0" column="4">
-               <spacer name="horizontalSpacer_28">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
              </layout>
             </widget>
            </widget>
@@ -5285,7 +5240,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>604</width>
+              <width>670</width>
               <height>781</height>
              </rect>
             </property>
@@ -6645,8 +6600,8 @@
      <y>399</y>
     </hint>
     <hint type="destinationlabel">
-     <x>470</x>
-     <y>425</y>
+     <x>471</x>
+     <y>426</y>
     </hint>
    </hints>
   </connection>
@@ -6674,7 +6629,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>360</x>
-     <y>383</y>
+     <y>386</y>
     </hint>
     <hint type="destinationlabel">
      <x>302</x>
@@ -6689,8 +6644,8 @@
    <slot>show()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>227</x>
-     <y>43</y>
+     <x>230</x>
+     <y>46</y>
     </hint>
     <hint type="destinationlabel">
      <x>532</x>
@@ -6705,12 +6660,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>227</x>
-     <y>43</y>
+     <x>230</x>
+     <y>46</y>
     </hint>
     <hint type="destinationlabel">
-     <x>227</x>
-     <y>43</y>
+     <x>230</x>
+     <y>46</y>
     </hint>
    </hints>
   </connection>
@@ -6725,8 +6680,8 @@
      <y>474</y>
     </hint>
     <hint type="destinationlabel">
-     <x>227</x>
-     <y>43</y>
+     <x>230</x>
+     <y>46</y>
     </hint>
    </hints>
   </connection>
@@ -6770,7 +6725,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>576</x>
-     <y>383</y>
+     <y>386</y>
     </hint>
     <hint type="destinationlabel">
      <x>498</x>
@@ -6790,7 +6745,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>752</x>
-     <y>348</y>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -6805,8 +6760,8 @@
      <y>525</y>
     </hint>
     <hint type="destinationlabel">
-     <x>227</x>
-     <y>31</y>
+     <x>230</x>
+     <y>34</y>
     </hint>
    </hints>
   </connection>
@@ -6821,8 +6776,8 @@
      <y>499</y>
     </hint>
     <hint type="destinationlabel">
-     <x>227</x>
-     <y>34</y>
+     <x>230</x>
+     <y>37</y>
     </hint>
    </hints>
   </connection>
@@ -6838,7 +6793,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>670</x>
-     <y>348</y>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -6854,7 +6809,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>701</x>
-     <y>348</y>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -6869,8 +6824,8 @@
      <y>499</y>
     </hint>
     <hint type="destinationlabel">
-     <x>227</x>
-     <y>33</y>
+     <x>230</x>
+     <y>36</y>
     </hint>
    </hints>
   </connection>

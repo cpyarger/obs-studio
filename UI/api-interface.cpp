@@ -64,7 +64,7 @@ struct OBSStudioAPI : obs_frontend_callbacks {
 
 	void *obs_frontend_get_mapper(void) override
 	{
-		return (void *)map;
+		return (void *)main->mapper;
 	}
 
 	//***********************OBS Frontend Main Bits**************************/
