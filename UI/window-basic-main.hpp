@@ -44,7 +44,7 @@
 #include <util/platform.h>
 #include <util/threading.h>
 #include <util/util.hpp>
-
+#include <QKeyEvent>
 #include <QPointer>
 
 class QMessageBox;
@@ -703,7 +703,8 @@ private:
 	void copyActionsDynamicProperties();
 
 	static void HotkeyTriggered(void *data, obs_hotkey_id id, bool pressed);
-
+	
+	
 	void AutoRemux();
 
 	void UpdatePause(bool activate = true);
@@ -831,7 +832,8 @@ public:
 	protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void changeEvent(QEvent *event) override;
-
+signals:
+	void hotkeypressed(QString type, QString string);
 private slots:
 	void on_actionFullscreenInterface_triggered();
 
@@ -1014,6 +1016,14 @@ public:
 
 private:
 	std::unique_ptr<Ui::OBSBasic> ui;
+
+protected:
+void keyPressEvent(QKeyEvent *event) override
+	{
+
+		mapper->triggerEvent("Hotkeys", event->text());
+		blog(1, "event -- %s", event->text().toStdString().c_str());
+	}
 };
 
 class SceneRenameDelegate : public QStyledItemDelegate {

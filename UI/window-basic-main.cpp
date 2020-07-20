@@ -408,6 +408,7 @@ OBSBasic::OBSBasic(QWidget *parent)
 		SLOT(ScenesReordered(const QModelIndex &, int, int,
 				     const QModelIndex &, int)));
 	mapper = new ControlMapper();
+	mapper->LoadMapping();
 }
 
 static void SaveAudioDevice(const char *name, int channel, obs_data_t *parent,
@@ -2132,6 +2133,7 @@ void OBSBasic::ProcessHotkey(obs_hotkey_id id, bool pressed)
 
 void OBSBasic::HotkeyTriggered(void *data, obs_hotkey_id id, bool pressed)
 {
+
 	OBSBasic &basic = *static_cast<OBSBasic *>(data);
 	QMetaObject::invokeMethod(&basic, "ProcessHotkey",
 				  Q_ARG(obs_hotkey_id, id),

@@ -415,6 +415,6 @@ signals:
 public slots:
 	void AddRow(QString TType, QString TString, QString AType,
 		    QString AString);
-	void DeleteRow(int row);
+	void DeleteRow();
 
 };

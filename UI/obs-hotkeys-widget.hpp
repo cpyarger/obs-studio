@@ -51,29 +51,21 @@ public:
 	OBSHotkeysWidget();
 	~OBSHotkeysWidget();
 	QString hotkeycombo;
-	QString ReturnCombo();
 
 protected:
-	void keyPressEvent(QKeyEvent *event) override;
-#ifdef __APPLE__
-	void keyReleaseEvent(QKeyEvent *event) override;
-#endif
-	void mousePressEvent(QMouseEvent *event) override;
 
-	void HandleNewKey(obs_key_combination_t new_key);
-	void RenderKey();
 	obs_key_combination_t original;
 	obs_key_combination_t key;
 	bool changed = false;
 	OBSSignal layoutChanged;
-	void InitSignalHandler();
+
 public slots:
-	void ReloadKeyLayout();
-	void ResetKey();
-	void ClearKey();
-	void EditTrigger(QString type, QString string);
+
+	void EditTrigger(QString type, QString trigger);
+	void dothing(QKeySequence keys);
 signals:
 	void KeyChanged(obs_key_combination_t);
+	void updated(QString type, QString Action);
 
 private:
 	Ui::OBSHotkeysWidget *ui;

@@ -4610,7 +4610,7 @@ void OBSBasicSettings::loadControlWindows()
 	TriggerFilter = new QComboBox();
 	ActionsFilter = new QComboBox;
 	QAction *newa = new QAction(TriggerFilter);
-
+	connect(ui->btn_obs_delete_control, SIGNAL(clicked()), this, SLOT(DeleteRow()));
 	//ui->tableWidget->setVerticalHeaderItem(0,)
 	connect(ui->SearchEdit, SIGNAL(textChanged(QString)), this,
 		SLOT(FilterTable(QString)));
@@ -4683,11 +4683,7 @@ void OBSBasicSettings::do_table_selection(int row, int col) {
 	ui->cb_output_select->setCurrentText(actiontype);
 	emit(EditAction(actiontype, actionstring));
 	emit(EditTrigger(triggertype, triggerstring));
-	blog(1, "basicSettings %s, %s, %s, %s ",
-	     triggertype.toStdString().c_str(),
-	     triggerstring.toStdString().c_str(),
-	     actiontype.toStdString().c_str(),
-	     actionstring.toStdString().c_str());
+
 }
 void SaveAction() {
 	ControlMapper *map = (ControlMapper*)obs_frontend_get_mapper();
@@ -4703,6 +4699,11 @@ void OBSBasicSettings::AddRow(QString TType, QString TString, QString AType,
 	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
 	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(AString.simplified()));
 }
-void OBSBasicSettings::DeleteRow(int row) {
-	ui->tableWidget->removeRow(row);
+void OBSBasicSettings::DeleteRow() {
+	//ui->tableWidget->removeRow(row);
+	int row2 = ui->tableWidget->selectedItems().at(0)->row();
+	blog(1, "deleterow-> %i", row2);
+	ui->tableWidget->removeRow(row2);
+	ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
+	map->deleteEntry(row2);
 }

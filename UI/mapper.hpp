@@ -45,7 +45,7 @@ public:
 	QString PreviousTriggerType;
 	QString PreviousActionString;
 	QString PreviousActionType;
-	
+	bool MappingExists(QString triggerstring);
 signals:
 	QString EventCall(QString input, QString inputAction, QString output,
 			  QString outputAction);
@@ -60,8 +60,11 @@ public slots
 	void UpdateTrigger(QString type,QString string);
 	void UpdateAction(QString type,QString string);
 	bool SaveMapping();
+	bool SaveMappings();
+	void triggerEvent(QString triggertype, QString triggerstring);
 	QString BroadcastControlEvent(QString input, QString inputAction,
 				      QString output, QString outputAction);
+	void deleteEntry(int row);
 
 private:
 	void SetDefaults();
