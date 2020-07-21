@@ -29,9 +29,9 @@ ControlMapper::ControlMapper()
 ControlMapper::~ControlMapper() {
 	obs_data_array_release(MapArray);
 }
-QString ControlMapper::BroadcastControlEvent(QString input, QString inputAction,
+QString ControlMapper::BroadcastControlEvent(QString input, obs_data_t *inputAction,
 					     QString output,
-					     QString outputAction)
+					     obs_data_t *outputAction)
 {
 	emit(ControlMapper::EventCall(input,inputAction,
 				      output,outputAction));
@@ -40,43 +40,30 @@ QString ControlMapper::BroadcastControlEvent(QString input, QString inputAction,
 bool isJSon(QString val) {
 	return (val.startsWith(QChar('[')) || val.startsWith(QChar('{')));
 }
-bool ControlMapper::MappingExists(QString mapping)
+int ControlMapper::MappingExists(obs_data_t* mapping)
 {
-	QString teststring; 
-	if (isJSon(mapping)){
-		obs_data_t *incoming = obs_data_create_from_json(mapping.toStdString().c_str());
-		obs_data_set_string(incoming, "value", "");
-		blog(1, "test+%s", obs_data_get_json(incoming));
-		teststring = obs_data_get_json(incoming);
-		obs_data_release(incoming);
-	} else {
-		teststring = mapping;
-	}
 	
-	bool exit=false;
+	bool exit = false;
 	int count = obs_data_array_count(MapArray);
+	obs_data_set_string(mapping, "value", "");
+	
+	
 	for (int i = 0; i < count; i++) {
 		obs_data_t *item = obs_data_array_item(MapArray, i);
-		obs_data_t *listitem = obs_data_create();
-		QString TriggerString = obs_data_get_string(item, "triggerstring");
-		QString itemstring; 
-		if (isJSon(TriggerString))
-		{
-			listitem = obs_data_create_from_json(TriggerString.toStdString().c_str());
+		obs_data_t *listitem = obs_data_create_from_json(
+			obs_data_get_string(item, "triggerstring"));
 			obs_data_set_string(listitem, "value", "");
-			itemstring = obs_data_get_json(listitem);
-		} else {
-			itemstring = TriggerString;
-		}
-		if (teststring == itemstring) {
+			
+		
+		if (obs_data_get_json(mapping) ==
+			    obs_data_get_json(listitem)) {
 			exit = true;
-			return true;
+			return i;
 		} 
 		obs_data_release(listitem);
 		obs_data_release(item);
-
 	}
-	return false;
+	return -1;
 }
 void ControlMapper::SetDefaults()
 {
@@ -96,15 +83,18 @@ bool ControlMapper::SaveMapping()
 	emit(AddRowToTable(CurrentTriggerType, CurrentTriggerString,
 			   CurrentActionType, CurrentActionString));
 	MapConfig = GetMappingStore();
+	
+	
 	obs_data_t *data = obs_data_create();
 	config_set_bool(MapConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 	config_set_bool(MapConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
 	obs_data_set_string(data, "triggertype", CurrentTriggerType.toStdString().c_str());
-	obs_data_set_string(data, "triggerstring", CurrentTriggerString.toStdString().c_str());
+	obs_data_set_string(data, "triggerstring", obs_data_get_json(CurrentTriggerString));
 	obs_data_set_string(data, "actiontype", CurrentActionType.toStdString().c_str());
-	obs_data_set_string(data, "actionstring", CurrentActionString.toStdString().c_str());
-//	obs_data_array_push_back(MapArray, data);
+
+	obs_data_set_string(data, "actionstring",   obs_data_get_json(CurrentActionString));
+	//	obs_data_array_push_back(MapArray, data);
 	int size = obs_data_array_count(MapArray);
 	obs_data_array_insert(MapArray, size, data);
 	obs_data_t *newdata = obs_data_create();
@@ -115,7 +105,7 @@ bool ControlMapper::SaveMapping()
 	config_save(MapConfig);
 	obs_data_release(data);
 	obs_data_release(newdata);
-	
+	//LoadMapping();
 	return true;
 }
 bool ControlMapper::SaveMappings()
@@ -148,11 +138,12 @@ bool ControlMapper::LoadMapping()
 	for (int i = 0; i < obs_data_array_count(MapArray); i++) {
 		auto data = obs_data_array_item(MapArray, i);
 		emit(AddRowToTable(QString(obs_data_get_string(data, "triggertype")),
-			QString(obs_data_get_string(data, "triggerstring")),
+			obs_data_create_from_json(obs_data_get_string(data, "triggerstring")),
 			QString(obs_data_get_string(data, "actiontype")),
-			QString(obs_data_get_string(data, "actionstring"))));
+			obs_data_create_from_json(obs_data_get_string(data, "actionstring"))));
 		blog(1, "mapping load");
 	}
+	
 	return true;
 }
 config_t* ControlMapper::GetMappingStore()
@@ -160,12 +151,12 @@ config_t* ControlMapper::GetMappingStore()
 	return obs_frontend_get_global_config();
 }
 
-void ControlMapper::UpdateTrigger(QString type,QString inputstring) {
+void ControlMapper::UpdateTrigger(QString type,obs_data_t *triggerstring) {
 	PreviousTriggerString = CurrentTriggerString;
 	PreviousTriggerType = CurrentTriggerType;
-	CurrentTriggerString = inputstring;
+	CurrentTriggerString = triggerstring;
 	CurrentTriggerType = type;
-	triggerEvent(type, inputstring);
+	triggerEvent(type, triggerstring);
 }
 void ControlMapper::deleteEntry(int entry) {
 	
@@ -173,22 +164,24 @@ void ControlMapper::deleteEntry(int entry) {
 	obs_data_array_erase(MapArray, entry);
 	obs_data_t *newdata = obs_data_create();
 	obs_data_set_array(newdata, "mapper", MapArray);
-	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES,
-			  obs_data_get_json(newdata));
+	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES, obs_data_get_json(newdata));
 	config_save(MapConfig);
 	obs_data_release(newdata);
 }
-void ControlMapper::triggerEvent(QString type, QString outputstring)
+void ControlMapper::triggerEvent(QString type, obs_data_t *triggerstring )
 {
-	if (MappingExists(outputstring)) {
+	if (MappingExists(triggerstring)!=-1) {
 		blog(1, "mapping exists  ");
+		obs_data_set_string(CurrentActionString, "value",
+				    obs_data_get_string(triggerstring,
+							"value"));
 	} else {
 		blog(1, "mapping doesnt exist  ");
 	}
 	
 	
 }
-void ControlMapper::UpdateAction(QString type, QString outputstring)
+void ControlMapper::UpdateAction(QString type, obs_data_t *outputstring)
 {
 	PreviousActionString = CurrentActionString;
 	PreviousActionType = CurrentActionType;

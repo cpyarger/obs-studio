@@ -1020,9 +1020,11 @@ private:
 protected:
 void keyPressEvent(QKeyEvent *event) override
 	{
-
-		mapper->triggerEvent("Hotkeys", event->text());
+	obs_data_t *hk  = obs_data_create();
+		obs_data_set_string(hk, "Hotkey", event->text().toStdString().c_str());
+		mapper->triggerEvent("Hotkeys", hk);
 		blog(1, "event -- %s", event->text().toStdString().c_str());
+		obs_data_release(hk);
 	}
 };
 

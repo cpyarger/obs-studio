@@ -42,7 +42,7 @@ private:
 	QStringList *items;
 	QString sceneName;
 	bool switching = false;
-	bool DoMap(QString map);
+	bool DoMap(obs_data_t* map);
 	QStringList FrontendActions = {"Start Streaming",
 				       "Stop Streaming",
 				       "Toggle Start/Stop Streaming",
@@ -99,7 +99,7 @@ private:
 	void HidePair(QString pair);
 
 public slots:
-	bool MapCall(QString plugin, QString map);
+	bool MapCall(QString plugin, obs_data_t* map);
 private slots:
 	QStringList GetSources(QString scene);
 	void obs_actions_filter_select(int);
@@ -107,10 +107,10 @@ private slots:
 	void obs_actions_select(QString action);
 	void check_advanced_switch(bool state);
 	
-	void EditAction(QString ActionType, QString TriggerType);
+	void EditAction(QString ActionType, obs_data_t* TriggerType);
 	void onChange();
 	signals:
-	void changed(QString type, QString change);
+	void changed(QString type, obs_data_t *change);
 
 private:
 	Ui::OBSActionsWidget *ui;

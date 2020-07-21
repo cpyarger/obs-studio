@@ -899,16 +899,19 @@ OBSBasicSettings::~OBSBasicSettings()
 	delete obshw;
 	delete obsaw;
 }
-QString OBSBasicSettings::MakeMap() {
+obs_data_t* OBSBasicSettings::MakeMap() {
 	// emit get input, emit getoutput, then grab string values and add to ui
+	obs_data_t *makemap = obs_data_create();
 	
-	QString inputplugin = ui->cb_input_select->currentText(); 
-	
-	QString outputplugin= ui->cb_output_select->currentText();
-	
-	return QString("{InputPlugin:'" + inputplugin + "',InputAction:'" +
-		       inputaction + "',OutputPlugin:'" + outputplugin +
-		       "',OutputAction:'" + outputaction + "'}");
+	obs_data_set_string(
+		makemap, "triggertype",
+		ui->cb_input_select->currentText().toStdString().c_str());
+	obs_data_set_string(
+		makemap, "actiontype",
+		ui->cb_output_select->currentText().toStdString().c_str());
+	obs_data_set_string(makemap, "triggerstring", obs_data_get_json(inputaction));
+	obs_data_set_string(makemap, "actionstring", obs_data_get_json(outputaction));
+	return makemap;
 
 }
 
@@ -4595,10 +4598,10 @@ void OBSBasicSettings::loadControlWindows()
 
 	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
 	ControlMapper *map = main->mapper;
-	connect(this, SIGNAL(EditAction(QString, QString)), map,
-		SIGNAL(EditAction(QString, QString)));
-	connect(this, SIGNAL(EditTrigger(QString, QString)), map,
-		SIGNAL(EditTrigger(QString, QString)));
+	connect(this, SIGNAL(EditAction(QString, obs_data_t*)), map,
+		SIGNAL(EditAction(QString, obs_data_t*)));
+	connect(this, SIGNAL(EditTrigger(QString, obs_data_t*)), map,
+		SIGNAL(EditTrigger(QString, obs_data_t*)));
 	connect(ui->btn_obs_save_control, SIGNAL(clicked()), map,
 		SLOT(SaveMapping()));
 	ui->btn_obs_delete_control->hide();
@@ -4616,8 +4619,8 @@ void OBSBasicSettings::loadControlWindows()
 		SLOT(FilterTable(QString)));
 	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
 		SLOT(do_table_selection(int, int)));
-	connect(map, SIGNAL(AddRowToTable(QString, QString, QString, QString)),
-		this, SLOT(AddRow(QString, QString, QString, QString)));
+	connect(map, SIGNAL(AddRowToTable(QString,obs_data_t*, QString, obs_data_t*)),
+		this, SLOT(AddRow(QString, obs_data_t*, QString, obs_data_t*)));
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4676,9 +4679,9 @@ void OBSBasicSettings::do_table_selection(int row, int col) {
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
 	QString triggertype = ui->tableWidget->item(row, 0)->text();
-	QString triggerstring = ui->tableWidget->item(row,1)->text();
+	obs_data_t *triggerstring = obs_data_create_from_json(ui->tableWidget->item(row,1)->text().toStdString().c_str());
 	QString actiontype = ui->tableWidget->item(row, 2)->text();
-	QString actionstring = ui->tableWidget->item(row, 3)->text();
+	obs_data_t* actionstring = obs_data_create_from_json( ui->tableWidget->item(row, 3)->text().toStdString().c_str());
 	ui->cb_input_select->setCurrentText(triggertype);
 	ui->cb_output_select->setCurrentText(actiontype);
 	emit(EditAction(actiontype, actionstring));
@@ -4689,15 +4692,15 @@ void SaveAction() {
 	ControlMapper *map = (ControlMapper*)obs_frontend_get_mapper();
 	map->SaveMapping();
 }
-void OBSBasicSettings::AddRow(QString TType, QString TString, QString AType,
-			      QString AString)
+void OBSBasicSettings::AddRow(QString TType, obs_data_t *TString, QString AType,
+			     obs_data_t *AString)
 {
 	int row = ui->tableWidget->rowCount();
 	ui->tableWidget->insertRow(row);
 	ui->tableWidget->setItem(row, 0, new QTableWidgetItem(TType.simplified()));
-	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(TString.simplified()));
+	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString(obs_data_get_json(TString)).simplified()));
 	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
-	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(AString.simplified()));
+	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString(obs_data_get_json(AString)).simplified()));
 }
 void OBSBasicSettings::DeleteRow() {
 	//ui->tableWidget->removeRow(row);

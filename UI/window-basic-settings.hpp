@@ -382,7 +382,7 @@ private slots:
 	void SetControlsIcon(const QIcon &icon);
 	void SetAdvancedIcon(const QIcon &icon);
 	void SettingListSelectionChanged();
-	QString MakeMap();
+	obs_data_t *MakeMap();
 	void FilterTable(QString filter);
 	void FilterTriggers(QString filter);
 	void FilterActions(QString filter);
@@ -396,8 +396,8 @@ public:
 	~OBSBasicSettings();
 	QStringList getControlsList();
 	void loadControlWindows();
-	QString inputaction;
-	QString outputaction;
+	obs_data_t *inputaction;
+	obs_data_t *outputaction;
 	
 
 
@@ -406,15 +406,15 @@ private:
 	QComboBox *TriggerFilter;
 	QComboBox *ActionsFilter;
 	OBSActionsWidget *obsaw = new OBSActionsWidget();
-OBSHotkeysWidget *obshw = new OBSHotkeysWidget();
+	OBSHotkeysWidget *obshw = new OBSHotkeysWidget();
 
 signals:
 	void onControlChange(QString Change);
-	void EditTrigger(QString TriggerType, QString TriggerString);
-	void EditAction(QString ActionType, QString TriggerType);
+	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
+	void EditAction(QString ActionType, obs_data_t *TriggerType);
 public slots:
-	void AddRow(QString TType, QString TString, QString AType,
-		    QString AString);
+	void AddRow(QString TType, obs_data_t *TString, QString AType,
+		    obs_data_t *AString);
 	void DeleteRow();
 
 };

@@ -26,13 +26,13 @@ OBSHotkeysWidget::OBSHotkeysWidget() : ui(new Ui::OBSHotkeysWidget)
 	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
 	ControlMapper *map = main->mapper;
 
-	connect(map, SIGNAL(EditTrigger(QString, QString)), this,
-		SLOT(EditTrigger(QString, QString)));
+	connect(map, SIGNAL(EditTrigger(QString, obs_data_t*)), this,
+		SLOT(EditTrigger(QString, obs_data_t*)));
 
 	connect(ui->keySequenceEdit, SIGNAL(keySequenceChanged(QKeySequence)), this,
 		SLOT(dothing(QKeySequence)));
-	connect(this, SIGNAL(updated(QString, QString)), map,
-		SLOT(UpdateTrigger(QString, QString)));
+	connect(this, SIGNAL(updated(QString, obs_data_t*)), map,
+		SLOT(UpdateTrigger(QString, obs_data_t*)));
 }
 OBSHotkeysWidget::~OBSHotkeysWidget() {
 	delete ui;
@@ -40,15 +40,21 @@ OBSHotkeysWidget::~OBSHotkeysWidget() {
 
 
 
-	void OBSHotkeysWidget::dothing(QKeySequence keys) {
-	emit(updated("Hotkeys", keys.toString()));
+void OBSHotkeysWidget::dothing(QKeySequence edit)
+{
+	 obs_data_t *keys = obs_data_create();
+
+	 obs_data_set_string(keys, "Hotkey",
+			     edit.toString().toStdString().c_str());
+	emit(updated("Hotkeys", keys));
 }
-void OBSHotkeysWidget::EditTrigger(QString type, QString trigger) {
+void OBSHotkeysWidget::EditTrigger(QString type,obs_data_t* trigger) {
+	
 	if (type == "Hotkeys") {
-		blog(1, "OBS Trigger Edit -- %s -- %s",
-		     type.toStdString().c_str(), trigger.toStdString().c_str());
-		ui->keySequenceEdit->setKeySequence(QKeySequence(trigger));
+		
+		ui->keySequenceEdit->setKeySequence(QKeySequence(obs_data_get_string(trigger,"Hotkey")));
 	}
-	emit(updated("Hotkeys", ui->keySequenceEdit->keySequence().toString()));
+
+	emit(updated("Hotkeys", trigger));
 }
 

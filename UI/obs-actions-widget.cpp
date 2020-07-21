@@ -43,8 +43,8 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	OBSBasic *main = (OBSBasic* )obs_frontend_get_main_window();
 	ControlMapper *map = main->mapper;
 	
-	connect(map, SIGNAL(EditAction(QString, QString)), this,
-		SLOT(EditAction(QString, QString)));
+	connect(map, SIGNAL(EditAction(QString, obs_data_t*)), this,
+		SLOT(EditAction(QString, obs_data_t*)));
 	this->obs_actions_filter_select(0);
 	connect(ui->cb_obs_action, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(obs_actions_filter_select(int)));
@@ -64,8 +64,8 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	connect(ui->cb_obs_output_transition, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_audio_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_media_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
-	connect(this, SIGNAL(changed(QString, QString)), map,
-		SLOT(UpdateAction(QString, QString)));
+	connect(this, SIGNAL(changed(QString, obs_data_t *)), map,
+		SLOT(UpdateAction(QString, obs_data_t *)));
 
 }
 
@@ -419,7 +419,7 @@ void OBSActionsWidget::obs_actions_select(QString action)
 	}
 	
 }
-bool OBSActionsWidget::MapCall(QString plugin, QString map)
+bool OBSActionsWidget::MapCall(QString plugin, obs_data_t* map)
 {
 	if (plugin == "OBS") {
 		return DoMap(map);
@@ -427,7 +427,7 @@ bool OBSActionsWidget::MapCall(QString plugin, QString map)
 		return false;
 	}
 }
-	bool OBSActionsWidget::DoMap(QString map)
+bool OBSActionsWidget::DoMap(obs_data_t* map)
 {
 		//make map into data array
 		//pull action from data array
@@ -565,20 +565,19 @@ void OBSActionsWidget::obs_actions_filter_select(int selection)
 
 
 
-void OBSActionsWidget::EditAction(QString type, QString actions) {
+void OBSActionsWidget::EditAction(QString type,obs_data_t* actions) {
 if (type == "OBS") {
-		blog(1, "OBS Action Edit -- %s -- %s",type.toStdString().c_str(), actions.toStdString().c_str());
-	auto data = obs_data_create_from_json(actions.toStdString().c_str());
+	
 		
 		ui->cb_obs_output_action->setCurrentText(
-		QString(obs_data_get_string(data, "action")));
+		QString(obs_data_get_string(actions, "action")));
 	ui->cb_obs_output_scene->setCurrentText(
-		QString(obs_data_get_string(data, "scene")));
+		QString(obs_data_get_string(actions, "scene")));
 		ui->cb_obs_output_audio_source->setCurrentText(
-			QString(obs_data_get_string(data, "audio_source")));
+			QString(obs_data_get_string(actions, "audio_source")));
 	blog(1, "EditAction-- widget -- %s",
-	     obs_data_get_string(data, "action"));
-	obs_data_release(data);
+	     obs_data_get_string(actions, "action"));
+	
 }
 
 }
@@ -592,7 +591,7 @@ void OBSActionsWidget::onChange() {
 	obs_data_set_string(data, "item",ui->cb_obs_output_item->currentText().toStdString().c_str());
 	obs_data_set_string(data, "audio_source",ui->cb_obs_output_audio_source->currentText().toStdString().c_str());
 	obs_data_set_string(data, "media_source",ui->cb_obs_output_media_source->currentText().toStdString().c_str());
-	emit(changed("OBS", QString(obs_data_get_json(data))));
-	obs_data_release(data);
+	emit(changed("OBS", data));
+	//obs_data_release(data);
 
 }

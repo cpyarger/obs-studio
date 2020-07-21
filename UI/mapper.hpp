@@ -13,14 +13,7 @@
 #include <QDoubleSpinBox>
 #include <QStackedWidget>
 #include <vector>
-using std::vector;
-EXPORT typedef struct Mapping
-{
-	QString input;
-	QString inputAction;
-	QString output;
-	QString outputAction;
-}Mapping;
+
 class ControlMapper : public QObject {
 	Q_OBJECT
 
@@ -36,34 +29,34 @@ public:
 	bool LoadMapping();
 	config_t* GetMappingStore();
 	
-	QString CurrentTriggerString="";
-	QString CurrentTriggerType="";
-	QString CurrentActionString="";
-	QString CurrentActionType="";
+	obs_data_t *CurrentTriggerString=obs_data_create();
+	QString CurrentTriggerType="Hotkeys";
+	obs_data_t *CurrentActionString=obs_data_create();
+	QString CurrentActionType="OBS";
 
-	QString PreviousTriggerString;
+	obs_data_t *PreviousTriggerString;
 	QString PreviousTriggerType;
-	QString PreviousActionString;
+	obs_data_t *PreviousActionString;
 	QString PreviousActionType;
-	bool MappingExists(QString triggerstring);
+	int MappingExists(obs_data_t *triggerstring);
 signals:
-	QString EventCall(QString input, QString inputAction, QString output,
-			  QString outputAction);
+	QString EventCall(QString input, obs_data_t *inputAction, QString output,
+			  obs_data_t *outputAction);
 
 
-	void EditTrigger(QString TriggerType, QString TriggerString);
-	void EditAction(QString ActionType, QString TriggerType);
-	void AddRowToTable(QString TriggerType, QString TriggerString,
-			   QString ActionType, QString ActionString);
+	void EditTrigger(QString TriggerType,obs_data_t *TriggerString);
+	void EditAction(QString ActionType, obs_data_t *Action);
+	void AddRowToTable(QString TriggerType,obs_data_t *TriggerString,
+			   QString ActionType,obs_data_t *actionstring);
 public slots
 		:
-	void UpdateTrigger(QString type,QString string);
-	void UpdateAction(QString type,QString string);
+	void UpdateTrigger(QString type,obs_data_t *string);
+	void UpdateAction(QString type,obs_data_t *string);
 	bool SaveMapping();
 	bool SaveMappings();
-	void triggerEvent(QString triggertype, QString triggerstring);
-	QString BroadcastControlEvent(QString input, QString inputAction,
-				      QString output, QString outputAction);
+	void triggerEvent(QString triggertype,obs_data_t *TriggerString);
+	QString BroadcastControlEvent(QString input, obs_data_t *inputAction,
+				      QString output, obs_data_t *outputAction);
 	void deleteEntry(int row);
 
 private:
