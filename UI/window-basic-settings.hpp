@@ -413,8 +413,9 @@ signals:
 	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
 	void EditAction(QString ActionType, obs_data_t *TriggerType);
 public slots:
-	void AddRow(QString TType, obs_data_t *TString, QString AType,
-		    obs_data_t *AString);
+	void AddRow(QString TType, obs_data_t *TString, QString AType, obs_data_t *AString);
+	void EditRow(int row, QString TType, obs_data_t *TString, QString AType, obs_data_t *AString);
 	void DeleteRow();
+	void ResetToDefaults();
 
 };

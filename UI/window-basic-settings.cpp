@@ -4603,7 +4603,7 @@ void OBSBasicSettings::loadControlWindows()
 	connect(this, SIGNAL(EditTrigger(QString, obs_data_t*)), map,
 		SIGNAL(EditTrigger(QString, obs_data_t*)));
 	connect(ui->btn_obs_save_control, SIGNAL(clicked()), map,
-		SLOT(SaveMapping()));
+		SLOT(AddorEditMapping()));
 	ui->btn_obs_delete_control->hide();
 	//ui->widgets
 	//ui->bottomWidgets->hide();
@@ -4619,8 +4619,14 @@ void OBSBasicSettings::loadControlWindows()
 		SLOT(FilterTable(QString)));
 	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
 		SLOT(do_table_selection(int, int)));
-	connect(map, SIGNAL(AddRowToTable(QString,obs_data_t*, QString, obs_data_t*)),
+	connect(map, SIGNAL(AddTableRow(QString,obs_data_t*, QString, obs_data_t*)),
 		this, SLOT(AddRow(QString, obs_data_t*, QString, obs_data_t*)));
+	connect(map, SIGNAL(EditTableRow(int, QString,obs_data_t*, QString, obs_data_t*)),
+		this, SLOT(EditRow(int, QString, obs_data_t*, QString, obs_data_t*)));
+	connect(ui->btn_obs_add_control, SIGNAL(clicked()), map,
+		SIGNAL(ResetToDefaults()));
+	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
+
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4676,6 +4682,10 @@ void OBSBasicSettings::loadControlWindows()
 }
 void OBSBasicSettings::do_table_selection(int row, int col) {
 	//get row data, show edit elements.
+	ControlMapper *mapper = (ControlMapper *)obs_frontend_get_mapper();
+	mapper->EditMode = true;
+	mapper->editRow = row;
+	
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
 	QString triggertype = ui->tableWidget->item(row, 0)->text();
@@ -4687,11 +4697,9 @@ void OBSBasicSettings::do_table_selection(int row, int col) {
 	emit(EditAction(actiontype, actionstring));
 	emit(EditTrigger(triggertype, triggerstring));
 
+
 }
-void SaveAction() {
-	ControlMapper *map = (ControlMapper*)obs_frontend_get_mapper();
-	map->SaveMapping();
-}
+
 void OBSBasicSettings::AddRow(QString TType, obs_data_t *TString, QString AType,
 			     obs_data_t *AString)
 {
@@ -4702,6 +4710,18 @@ void OBSBasicSettings::AddRow(QString TType, obs_data_t *TString, QString AType,
 	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
 	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString(obs_data_get_json(AString)).simplified()));
 }
+void OBSBasicSettings::EditRow(int row, QString TType, obs_data_t *TString, QString AType,
+			     obs_data_t *AString)
+{
+	
+	//ui->tableWidget->removeRow(row);
+	//ui->tableWidget->insertRow(row);
+	ui->tableWidget->setItem(row, 0, new QTableWidgetItem(TType.simplified()));
+	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString(obs_data_get_json(TString)).simplified()));
+	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
+	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString(obs_data_get_json(AString)).simplified()));
+	ui->tableWidget->update();
+}
 void OBSBasicSettings::DeleteRow() {
 	//ui->tableWidget->removeRow(row);
 	int row2 = ui->tableWidget->selectedItems().at(0)->row();
@@ -4709,4 +4729,9 @@ void OBSBasicSettings::DeleteRow() {
 	ui->tableWidget->removeRow(row2);
 	ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
 	map->deleteEntry(row2);
+}
+void OBSBasicSettings::ResetToDefaults()
+{
+	ui->cb_input_select->setCurrentIndex(0);
+	ui->cb_output_select->setCurrentIndex(0);
 }

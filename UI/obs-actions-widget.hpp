@@ -108,9 +108,11 @@ private slots:
 	void check_advanced_switch(bool state);
 	
 	void EditAction(QString ActionType, obs_data_t* TriggerType);
+	void ResetToDefaults();
 	void onChange();
-	signals:
+signals:
 	void changed(QString type, obs_data_t *change);
+
 
 private:
 	Ui::OBSActionsWidget *ui;

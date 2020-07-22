@@ -78,10 +78,10 @@ void ControlMapper::SetDefaults()
 					  PARAM_DEVICES, DEFUALT_MAPPING);
 	}
 }
-bool ControlMapper::SaveMapping()
+
+void ControlMapper::AddorEditMapping()
 {
-	emit(AddRowToTable(CurrentTriggerType, CurrentTriggerString,
-			   CurrentActionType, CurrentActionString));
+	
 	MapConfig = GetMappingStore();
 	
 	
@@ -95,33 +95,33 @@ bool ControlMapper::SaveMapping()
 
 	obs_data_set_string(data, "actionstring",   obs_data_get_json(CurrentActionString));
 	//	obs_data_array_push_back(MapArray, data);
-	int size = obs_data_array_count(MapArray);
-	obs_data_array_insert(MapArray, size, data);
+	if (!EditMode) {
+		emit(AddTableRow(CurrentTriggerType, CurrentTriggerString,
+				   CurrentActionType, CurrentActionString));
+		int size = obs_data_array_count(MapArray);
+
+		obs_data_array_insert(MapArray, size, data);
+	} else {
+		emit(EditTableRow(editRow,CurrentTriggerType, CurrentTriggerString,
+				   CurrentActionType, CurrentActionString));
+		obs_data_array_erase(MapArray, editRow);
+		obs_data_array_insert(MapArray, editRow, data);
+	}
+
+	SaveMapping();
+	EditMode = false;
+	editRow = -1;
+}
+void ControlMapper::SaveMapping() {
 	obs_data_t *newdata = obs_data_create();
 	obs_data_set_array(newdata, "mapper", MapArray);
 
-	
-	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES,obs_data_get_json(newdata));
-	config_save(MapConfig);
-	obs_data_release(data);
-	obs_data_release(newdata);
-	//LoadMapping();
-	return true;
-}
-bool ControlMapper::SaveMappings()
-{
-
-	MapConfig = GetMappingStore();
-
-	obs_data_t *newdata = obs_data_create();
-	obs_data_set_array(newdata, "mapper", MapArray);
-	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES,obs_data_get_json(newdata));
+	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES,
+			  obs_data_get_json(newdata));
 	config_save(MapConfig);
 	obs_data_release(newdata);
-	
-	return true;
-}
 
+}
 bool ControlMapper::LoadMapping()
 {
 	SetDefaults();
@@ -137,7 +137,7 @@ bool ControlMapper::LoadMapping()
 	MapArray = obs_data_get_array(Data, "mapper");
 	for (int i = 0; i < obs_data_array_count(MapArray); i++) {
 		auto data = obs_data_array_item(MapArray, i);
-		emit(AddRowToTable(QString(obs_data_get_string(data, "triggertype")),
+		emit(AddTableRow(QString(obs_data_get_string(data, "triggertype")),
 			obs_data_create_from_json(obs_data_get_string(data, "triggerstring")),
 			QString(obs_data_get_string(data, "actiontype")),
 			obs_data_create_from_json(obs_data_get_string(data, "actionstring"))));
@@ -151,13 +151,7 @@ config_t* ControlMapper::GetMappingStore()
 	return obs_frontend_get_global_config();
 }
 
-void ControlMapper::UpdateTrigger(QString type,obs_data_t *triggerstring) {
-	PreviousTriggerString = CurrentTriggerString;
-	PreviousTriggerType = CurrentTriggerType;
-	CurrentTriggerString = triggerstring;
-	CurrentTriggerType = type;
-	triggerEvent(type, triggerstring);
-}
+
 void ControlMapper::deleteEntry(int entry) {
 	
 	MapConfig = GetMappingStore();
@@ -180,6 +174,14 @@ void ControlMapper::triggerEvent(QString type, obs_data_t *triggerstring )
 	}
 	
 	
+}
+void ControlMapper::UpdateTrigger(QString type, obs_data_t *triggerstring)
+{
+	PreviousTriggerString = CurrentTriggerString;
+	PreviousTriggerType = CurrentTriggerType;
+	CurrentTriggerString = triggerstring;
+	CurrentTriggerType = type;
+	triggerEvent(type, triggerstring);
 }
 void ControlMapper::UpdateAction(QString type, obs_data_t *outputstring)
 {

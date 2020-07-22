@@ -24,7 +24,8 @@ public:
 
 	bool DebugEnabled=true;
 	bool AlertsEnabled=false;
-
+	int editRow=-1;
+	bool EditMode=false;
 	bool SettingsLoaded;
 	bool LoadMapping();
 	config_t* GetMappingStore();
@@ -46,18 +47,23 @@ signals:
 
 	void EditTrigger(QString TriggerType,obs_data_t *TriggerString);
 	void EditAction(QString ActionType, obs_data_t *Action);
-	void AddRowToTable(QString TriggerType,obs_data_t *TriggerString,
+	void AddTableRow(QString TriggerType,obs_data_t *TriggerString,
 			   QString ActionType,obs_data_t *actionstring);
+	void EditTableRow(int row, QString TriggerType,obs_data_t *TriggerString,
+			   QString ActionType,obs_data_t *actionstring);
+	void ResetToDefaults();
+	
 public slots
 		:
 	void UpdateTrigger(QString type,obs_data_t *string);
 	void UpdateAction(QString type,obs_data_t *string);
-	bool SaveMapping();
-	bool SaveMappings();
+	void SaveMapping();
+	void AddorEditMapping();
 	void triggerEvent(QString triggertype,obs_data_t *TriggerString);
 	QString BroadcastControlEvent(QString input, obs_data_t *inputAction,
 				      QString output, obs_data_t *outputAction);
 	void deleteEntry(int row);
+
 
 private:
 	void SetDefaults();

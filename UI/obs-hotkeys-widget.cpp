@@ -33,12 +33,16 @@ OBSHotkeysWidget::OBSHotkeysWidget() : ui(new Ui::OBSHotkeysWidget)
 		SLOT(dothing(QKeySequence)));
 	connect(this, SIGNAL(updated(QString, obs_data_t*)), map,
 		SLOT(UpdateTrigger(QString, obs_data_t*)));
+	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
 }
 OBSHotkeysWidget::~OBSHotkeysWidget() {
 	delete ui;
 }
 
-
+void OBSHotkeysWidget::ResetToDefaults()
+{
+	ui->keySequenceEdit->clear();
+}
 
 void OBSHotkeysWidget::dothing(QKeySequence edit)
 {

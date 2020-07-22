@@ -63,6 +63,8 @@ public slots:
 
 	void EditTrigger(QString type, obs_data_t *trigger);
 	void dothing(QKeySequence keys);
+	void ResetToDefaults();
+
 signals:
 	void KeyChanged(obs_key_combination_t);
 	void updated(QString type, obs_data_t* Action);

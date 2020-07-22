@@ -64,6 +64,7 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	connect(ui->cb_obs_output_transition, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_audio_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_media_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
 	connect(this, SIGNAL(changed(QString, obs_data_t *)), map,
 		SLOT(UpdateAction(QString, obs_data_t *)));
 
@@ -72,6 +73,10 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 OBSActionsWidget::~OBSActionsWidget()
 {
 	delete ui;
+}
+void OBSActionsWidget::ResetToDefaults()
+{
+	ui->cb_obs_output_action->setCurrentIndex(0);
 }
 void OBSActionsWidget::ShowPair(QString Pair) {
 	if (Pair == "scene") {
