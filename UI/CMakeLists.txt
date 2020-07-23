@@ -270,7 +270,8 @@ set(obs_SOURCES
 	utils.cpp
 	mapper.cpp
 	obs-actions-widget.cpp
-	obs-hotkeys-widget.cpp)
+	obs-hotkeys-widget.cpp
+	obs-controller.cpp)
 
 set(obs_HEADERS
 	${obs_PLATFORM_HEADERS}
@@ -338,7 +339,8 @@ set(obs_HEADERS
 	utils.hpp
 	mapper.hpp
 	obs-actions-widget.hpp
-	obs-hotkeys-widget.hpp)
+	obs-hotkeys-widget.hpp
+	obs-controller.hpp)
 
 set(obs_importers_HEADERS
 	importers/importers.hpp)

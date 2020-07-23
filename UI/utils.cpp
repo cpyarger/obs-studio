@@ -55,7 +55,38 @@ obs_bounds_type getBoundsTypeFromName(QString name)
 {
 	return boundTypeNames.key(name);
 }
+float Utils::mapper(int x)
 
+{
+	float in_min = 0;
+	float in_max = 127;
+	float out_min = 0;
+	float out_max = 1;
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+int Utils::mapper2(double x)
+
+{
+	double in_min = 0;
+	double in_max = 1;
+	double out_min = 0;
+	double out_max = 127;
+	return ((x - in_min) * (out_max - out_min) / (in_max - in_min) +
+		out_min);
+}
+
+bool Utils::is_number(const std::string &s)
+{
+	std::string::const_iterator it = s.begin();
+	while (it != s.end() && std::isdigit(*it))
+		++it;
+	return !s.empty() && it == s.end();
+}
+bool Utils::inrange(int low, int high, int x)
+{
+
+	return ((x - low) <= (high - low));
+}
 obs_data_array_t* Utils::StringListToArray(char** strings, const char* key)
 {
 	obs_data_array_t* list = obs_data_array_create();
@@ -1030,4 +1061,22 @@ QStringList Utils::GetAudioSourceNames()
 		static_cast<void*>(&sourceNames));
 
 	return sourceNames;
+}
+
+QStringList Utils::GetTransitionsList(){
+	QStringList names;
+	OBSSourceAutoRelease currentTransition =
+		obs_frontend_get_current_transition();
+	obs_frontend_source_list transitionList = {};
+	obs_frontend_get_transitions(&transitionList);
+
+	OBSDataArrayAutoRelease transitions = obs_data_array_create();
+	for (size_t i = 0; i < transitionList.sources.num; i++) {
+		OBSSource transition = transitionList.sources.array[i];
+
+		
+				 names.append(obs_source_get_name(transition));
+	}
+	obs_frontend_source_list_free(&transitionList);
+	return names;
 }

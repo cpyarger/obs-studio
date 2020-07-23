@@ -6,9 +6,7 @@
 #include <QCheckBox>
 #include <cmath>
 #include "mapper.hpp"
-#include <qjsonarray.h>
-#include <qjsonobject.h>
-#include <qjsondocument.h>
+
 #if __has_include(<obs-frontend-api.h>)
 
 #include <obs-frontend-api.h>
@@ -20,55 +18,32 @@
 #define PARAM_ALERT "AlertsEnabled"
 #define PARAM_DEVICES "Mapping"
 #define DEFUALT_MAPPING "{\"mapping\": []}"
+
+
+
+
+
 ControlMapper::ControlMapper()
 	: DebugEnabled(false), AlertsEnabled(true), SettingsLoaded(false)
 {
 	MapConfig = GetMappingStore();
 	SetDefaults();
+	controller = new Controller();
+	connect(this, SIGNAL(DoAction(obs_data_t *)), controller,
+		SLOT(execute(obs_data_t *)));
 }
 ControlMapper::~ControlMapper() {
 	obs_data_array_release(MapArray);
 }
-QString ControlMapper::BroadcastControlEvent(QString input, obs_data_t *inputAction,
-					     QString output,
-					     obs_data_t *outputAction)
-{
-	emit(ControlMapper::EventCall(input,inputAction,
-				      output,outputAction));
-	return QString("return");
-}
+
 bool isJSon(QString val) {
 	return (val.startsWith(QChar('[')) || val.startsWith(QChar('{')));
-}
-int ControlMapper::MappingExists(obs_data_t* mapping)
-{
-	
-	bool exit = false;
-	int count = obs_data_array_count(MapArray);
-	obs_data_set_string(mapping, "value", "");
-	
-	
-	for (int i = 0; i < count; i++) {
-		obs_data_t *item = obs_data_array_item(MapArray, i);
-		obs_data_t *listitem = obs_data_create_from_json(
-			obs_data_get_string(item, "triggerstring"));
-			obs_data_set_string(listitem, "value", "");
-			
-		
-		if (obs_data_get_json(mapping) ==
-			    obs_data_get_json(listitem)) {
-			exit = true;
-			return i;
-		} 
-		obs_data_release(listitem);
-		obs_data_release(item);
-	}
-	return -1;
 }
 void ControlMapper::SetDefaults()
 {
 	// OBS Config defaults
-	
+	obs_data_set_string(CurrentActionString, "action", "Start Streaming");
+
 	if (MapConfig) {
 		config_set_default_bool(MapConfig, SECTION_NAME, PARAM_DEBUG,
 					DebugEnabled);
@@ -162,15 +137,46 @@ void ControlMapper::deleteEntry(int entry) {
 	config_save(MapConfig);
 	obs_data_release(newdata);
 }
-void ControlMapper::triggerEvent(QString type, obs_data_t *triggerstring )
+
+
+int ControlMapper::MappingExists(obs_data_t *mapping)
 {
-	if (MappingExists(triggerstring)!=-1) {
-		blog(1, "mapping exists  ");
-		obs_data_set_string(CurrentActionString, "value",
-				    obs_data_get_string(triggerstring,
-							"value"));
+
+	bool exit = false;
+	int count = obs_data_array_count(MapArray);
+	auto X = obs_data_get_int(mapping, "value");
+	obs_data_set_string(mapping, "value", "");
+
+	for (int i = 0; i < count; i++) {
+		obs_data_t *item = obs_data_array_item(MapArray, i);
+		obs_data_t *listitem = obs_data_create_from_json(
+			obs_data_get_string(item, "triggerstring"));
+		obs_data_set_string(listitem, "value", "");
+
+		if (QString(obs_data_get_json(mapping)).simplified() == QString(obs_data_get_json(listitem)).simplified()) {
+			obs_data_release(listitem);
+			exit = true;
+			obs_data_set_int(mapping, "value", X);
+			return i;
+		}
+		obs_data_release(listitem);
+
+		
+	}
+	return -1;
+}
+void ControlMapper::TriggerEvent(QString type,obs_data_t *triggerstring )
+{
+	int x = MappingExists(triggerstring);
+	if (x!=-1) {
+		obs_data_t *data = obs_data_array_item(MapArray, x);
+		obs_data_t *senddata = obs_data_create_from_json(
+			obs_data_get_string(data, "actionstring"));
+		obs_data_set_int(senddata, "value",obs_data_get_int(triggerstring, "value"));	   
+		//controller->execute(senddata);
+		emit(DoAction(senddata));
 	} else {
-		blog(1, "mapping doesnt exist  ");
+	
 	}
 	
 	
@@ -181,7 +187,7 @@ void ControlMapper::UpdateTrigger(QString type, obs_data_t *triggerstring)
 	PreviousTriggerType = CurrentTriggerType;
 	CurrentTriggerString = triggerstring;
 	CurrentTriggerType = type;
-	triggerEvent(type, triggerstring);
+	//triggerEvent(type, triggerstring);
 }
 void ControlMapper::UpdateAction(QString type, obs_data_t *outputstring)
 {

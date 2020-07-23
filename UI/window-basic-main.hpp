@@ -1022,7 +1022,7 @@ void keyPressEvent(QKeyEvent *event) override
 	{
 	obs_data_t *hk  = obs_data_create();
 		obs_data_set_string(hk, "Hotkey", event->text().toStdString().c_str());
-		mapper->triggerEvent("Hotkeys", hk);
+		mapper->TriggerEvent("Hotkeys", hk);
 		blog(1, "event -- %s", event->text().toStdString().c_str());
 		obs_data_release(hk);
 	}

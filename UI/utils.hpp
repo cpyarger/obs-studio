@@ -97,4 +97,5 @@ namespace Utils {
 	const char* GetFilenameFormatting();
 	bool SetFilenameFormatting(const char* filenameFormatting);
 	bool inrange(int low, int high, int x);
-};
+	QStringList GetTransitionsList();
+	};

@@ -13,6 +13,7 @@
 #include <QDoubleSpinBox>
 #include <QStackedWidget>
 #include <vector>
+#include "obs-controller.hpp"
 
 class ControlMapper : public QObject {
 	Q_OBJECT
@@ -41,8 +42,7 @@ public:
 	QString PreviousActionType;
 	int MappingExists(obs_data_t *triggerstring);
 signals:
-	QString EventCall(QString input, obs_data_t *inputAction, QString output,
-			  obs_data_t *outputAction);
+
 
 
 	void EditTrigger(QString TriggerType,obs_data_t *TriggerString);
@@ -52,16 +52,15 @@ signals:
 	void EditTableRow(int row, QString TriggerType,obs_data_t *TriggerString,
 			   QString ActionType,obs_data_t *actionstring);
 	void ResetToDefaults();
+	void DoAction(obs_data_t*actionString);
 	
-public slots
-		:
+public slots:
 	void UpdateTrigger(QString type,obs_data_t *string);
 	void UpdateAction(QString type,obs_data_t *string);
 	void SaveMapping();
 	void AddorEditMapping();
-	void triggerEvent(QString triggertype,obs_data_t *TriggerString);
-	QString BroadcastControlEvent(QString input, obs_data_t *inputAction,
-				      QString output, obs_data_t *outputAction);
+	void TriggerEvent(QString triggertype,obs_data_t *TriggerString);
+
 	void deleteEntry(int row);
 
 
@@ -69,4 +68,5 @@ private:
 	void SetDefaults();
 	config_t *MapConfig;
 	obs_data_array_t *MapArray;
+	Controller *controller;
 };

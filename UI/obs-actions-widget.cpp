@@ -27,7 +27,7 @@
 OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	ui->setupUi(this);
 	/**************connect labels and comboboxes***************/
-
+	ui->label_advanced->hide();
 	HidePair("extra_1");
 	HidePair("transition");
 	HidePair("audio_source");
@@ -36,16 +36,15 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	HidePair("scene");
 	HidePair("source");
 	HidePair("item");
-	ui->label_advanced->hide();
 	ui->pb_override->hide();
 	ui->cb_obs_output_audio_source->addItems(Utils::GetAudioSourceNames());
 	ui->cb_obs_output_media_source->addItems(Utils::GetMediaSourceNames());
+	ui->cb_obs_output_transition->addItems(Utils::GetTransitionsList());
 	OBSBasic *main = (OBSBasic* )obs_frontend_get_main_window();
 	ControlMapper *map = main->mapper;
 	
 	connect(map, SIGNAL(EditAction(QString, obs_data_t*)), this,
 		SLOT(EditAction(QString, obs_data_t*)));
-	this->obs_actions_filter_select(0);
 	connect(ui->cb_obs_action, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(obs_actions_filter_select(int)));
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
@@ -58,6 +57,8 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	//connect all combos to on change
 	connect(ui->cb_obs_output_action, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
+	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)),this, SLOT(on_source_change(QString)));
+	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),this, SLOT(on_scene_change(QString)));
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_item, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
 	connect(ui->cb_obs_output_filter, SIGNAL(currentTextChanged(QString)),this, SLOT(onChange()));
@@ -67,7 +68,15 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
 	connect(this, SIGNAL(changed(QString, obs_data_t *)), map,
 		SLOT(UpdateAction(QString, obs_data_t *)));
-
+	setStyleSheet(
+		"QComboBox { min-width: 60px; }"
+		"QComboBox QAbstractItemView { min-height: 100px;}");
+	this->listview = new QListView(this->ui->cb_obs_output_action);
+	this->ui->cb_obs_output_action->setView(this->listview);
+	this->ui->cb_obs_output_action->addItems(AllActions);
+	this->listview->setSizeAdjustPolicy(
+		QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents);
+	ui->cb_obs_output_action->setSizeAdjustPolicy(QComboBox::SizeAdjustPolicy::AdjustToContents);
 }
 
 OBSActionsWidget::~OBSActionsWidget()
@@ -77,26 +86,45 @@ OBSActionsWidget::~OBSActionsWidget()
 void OBSActionsWidget::ResetToDefaults()
 {
 	ui->cb_obs_output_action->setCurrentIndex(0);
+	ui->cb_obs_action->setCurrentIndex(0);
+	ui->cb_obs_output_transition->setCurrentIndex(0);
+	ui->cb_obs_output_filter->setCurrentIndex(0);
+	ui->cb_obs_output_scene->setCurrentIndex(0);
+	ui->cb_obs_output_source->setCurrentIndex(0);
+	ui->cb_obs_output_audio_source->setCurrentIndex(0);
+	ui->cb_obs_output_media_source->setCurrentIndex(0);
+
 }
-void OBSActionsWidget::ShowPair(QString Pair) {
+QStringList OBSActionsWidget::GetTransitions() {
+	return Utils::GetTransitionsList();
+
+}
+void OBSActionsWidget::ShowPair(QString Pair)
+{
 	if (Pair == "scene") {
 		ui->label_obs_output_scene->show();
 		ui->cb_obs_output_scene->show();
+		ui->cb_obs_output_scene->addItems(GetScenes());
 	}else if (Pair == "source") {
 		ui->label_obs_output_source->show();
 		ui->cb_obs_output_source->show();
+		ui->cb_obs_output_source->addItems(GetSources(ui->cb_obs_output_scene->currentText()));
 	} else if (Pair == "filter") {
 		ui->label_obs_output_filter->show();
 		ui->cb_obs_output_filter->show();
+		ui->cb_obs_output_filter->addItems(
+			GetFilters(ui->cb_obs_output_source->currentText()));
 	} else if (Pair == "transition") {
 		ui->label_obs_output_transition->show();
 		ui->cb_obs_output_transition->show();
+		
 	} else if (Pair == "item") {
 		ui->label_obs_output_item->show();
 		ui->cb_obs_output_item->show();
 	} else if (Pair == "audio_source") {
 		ui->label_obs_output_audio_source->show();
 		ui->cb_obs_output_audio_source->show();
+		
 	} else if (Pair == "media_source") {
 		ui->label_obs_output_media_source->show();
 		ui->cb_obs_output_media_source->show();
@@ -135,295 +163,90 @@ void OBSActionsWidget::HidePair(QString Pair) {
 
 }
 
-void OBSActionsWidget::obs_actions_select(QString action)
+
+	void OBSActionsWidget::ShowIntActions() {}
+void OBSActionsWidget::on_source_change(QString source) {
+		ui->cb_obs_output_filter->clear();
+		ui->cb_obs_output_filter->addItems(GetFilters(source));
+	}
+void OBSActionsWidget::on_scene_change(QString scene) {
+		ui->cb_obs_output_source->clear();
+		ui->cb_obs_output_source->addItems(GetSources(scene));
+	}
+void OBSActionsWidget::ShowStringActions() {}
+	void OBSActionsWidget::ShowBoolActions() {}
+void OBSActionsWidget::ShowOnly(QStringList shows)
 {
-	HidePair("extra_1");
-	HidePair("transition");
-	HidePair("audio_source");
-	HidePair("media_source");
-	HidePair("filter");
-	HidePair("scene");
-	HidePair("source");
-	HidePair("item");
+	int count = AllActions.count();
+	for (int i = 0; i < count; i++) {
+		if (shows.contains(AllActions.at(i))) {
+			ShowEntry(AllActions.at(i));
+		} else {
+			HideEntry(AllActions.at(i));
+		}
+	}
+	
 
-	std::map<QString,
-		 std::function<void(QString action, Ui::OBSActionsWidget * wid,
-				    OBSActionsWidget * here)>>
-		funcMap = {{"Set Current Scene",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    here->ShowPair("scene");
-				    
-			    }},
-			   {"Start Streaming",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
+}
+QString OBSActionsWidget::FirstVisible() {
+	int count = AllActions.count();
+	for (int i = 0; i < count; i++) {
+		if (!listview->isRowHidden(i)) {
+			return AllActions.at(i);
+		}
+	}
 
-
-			    }},
-			   {"Stop Streaming",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Toggle Start/Stop Streaming",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Start Recording",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Stop Recording",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Pause Recording",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Unpause Recording",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Start Replay Buffer",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Stop Replay Buffer",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Enable Preview",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Disable Preview",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Studio Mode",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Transition",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Reset Stats",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-				    //source
-			   {"Enable Source Filter",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("scene");
-				    here->ShowPair("source");
-				    here->ShowPair("filter");
-				    
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    wid->cb_obs_output_source->addItems(
-					    here->GetSources(wid->cb_obs_output_scene->currentText()));
-				    
-			    }},
-			   {"Disable Source Filter",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("scene");
-				    here->ShowPair("source");
-				    here->ShowPair("filter");
-			
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    wid->cb_obs_output_source->addItems(
-					    here->GetSources(
-						    wid->cb_obs_output_scene
-							    ->currentText()));
-				    
-			    }},
-			   {"Set Gain Filter",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("scene");
-				    here->ShowPair("source");
-				    here->ShowPair("filter");
-				    
-				   
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    wid->cb_obs_output_source->addItems(
-					    here->GetSources(
-						    wid->cb_obs_output_scene
-							    ->currentText()));
-			    }},
-			   {"Toggle Source Filter",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				
-				    here->ShowPair("scene");
-				    here->ShowPair("source");
-				    here->ShowPair("filter");
-				    
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    wid->cb_obs_output_source->addItems(
-					    here->GetSources(
-						    wid->cb_obs_output_scene
-							    ->currentText()));
-			    }},
-			   {"Reset Scene Item",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    here->ShowPair("scene");
-				    here->ShowPair("item");
-
-			    }},
-			   {"Set Scene Item Render",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("scene");
-				    here->ShowPair("item");
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    
-				 
-			    }},
-			   {"Set Scene Item Position",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    wid->cb_obs_output_scene->show();
-				    wid->cb_obs_output_item->show();
-			    }},
-			   {"Set Scene Item Transform",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    here->ShowPair("scene");
-				    here->ShowPair("item");
-		
-			    }},
-			   {"Set Scene Item Crop",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    here->ShowPair("scene");
-				    here->ShowPair("item");
-			    }},
-			   {"Set Current Scene",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-
-				    wid->cb_obs_output_scene->show();
-				    here->ShowPair("scene");
-				 
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-
-			    }},
-			   {"Set Scene Transition Override",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    wid->cb_obs_output_scene->addItems(
-					    here->GetScenes());
-				    here->ShowPair("scene");
-				    here->ShowPair("transition");
-				    
-			    }},
-			   {"Set Current Transition",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("transition");
-    
-			    }},
-			   {"Set Volume",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("transition");
-
-			    }},
-			   {"Set Mute",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("audio_source");
-
-				    
-			    
-			    }},
-			   {"Toggle Mute",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("audio_source");
-
-
-			    }},
-			   {"Set Source Name",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-			    }},
-			   {"Set Sync Offset",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Set Source Settings",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Set Source Filter Visibility",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("source");
-				    here->ShowPair("filter");
-			    }},
-			   {"Set Audio Monitor Type",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {}},
-			   {"Take Source Screenshot",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("source");
-				    here->ShowPair("scene");
-
-			    }},
-			   {"Play/Pause Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-
-			    }},
-			   {"Restart Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }},
-			   {"Stop Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }},
-			   {"Next Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }},
-			   {"Previous Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }},
-			   {"Set Media Time",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }},
-			   {"Scrub Media",
-			    [](QString action, Ui::OBSActionsWidget *wid,
-			       OBSActionsWidget *here) {
-				    here->ShowPair("media_source");
-			    }}
-
-	};
-	try {
-		funcMap[action](action, ui, this);
-	} catch (std::exception &e) {
-		blog(LOG_DEBUG, "error %s", e.what());
-
+}
+ void OBSActionsWidget::ShowEntry(QString Entry) {
+	 int x = AllActions.indexOf(Entry);
+	 if (x == -1) {
+		 blog(1, "no entry -- %s", Entry.toStdString().c_str());
+	 } else {
+		 listview->setRowHidden(x, false);
+		 listview->adjustSize();
+		 ui->cb_obs_output_action->adjustSize();
+	 }
+	 
+ }
+void OBSActionsWidget::HideEntry(QString Entry) {
+	int x = AllActions.indexOf(Entry);
+	if (x == -1) {
+		blog(1, "no entry -- %s", Entry.toStdString().c_str());
+	} else {
+		listview->setRowHidden(x, true);
+		listview->adjustSize();
+		ui->cb_obs_output_action->adjustSize();
 	}
 	
 }
+void OBSActionsWidget::ShowAllActions() {
+	int count = ui->cb_obs_output_action->count();
+	for (int i = 0; i < count; i++) {	
+	ShowEntry(AllActions.at(i));
+	}
+}
+void OBSActionsWidget::HideEntries(QStringList entrys) {
+	int count = ui->cb_obs_output_action->count();
+
+	for (int i = 0; i < count; i++) {
+		if (entrys.contains(AllActions.at(i))) {
+			HideEntry(AllActions.at(i));
+		}
+	}
+	listview->adjustSize();
+}
+void OBSActionsWidget::ShowEntries(QStringList entrys)
+{
+	int count = ui->cb_obs_output_action->count();
+
+	for (int i = 0; i < count; i++) {
+		if (entrys.contains(AllActions.at(i))) {
+			ShowEntry(AllActions.at(i));
+		}
+	}
+	listview->adjustSize();
+}
+
 bool OBSActionsWidget::MapCall(QString plugin, obs_data_t* map)
 {
 	if (plugin == "OBS") {
@@ -439,6 +262,13 @@ bool OBSActionsWidget::DoMap(obs_data_t* map)
 		//map action based on actionsMap
 
 	return false;
+}
+void OBSActionsWidget::HideAdvancedActions()
+{
+	HideEntries(AdvancedFilterActions);
+	HideEntries(AdvancedMediaActions);
+	HideEntries(AdvancedSceneActions);
+	HideEntries(AdvancedSourceActions);
 }
 QStringList OBSActionsWidget::GetSources(QString scene)
 {
@@ -497,69 +327,51 @@ void OBSActionsWidget::obs_actions_filter_select(int selection)
 {
 	switching = true;
 
-	ui->cb_obs_output_action->clear();
 	switch (selection) {
 		case 0:
 			//All filters
-			
-			
-			
-			
-			
 			if (ui->check_advanced->isChecked()) {
-				ui->cb_obs_output_action->addItems(FrontendActions);
-				ui->cb_obs_output_action->addItems(sceneActions);
-				ui->cb_obs_output_action->addItems(AdvancedSceneActions);
-				ui->cb_obs_output_action->addItems(sourceActions);
-				ui->cb_obs_output_action->addItems(AdvancedSourceActions);
-				ui->cb_obs_output_action->addItems(filterActions);
-				ui->cb_obs_output_action->addItems(AdvancedFilterActions);
-				ui->cb_obs_output_action->addItems(mediaActions);
-				ui->cb_obs_output_action->addItems(AdvancedMediaActions);
+				ShowAllActions();
 			} else {
-				ui->cb_obs_output_action->addItems(FrontendActions);
-				ui->cb_obs_output_action->addItems(sceneActions);
-				ui->cb_obs_output_action->addItems(sourceActions);
-				ui->cb_obs_output_action->addItems(filterActions);
-				ui->cb_obs_output_action->addItems(mediaActions);
+				ShowAllActions();
+				HideAdvancedActions();
 			}
 		case 1:
 			// Frontend
-			ui->cb_obs_output_action->addItems(FrontendActions);
+			ShowOnly(FrontendActions);
+
 			break;
 		case 2:
 			// Scenes
-			ui->cb_obs_output_action->addItems(sceneActions);
+			ShowOnly(sceneActions);
+
 			if (ui->check_advanced->isChecked()) {
-				ui->cb_obs_output_action->addItems(
-					AdvancedSceneActions);
+				ShowEntries(AdvancedSceneActions);
 			}
 			break;
 		case 3:
 			//Sources
-			ui->cb_obs_output_action->addItems(sourceActions);
+			ShowOnly(sourceActions);
 			if (ui->check_advanced->isChecked()) {
-				ui->cb_obs_output_action->addItems(
-					AdvancedSourceActions);
+				ShowEntries(AdvancedSourceActions);
 			}
 			break;
 		case 4:
 			//Filters
-			ui->cb_obs_output_action->addItems(filterActions);
+			ShowOnly(filterActions);
 			if (ui->check_advanced->isChecked()) {
-				ui->cb_obs_output_action->addItems(
-					AdvancedFilterActions);
+				ShowEntries(AdvancedFilterActions);
 			}
 			break;
 		case 5:
 			//Media
-			ui->cb_obs_output_action->addItems(mediaActions);
+			ShowOnly(mediaActions);
 			if (ui->check_advanced->isChecked()) {
-				ui->cb_obs_output_action->addItems(
-					AdvancedMediaActions);
+				ShowEntries(AdvancedMediaActions);
 			}
 			break;
 	};
+		ui->cb_obs_output_action->setCurrentText(FirstVisible());
 	switching = false;
 	
 }
@@ -599,4 +411,243 @@ void OBSActionsWidget::onChange() {
 	emit(changed("OBS", data));
 	//obs_data_release(data);
 
+}
+
+
+void OBSActionsWidget::obs_actions_select(QString action)
+{
+	HidePair("extra_1");
+	HidePair("transition");
+	HidePair("audio_source");
+	HidePair("media_source");
+	HidePair("filter");
+	HidePair("scene");
+	HidePair("source");
+	HidePair("item");
+	ui->label_advanced->hide();
+	std::map<QString,
+		 std::function<void(QString action, Ui::OBSActionsWidget * wid,
+				    OBSActionsWidget * here)>>
+		funcMap = {{"Set Current Scene",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+			    }},
+			   {"Start Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+
+			    }},
+			   {"Stop Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Toggle Start/Stop Streaming",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Start Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Pause Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Unpause Recording",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Start Replay Buffer",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Stop Replay Buffer",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Enable Preview",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Disable Preview",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Studio Mode",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Transition",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Reset Stats",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   //source
+			   {"Enable Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("source");
+				    here->ShowPair("filter");
+
+
+			    }},
+			   {"Disable Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("source");
+				    here->ShowPair("filter");
+
+			    }},
+			   {"Set Gain Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("source");
+				    here->ShowPair("filter");
+
+	
+			    }},
+			   {"Toggle Source Filter",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("source");
+				    here->ShowPair("filter");
+
+		
+			    }},
+			   {"Reset Scene Item",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    wid->cb_obs_output_scene->addItems(
+					    here->GetScenes());
+				    here->ShowPair("scene");
+				    here->ShowPair("item");
+			    }},
+			   {"Set Scene Item Render",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("item");
+				    
+			    }},
+			   {"Set Scene Item Position",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("item");
+			
+			    }},
+			   {"Set Scene Item Transform",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+	
+				    here->ShowPair("scene");
+				    here->ShowPair("item");
+			    }},
+			   {"Set Scene Item Crop",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+
+				    here->ShowPair("scene");
+				    here->ShowPair("item");
+			    }},
+			   {"Set Current Scene",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				   
+				    here->ShowPair("scene");
+
+			    }},
+			   {"Set Scene Transition Override",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("scene");
+				    here->ShowPair("transition");
+			    }},
+			   {"Set Current Transition",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("transition");
+			    }},
+			   {"Set Volume",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("audio_source");
+				    wid->label_advanced->show();
+			    }},
+			   {"Set Mute",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("audio_source");
+			    }},
+			   {"Toggle Mute",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("audio_source");
+			    }},
+			   {"Set Source Name",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Sync Offset",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Source Settings",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Set Source Filter Visibility",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("source");
+				    here->ShowPair("filter");
+
+			    }},
+			   {"Set Audio Monitor Type",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {}},
+			   {"Take Source Screenshot",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("source");
+				    here->ShowPair("scene");
+			    }},
+			   {"Play/Pause Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Restart Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Stop Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Next Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Previous Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Set Media Time",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }},
+			   {"Scrub Media",
+			    [](QString action, Ui::OBSActionsWidget *wid,
+			       OBSActionsWidget *here) {
+				    here->ShowPair("media_source");
+			    }}
+
+		};
+	try {
+		funcMap[action](action, ui, this);
+	} catch (std::exception &e) {
+		blog(LOG_DEBUG, "error %s", e.what());
+	}
 }
