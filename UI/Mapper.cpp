@@ -6,7 +6,13 @@
 #include <QCheckBox>
 #include <cmath>
 #include "mapper.hpp"
+#include <qevent.h>
+#include <util/dstr.hpp>
+#include <QPointer>
+#include <QStyle>
 
+#include "obs-app.hpp"
+#include "qt-wrappers.hpp"
 #if __has_include(<obs-frontend-api.h>)
 
 #include <obs-frontend-api.h>
@@ -31,9 +37,36 @@ ControlMapper::ControlMapper()
 	controller = new Controller();
 	connect(this, SIGNAL(DoAction(obs_data_t *)), controller,
 		SLOT(execute(obs_data_t *)));
+	hotkeyController = new HKC();
 }
-ControlMapper::~ControlMapper() {
+HKC::HKC() {
+	obs_hotkey_enable_background_press(true);
+}
+void HKC::addHK(QString Hotkey) {
+
+}
+void HKC::DoHK(obs_key_combination_t hotkey, bool pressed)
+{
+	DStr str;
+	obs_key_combination_to_str(hotkey, str);
+	auto tstring = QT_UTF8(str);	
+	if (pressed) {
+		blog(1, "hotkey pressed -- %s",tstring.toStdString().c_str());
+	}
+	
+}
+
+
+
+HKC::~HKC()
+{
+	delete this;
+}
+
+ControlMapper::~ControlMapper()
+{
 	obs_data_array_release(MapArray);
+	delete this;
 }
 
 bool isJSon(QString val) {

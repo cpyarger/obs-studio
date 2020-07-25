@@ -2129,11 +2129,12 @@ void OBSBasic::InitHotkeys()
 void OBSBasic::ProcessHotkey(obs_hotkey_id id, bool pressed)
 {
 	obs_hotkey_trigger_routed_callback(id, pressed);
+	
 }
 
 void OBSBasic::HotkeyTriggered(void *data, obs_hotkey_id id, bool pressed)
 {
-
+	
 	OBSBasic &basic = *static_cast<OBSBasic *>(data);
 	QMetaObject::invokeMethod(&basic, "ProcessHotkey",
 				  Q_ARG(obs_hotkey_id, id),

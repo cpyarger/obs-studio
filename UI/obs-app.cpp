@@ -155,8 +155,8 @@ QObject *CreateShortcutFilter()
 		};
 
 		auto key_event = [&](QKeyEvent *event) {
-			if (!App()->HotkeysEnabledInFocus())
-				return true;
+			//if (!App()->HotkeysEnabledInFocus())
+			//	return true;
 
 			QDialog *dialog = qobject_cast<QDialog *>(obj);
 
@@ -189,24 +189,29 @@ QObject *CreateShortcutFilter()
 					event->nativeVirtualKey());
 			}
 
-			hotkey.modifiers = TranslateQtKeyboardEventModifiers(
-				event->modifiers());
-
+			hotkey.modifiers = TranslateQtKeyboardEventModifiers(event->modifiers());
+			ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
+			map->hotkeyController->DoHK(hotkey,pressed);
 			obs_hotkey_inject_event(hotkey, pressed);
+			
 			return true;
 		};
-
+		
+		
 		switch (event->type()) {
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
+
 			return mouse_event(*static_cast<QMouseEvent *>(event));
 
 		/*case QEvent::MouseButtonDblClick:
 		case QEvent::Wheel:*/
 		case QEvent::KeyPress:
 		case QEvent::KeyRelease:
+			
+		
 			return key_event(static_cast<QKeyEvent *>(event));
-
+			
 		default:
 			return false;
 		}

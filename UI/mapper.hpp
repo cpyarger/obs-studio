@@ -15,6 +15,24 @@
 #include <vector>
 #include "obs-controller.hpp"
 
+
+/************************Hotkeys bits*************************/
+class HKC : public QObject {
+	Q_OBJECT
+
+public:
+	HKC();
+	~HKC();
+	void DoHK(obs_key_combination_t event, bool pressed);
+	void addHK(QString hotkey);
+	void loadmap();
+signals:
+	void EmitHotkey(QString);
+public slots:
+};
+
+
+
 class ControlMapper : public QObject {
 	Q_OBJECT
 
@@ -69,8 +87,9 @@ private:
 	config_t *MapConfig;
 	obs_data_array_t *MapArray;
 	Controller *controller;
-
+	
 	public:
+	HKC *hotkeyController;
 	QStringList AllActions = {
 		"control.action.Disable_Preview",
 		"control.action.Disable_Source_Filter",
@@ -114,3 +133,5 @@ private:
 		"control.action.Transition",
 		"control.action.Unpause_Recording"};
 };
+
+

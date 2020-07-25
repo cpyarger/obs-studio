@@ -137,13 +137,14 @@ void obs_hotkey_pair_set_descriptions(obs_hotkey_pair_id id, const char *desc0,
 
 static void hotkey_signal(const char *signal, obs_hotkey_t *hotkey)
 {
+	blog(1, signal);
+
 	calldata_t data;
 	calldata_init(&data);
 	calldata_set_ptr(&data, "key", hotkey);
 
 	signal_handler_signal(obs->hotkeys.signals, signal, &data);
-
-	calldata_free(&data);
+		calldata_free(&data);
 }
 
 static inline void fixup_pointers(void);
@@ -1306,6 +1307,7 @@ void obs_hotkey_inject_event(obs_key_combination_t hotkey, bool pressed)
 		pressed,
 		obs->hotkeys.strict_modifiers,
 	};
+
 	enum_bindings(inject_hotkey, &event);
 	unlock();
 }
