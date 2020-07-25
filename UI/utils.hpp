@@ -98,4 +98,5 @@ namespace Utils {
 	bool SetFilenameFormatting(const char* filenameFormatting);
 	bool inrange(int low, int high, int x);
 	QStringList GetTransitionsList();
+	QStringList GetSceneItemsList(QString scene);
 	};

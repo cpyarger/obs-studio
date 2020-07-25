@@ -95,6 +95,7 @@ void ControlMapper::SaveMapping() {
 			  obs_data_get_json(newdata));
 	config_save(MapConfig);
 	obs_data_release(newdata);
+	
 
 }
 bool ControlMapper::LoadMapping()

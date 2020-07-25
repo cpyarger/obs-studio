@@ -1079,4 +1079,42 @@ QStringList Utils::GetTransitionsList(){
 	}
 	obs_frontend_source_list_free(&transitionList);
 	return names;
+	
+}
+
+QStringList Utils::GetSceneItemsList(QString scenename) {
+
+	QStringList SceneItemsList;
+
+	const char *sceneName = scenename.toStdString().c_str();
+	OBSSourceAutoRelease sceneSource = obs_get_source_by_name(sceneName);
+	OBSScene scene = obs_scene_from_source(sceneSource);
+	
+
+	OBSDataArrayAutoRelease sceneItemArray = obs_data_array_create();
+
+	auto sceneItemEnumProc = [](obs_scene_t *, obs_sceneitem_t *item,
+				    void *privateData) -> bool {
+		obs_data_array_t *sceneItemArray =
+			(obs_data_array_t *)privateData;
+
+		OBSDataAutoRelease sceneItemData = obs_data_create();
+		
+		OBSSource source = obs_sceneitem_get_source(item);
+
+		obs_data_set_string(sceneItemData, "sourceName",
+				    obs_source_get_name(source));
+
+	
+
+		obs_data_array_push_back(sceneItemArray, sceneItemData);
+		return true;
+	};
+	obs_scene_enum_items(scene, sceneItemEnumProc, sceneItemArray);
+
+	for (int i = 0; i < obs_data_array_count(sceneItemArray); i++){
+		SceneItemsList.append(obs_data_get_string(
+			obs_data_array_item(sceneItemArray, i), "sourceName"));
+	}
+	return SceneItemsList;
 }

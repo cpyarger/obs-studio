@@ -81,47 +81,51 @@ private:
 				    "Previous Media"};
 
 
-	QStringList AllActions = {"Disable Preview",
-				  "Disable Source Filter",
-				  "Enable Preview",
-				  "Enable Source Filter",
-				  "Next Media",
-				  "Pause Recording",
-				  "Play/Pause Media",
-				  "Previous Media",
-				  "Reset Scene Item",
-				  "Reset Stats",
-				  "Restart Media",
-				  "Set Audio Monitor Type",
-				  "Set Current Scene",
-				  "Set Current Transition",
-				  "Set Gain Filter",
-				  "Set Media Time",
-				  "Set Mute",
-				  "Set Scene Item Crop",
-				  "Set Scene Item Position",
-				  "Set Scene Item Render",
-				  "Set Scene Item Transform",
-				  "Set Scene Transition Override",
-				  "Set Source Filter Visibility",
-				  "Set Source Name",
-				  "Set Source Settings",
-				  "Set Sync Offset",
-				  "Set Volume",
-				  "Start Recording",
-				  "Start Replay Buffer",
-				  "Start Streaming",
-				  "Stop Media",
-				  "Stop Recording",
-				  "Stop Replay Buffer",
-				  "Stop Streaming",
-				  "Studio Mode",
-				  "Take Source Screenshot",
-				  "Toggle Mute",
-				  "Toggle Source Filter",
-				  "Toggle Start/Stop Streaming",
-				  "Transition",
-				  "Unpause Recording"};
+	QStringList AllActions = {};
+
+	QStringList AllActions_raw = {
+		"control.action.Disable_Preview",
+		"control.action.Disable_Source_Filter",
+		"control.action.Enable_Preview",
+		"control.action.Enable_Source_Filter",
+		"control.action.Next_Media",
+		"control.action.Pause_Recording",
+		"control.action.Play_Pause_Media",
+		"control.action.Previous_Media",
+		"control.action.Reset_Scene_Item",
+		"control.action.Reset_Stats",
+		"control.action.Restart_Media",
+		"control.action.Set_Audio_Monitor_Type",
+		"control.action.Set_Current_Scene",
+		"control.action.Set_Current_Transition",
+		"control.action.Set_Gain_Filter",
+		"control.action.Set_Media_Time",
+		"control.action.Set_Mute",
+		"control.action.Set_Scene_Item_Crop",
+		"control.action.Set_Scene_Item_Position",
+		"control.action.Set_Scene_Item_Render",
+		"control.action.Set_Scene_Item_Transform",
+		"control.action.Set_Scene_Transition_Override",
+		"control.action.Set_Source_Filter_Visibility",
+		"control.action.Set_Source_Name",
+		"control.action.Set_Source_Settings",
+		"control.action.Set_Sync_Offset",
+		"control.action.Set_Volume",
+		"control.action.Start_Recording",
+		"control.action.Start_Replay_Buffer",
+		"control.action.Start_Streaming",
+		"control.action.Stop_Media",
+		"control.action.Stop_Recording",
+		"control.action.Stop_Replay_Buffer",
+		"control.action.Stop_Streaming",
+		"control.action.Studio_Mode",
+		"control.action.Take_Source_Screenshot",
+		"control.action.Toggle_Mute",
+		"control.action.Toggle_Source_Filter",
+		"control.action.Toggle_Start_Stop_Streaming",
+		"control.action.Transition",
+		"control.action.Unpause_Recording"};
+
 	QStringList AdvancedSourceActions = {
 					     "Set Mute",
 					     "Set Source Name",
@@ -142,6 +146,7 @@ private:
 		"Set Volume",
 		"Set Media Time",
 	};
+	void TranslateActions();
 	void ShowIntActions();
 	void ShowStringActions();
 	void ShowBoolActions();
@@ -153,10 +158,10 @@ private:
 	void HideEntries(QStringList entrys);
 	void ShowEntries(QStringList entrys);
 	QString FirstVisible();
-
+	QString untranslate(QString translation);
 	void ShowPair(QString pair);
 	void HidePair(QString pair);
-
+	void ShowHideAdvanced(bool state);
 public slots:
 	bool MapCall(QString plugin, obs_data_t* map);
 private slots:
