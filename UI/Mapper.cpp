@@ -10,9 +10,11 @@
 #include <util/dstr.hpp>
 #include <QPointer>
 #include <QStyle>
-
 #include "obs-app.hpp"
 #include "qt-wrappers.hpp"
+#include <obs.hpp>
+#include <functional>
+
 #if __has_include(<obs-frontend-api.h>)
 
 #include <obs-frontend-api.h>
@@ -35,28 +37,74 @@ ControlMapper::ControlMapper()
 	MapConfig = GetMappingStore();
 	SetDefaults();
 	controller = new Controller();
-	connect(this, SIGNAL(DoAction(obs_data_t *)), controller,
-		SLOT(execute(obs_data_t *)));
+	connect(this, SIGNAL(DoAction(obs_data_t *)), controller, SLOT(execute(obs_data_t *)));
 	hotkeyController = new HKC();
+	connect(hotkeyController, SIGNAL(Trigger(QString,obs_data_t*)), this, SLOT(TriggerEvent(QString, obs_data_t*)));
+	connect(this, SIGNAL(mapLoadAction(obs_data_t *)), hotkeyController,
+		SLOT(loadmap(obs_data_t *)));
+	LoadMapping();
 }
 HKC::HKC() {
 	obs_hotkey_enable_background_press(true);
+	
 }
-void HKC::addHK(QString Hotkey) {
 
+void HKC::AddHK(QKeySequence ks)
+{
+	
+	
+	
+	QGlobalShortcut *gs;
+	gs=new QGlobalShortcut(this);
+	gs->setKey(ks);
+	
+	
+	
+	connect(gs, SIGNAL(activated(QKeySequence)), this,
+			SLOT(DoQHK(QKeySequence)));
+	qv.push_back(gs);
+
+}
+	
+
+void HKC::DoQHK(QKeySequence ks)
+{
+	//obs_data_t *data = obs_data_create();
+	
+	
+	blog(1, " pressed ks: %s ", ks.toString().toStdString().c_str());
+
+	/*
+		if (kp.pressed) {
+			blog(1, "Qhotkey pressed-- %s", ks.toString().toStdString().c_str());
+				obs_data_set_string(data, "Hotkey",ks.toString().toStdString().c_str());
+				emit(Trigger("Hotkeys", data));
+			}
+		pressmap[kp.Sequence].pressed =	!pressmap[kp.Sequence].pressed;
+		*/
 }
 void HKC::DoHK(obs_key_combination_t hotkey, bool pressed)
 {
+	obs_data_t * data = obs_data_create();
 	DStr str;
 	obs_key_combination_to_str(hotkey, str);
 	auto tstring = QT_UTF8(str);	
 	if (pressed) {
 		blog(1, "hotkey pressed -- %s",tstring.toStdString().c_str());
+		obs_data_set_string(data, "Hotkey",
+				    tstring.simplified().toStdString().c_str());
+		emit(Trigger("Hotkeys",data));
 	}
-	
+	obs_data_release(data);
 }
 
-
+void HKC::loadmap(obs_data_t *map) {
+	if (QString(obs_data_get_string(map, "triggertype")).simplified() == "Hotkeys") {
+		obs_data_t *ts = obs_data_create_from_json(obs_data_get_string(map, "triggerstring"));
+		
+		AddHK(QKeySequence(obs_data_get_string(ts,"Hotkey")));
+	}
+}
 
 HKC::~HKC()
 {
@@ -117,6 +165,7 @@ void ControlMapper::AddorEditMapping()
 	}
 
 	SaveMapping();
+	LoadMapping();
 	EditMode = false;
 	editRow = -1;
 }
@@ -144,12 +193,15 @@ bool ControlMapper::LoadMapping()
 			MapConfig, SECTION_NAME, PARAM_DEVICES));
 	
 	MapArray = obs_data_get_array(Data, "mapper");
+	emit(ClearTable());
 	for (int i = 0; i < obs_data_array_count(MapArray); i++) {
-		auto data = obs_data_array_item(MapArray, i);
+		obs_data_t * data = obs_data_array_item(MapArray, i);
+		emit(mapLoadAction(data));
 		emit(AddTableRow(QString(obs_data_get_string(data, "triggertype")),
 			obs_data_create_from_json(obs_data_get_string(data, "triggerstring")),
 			QString(obs_data_get_string(data, "actiontype")),
 			obs_data_create_from_json(obs_data_get_string(data, "actionstring"))));
+	
 		blog(1, "mapping load");
 	}
 	
@@ -176,27 +228,34 @@ void ControlMapper::deleteEntry(int entry) {
 int ControlMapper::MappingExists(obs_data_t *mapping)
 {
 
-	bool exit = false;
 	int count = obs_data_array_count(MapArray);
-	auto X = obs_data_get_int(mapping, "value");
+	const char *X;
+	if (isJSon(obs_data_get_string(mapping, "value"))) {
+		X= obs_data_get_json(obs_data_create_from_json(
+			obs_data_get_string(mapping, "value")));
+	} else {
+		X = "";
+	}
+	
 	obs_data_set_string(mapping, "value", "");
+	
+	
 
 	for (int i = 0; i < count; i++) {
 		obs_data_t *item = obs_data_array_item(MapArray, i);
-		obs_data_t *listitem = obs_data_create_from_json(
-			obs_data_get_string(item, "triggerstring"));
+		obs_data_t *listitem = obs_data_create_from_json(obs_data_get_string(item, "triggerstring"));
 		obs_data_set_string(listitem, "value", "");
 
 		if (QString(obs_data_get_json(mapping)).simplified() == QString(obs_data_get_json(listitem)).simplified()) {
 			obs_data_release(listitem);
-			exit = true;
-			obs_data_set_int(mapping, "value", X);
+			obs_data_set_string(mapping, "value", X);
 			return i;
 		}
 		obs_data_release(listitem);
 
 		
 	}
+	obs_data_set_string(mapping, "value", X);
 	return -1;
 }
 void ControlMapper::TriggerEvent(QString type,obs_data_t *triggerstring )
@@ -204,16 +263,13 @@ void ControlMapper::TriggerEvent(QString type,obs_data_t *triggerstring )
 	int x = MappingExists(triggerstring);
 	if (x!=-1) {
 		obs_data_t *data = obs_data_array_item(MapArray, x);
-		obs_data_t *senddata = obs_data_create_from_json(
-			obs_data_get_string(data, "actionstring"));
-		obs_data_set_int(senddata, "value",obs_data_get_int(triggerstring, "value"));	   
+		obs_data_t *senddata = obs_data_create_from_json(obs_data_get_string(data, "actionstring"));
+		obs_data_set_string(senddata, "value",obs_data_get_string(triggerstring, "value"));	   
 		//controller->execute(senddata);
 		emit(DoAction(senddata));
 	} else {
 	
-	}
-	
-	
+	}	
 }
 void ControlMapper::UpdateTrigger(QString type, obs_data_t *triggerstring)
 {

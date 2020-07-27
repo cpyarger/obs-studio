@@ -21,6 +21,8 @@
 extern "C" {
 #endif
 
+
+
 typedef size_t obs_hotkey_id;
 typedef size_t obs_hotkey_pair_id;
 

@@ -4626,7 +4626,8 @@ void OBSBasicSettings::loadControlWindows()
 	connect(ui->btn_obs_add_control, SIGNAL(clicked()), map,
 		SIGNAL(ResetToDefaults()));
 	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
-
+	connect(map, SIGNAL(ClearTable()), this, SLOT(ClearTable()));
+	
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4734,4 +4735,8 @@ void OBSBasicSettings::ResetToDefaults()
 {
 	ui->cb_input_select->setCurrentIndex(0);
 	ui->cb_output_select->setCurrentIndex(0);
+}
+void OBSBasicSettings::ClearTable()
+{
+	ui->tableWidget->setRowCount(0);
 }

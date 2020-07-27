@@ -14,23 +14,32 @@
 #include <QStackedWidget>
 #include <vector>
 #include "obs-controller.hpp"
-
-
+#include <src/qglobalshortcut.h>
+#include <map>
 /************************Hotkeys bits*************************/
 class HKC : public QObject {
 	Q_OBJECT
 
 public:
+	struct KPair {
+		QKeySequence Sequence;
+		QGlobalShortcut *gs;
+		bool pressed;
+	};
 	HKC();
 	~HKC();
 	void DoHK(obs_key_combination_t event, bool pressed);
-	void addHK(QString hotkey);
-	void loadmap();
+	void AddHK(QKeySequence hk);
+	void remaphk(obs_data_t *map);
+	std::vector<QGlobalShortcut*> qv;
 signals:
-	void EmitHotkey(QString);
+	void EmitHotkey(QString actiontype, QString action);
+	void Trigger(QString actiontype, obs_data_t *action);
 public slots:
-};
+	void loadmap(obs_data_t *map);
+	void DoQHK(QKeySequence hk);
 
+};
 
 
 class ControlMapper : public QObject {
@@ -70,15 +79,16 @@ signals:
 	void EditTableRow(int row, QString TriggerType,obs_data_t *TriggerString,
 			   QString ActionType,obs_data_t *actionstring);
 	void ResetToDefaults();
+	void ClearTable();
 	void DoAction(obs_data_t*actionString);
-	
+	void mapLoadAction(obs_data_t *map);
 public slots:
 	void UpdateTrigger(QString type,obs_data_t *string);
 	void UpdateAction(QString type,obs_data_t *string);
 	void SaveMapping();
 	void AddorEditMapping();
 	void TriggerEvent(QString triggertype,obs_data_t *TriggerString);
-
+	
 	void deleteEntry(int row);
 
 

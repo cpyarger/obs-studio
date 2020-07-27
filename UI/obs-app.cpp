@@ -191,7 +191,6 @@ QObject *CreateShortcutFilter()
 
 			hotkey.modifiers = TranslateQtKeyboardEventModifiers(event->modifiers());
 			ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
-			map->hotkeyController->DoHK(hotkey,pressed);
 			obs_hotkey_inject_event(hotkey, pressed);
 			
 			return true;

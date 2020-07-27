@@ -417,5 +417,6 @@ public slots:
 	void EditRow(int row, QString TType, obs_data_t *TString, QString AType, obs_data_t *AString);
 	void DeleteRow();
 	void ResetToDefaults();
+	void ClearTable();
 
 };
