@@ -36,7 +36,6 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget) {
 	HidePair("scene");
 	HidePair("source");
 	HidePair("item");
-	ui->pb_override->hide();
 	ui->cb_obs_output_audio_source->addItems(Utils::GetAudioSourceNames());
 	ui->cb_obs_output_media_source->addItems(Utils::GetMediaSourceNames());
 	ui->cb_obs_output_transition->addItems(Utils::GetTransitionsList());

@@ -52,36 +52,30 @@ HKC::HKC() {
 void HKC::AddHK(QKeySequence ks)
 {
 	
-	
-	
-	QGlobalShortcut *gs;
-	gs=new QGlobalShortcut(this);
-	gs->setKey(ks);
-	
-	
-	
-	connect(gs, SIGNAL(activated(QKeySequence)), this,
-			SLOT(DoQHK(QKeySequence)));
-	qv.push_back(gs);
-
+auto hotkey = new QHotkey(QKeySequence(ks), true, this);
+qDebug() << "Is Registered: " << hotkey->isRegistered();
+pressmap.insert(ks, false);
+QObject::connect(hotkey, &QHotkey::activated, this, &HKC::DoQHK);
 }
 	
 
-void HKC::DoQHK(QKeySequence ks)
+void HKC::DoQHK()
 {
-	//obs_data_t *data = obs_data_create();
-	
-	
-	blog(1, " pressed ks: %s ", ks.toString().toStdString().c_str());
 
-	/*
-		if (kp.pressed) {
-			blog(1, "Qhotkey pressed-- %s", ks.toString().toStdString().c_str());
-				obs_data_set_string(data, "Hotkey",ks.toString().toStdString().c_str());
-				emit(Trigger("Hotkeys", data));
-			}
-		pressmap[kp.Sequence].pressed =	!pressmap[kp.Sequence].pressed;
-		*/
+	//obs_data_t *data = obs_data_create();
+	obs_data_t *data = obs_data_create();
+	QHotkey *x = qobject_cast<QHotkey *>(sender());
+	auto y = x->shortcut();
+	if (!pressmap[y]) {
+	
+		blog(1, "Qhotkey Pressed  -- %s", y.toString().toStdString().c_str());
+		obs_data_set_string(data, "Hotkey", y.toString().simplified().toStdString().c_str());
+		emit(Trigger("Hotkeys", data));
+		pressmap[y] = true;
+	} else {
+		blog(1, "Qhotkey Released  -- %s", y.toString().toStdString().c_str());
+		pressmap[y] = false;
+	}
 }
 void HKC::DoHK(obs_key_combination_t hotkey, bool pressed)
 {

@@ -12,7 +12,7 @@ if(BROWSER_AVAILABLE_INTERNAL)
 endif()
 
 add_subdirectory(obs-frontend-api)
-
+add_subdirectory(QHotkey)
 # ----------------------------------------------------------------------------
 
 project(obs)
@@ -101,7 +101,6 @@ if(WIN32)
 		win-update/update-window.cpp
 		win-update/win-update.cpp
 		win-update/win-update-helpers.cpp
-		src/qglobalshortcut_win.cc
 		${obs-studio_BINARY_DIR}/obs.rc)
 	set(obs_PLATFORM_HEADERS
 		win-update/update-window.hpp
@@ -130,8 +129,7 @@ elseif(APPLE)
 		include_directories(${SPARKLE})
 		set(obs_PLATFORM_SOURCES
 			${obs_PLATFORM_SOURCES}
-			sparkle-updater.mm
-			src/qglobalshortcut_macx.cc)
+			sparkle-updater.mm)
 		set(obs_PLATFORM_LIBRARIES
 			${obs_PLATFORM_LIBRARIES}
 			${SPARKLE})
@@ -142,8 +140,7 @@ elseif(UNIX)
         find_package(Qt5X11Extras REQUIRED)
 
 	set(obs_PLATFORM_SOURCES
-		platform-x11.cpp
-		src/qglobalshortcut_x11.cc)
+		platform-x11.cpp)
 
         set(obs_PLATFORM_LIBRARIES
                 Qt5::X11Extras)
@@ -275,7 +272,7 @@ set(obs_SOURCES
 	obs-actions-widget.cpp
 	obs-hotkeys-widget.cpp
 	obs-controller.cpp
-	src/qglobalshortcut.cc)
+	)
 
 set(obs_HEADERS
 	${obs_PLATFORM_HEADERS}
@@ -345,7 +342,7 @@ set(obs_HEADERS
 	obs-actions-widget.hpp
 	obs-hotkeys-widget.hpp
 	obs-controller.hpp
-	src/qglobalshortcut.h)
+	)
 
 set(obs_importers_HEADERS
 	importers/importers.hpp)
@@ -419,7 +416,8 @@ target_link_libraries(obs
 	obs-frontend-api
 	${FFMPEG_LIBRARIES}
 	${LIBCURL_LIBRARIES}
-	${obs_PLATFORM_LIBRARIES})
+	${obs_PLATFORM_LIBRARIES}
+	qhotkey)
 
 if (APPLE)
 	target_link_libraries(obs

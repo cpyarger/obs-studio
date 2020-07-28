@@ -14,8 +14,10 @@
 #include <QStackedWidget>
 #include <vector>
 #include "obs-controller.hpp"
-#include <src/qglobalshortcut.h>
 #include <map>
+#include <QHotkey/QHotkey/QHotkey>
+
+
 /************************Hotkeys bits*************************/
 class HKC : public QObject {
 	Q_OBJECT
@@ -23,21 +25,21 @@ class HKC : public QObject {
 public:
 	struct KPair {
 		QKeySequence Sequence;
-		QGlobalShortcut *gs;
 		bool pressed;
 	};
+	QMap<QKeySequence, bool> pressmap;
 	HKC();
 	~HKC();
 	void DoHK(obs_key_combination_t event, bool pressed);
 	void AddHK(QKeySequence hk);
 	void remaphk(obs_data_t *map);
-	std::vector<QGlobalShortcut*> qv;
 signals:
 	void EmitHotkey(QString actiontype, QString action);
 	void Trigger(QString actiontype, obs_data_t *action);
 public slots:
 	void loadmap(obs_data_t *map);
-	void DoQHK(QKeySequence hk);
+	void DoQHK();
+
 
 };
 
