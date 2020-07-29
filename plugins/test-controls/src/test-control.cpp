@@ -34,8 +34,6 @@ void ___data_item_release(obs_data_item_t *dataItem)
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-midi", "en-US")
 
-
-
 void register_gui(char *path)
 {
 
@@ -52,7 +50,7 @@ bool obs_module_load(void)
 {
 	char *path = obs_module_file("test.svg");
 	blog(LOG_INFO, "MIDI LOADED ");
-	
+
 	register_gui(path);
 	return true;
 }

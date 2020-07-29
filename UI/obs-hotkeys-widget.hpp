@@ -53,7 +53,6 @@ public:
 	QString hotkeycombo;
 
 protected:
-
 	obs_key_combination_t original;
 	obs_key_combination_t key;
 	bool changed = false;
@@ -67,7 +66,7 @@ public slots:
 
 signals:
 	void KeyChanged(obs_key_combination_t);
-	void updated(QString type, obs_data_t* Action);
+	void updated(QString type, obs_data_t *Action);
 
 private:
 	Ui::OBSHotkeysWidget *ui;

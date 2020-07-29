@@ -21,24 +21,23 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "qobject.h"
 #include "utils.hpp"
 
-
-
 namespace OBSController {
 // BUTTON ACTIONS
 void SetCurrentScene(const char *sceneName);
 void SetPreviewScene(const char *sceneName);
-void SetCurrentSceneCollection(const char * sceneCollection);
+void SetCurrentSceneCollection(const char *sceneCollection);
 void ResetSceneItem(const char *sceneName, const char *itemName);
 void TransitionToProgram();
-void TransitionToProgram(const char * transitionName, int transitionDuration = 300);
-void SetCurrentTransition(const char * name);
+void TransitionToProgram(const char *transitionName,
+			 int transitionDuration = 300);
+void SetCurrentTransition(const char *name);
 void SetTransitionDuration(int duration); // can also be used with cc
 
 void SetSourceVisibility();    // doesn't exist??
 void ToggleSourceVisibility(); //doesn't exist?
 
-void ToggleMute(const char * sourceName);
-void SetMute(const char * sourceName, bool mute);
+void ToggleMute(const char *sourceName);
+void SetMute(const char *sourceName, bool mute);
 
 void StartStopStreaming();
 void StartStreaming();
@@ -55,18 +54,18 @@ void StartReplayBuffer();
 void StopReplayBuffer();
 void SaveReplayBuffer();
 
-void SetCurrentProfile(const char * profileName);
+void SetCurrentProfile(const char *profileName);
 void SetTextGDIPlusText();
 void SetBrowserSourceURL();
 void ReloadBrowserSource();
-void TakeSourceScreenshot(const char * source);
+void TakeSourceScreenshot(const char *source);
 void EnableSourceFilter();
 void DisableSourceFilter();
 void ToggleSourceFilter();
 
 // CC ACTIONS
-void SetVolume(const char * source, float volume);
-void SetSyncOffset(const char * sourceName, int64_t sourceSyncOffset);
+void SetVolume(const char *source, float volume);
+void SetSyncOffset(const char *sourceName, int64_t sourceSyncOffset);
 void SetSourcePosition();
 void SetSourceRotation();
 void SetSourceScale();
@@ -74,16 +73,14 @@ void SetGainFilter();
 void SetOpacity();
 };
 
-
 class Controller : public QObject {
 	Q_OBJECT
 
 public:
 	Controller();
 	~Controller();
-	QString TranslateActions(obs_data_t* actionData);
+	QString TranslateActions(obs_data_t *actionData);
+	QString TranslateActions(obs_data_t *actionData);
 public slots:
 	void execute(obs_data_t *data);
-
-
 };

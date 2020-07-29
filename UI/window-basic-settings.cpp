@@ -354,7 +354,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	ui->cb_input_select->addItem("Hotkeys");
 	main->EnableOutputs(false);
 	loadControlWindows();
-	
+
 	PopulateAACBitrates({ui->simpleOutputABitrate, ui->advOutTrack1Bitrate,
 			     ui->advOutTrack2Bitrate, ui->advOutTrack3Bitrate,
 			     ui->advOutTrack4Bitrate, ui->advOutTrack5Bitrate,
@@ -778,7 +778,6 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	connect(ui->advRBSecMax, SIGNAL(valueChanged(int)), this,
 		SLOT(AdvReplayBufferChanged()));
 
-
 	// Get Bind to IP Addresses
 	obs_properties_t *ppts = obs_get_output_properties("rtmp_output");
 	obs_property_t *p = obs_properties_get(ppts, "bind_ip");
@@ -835,34 +834,36 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 
 	connect(ui->treeWidget, SIGNAL(itemSelectionChanged()), this,
 		SLOT(SettingListSelectionChanged()));
-	
 }
 
 void OBSBasicSettings::SettingListSelectionChanged()
 {
 
 	blog(1, "listchanged--%s -- %i -- %i ",
-	     ui->treeWidget->currentItem()->data(1,0).toString()
+	     ui->treeWidget->currentItem()
+		     ->data(1, 0)
+		     .toString()
 		     .toStdString()
 		     .c_str(),
 	     ui->treeWidget->currentIndex().column(),
-	     ui->treeWidget->indexOfTopLevelItem(ui->treeWidget->currentItem()));
+	     ui->treeWidget->indexOfTopLevelItem(
+		     ui->treeWidget->currentItem()));
 	switch (ui->treeWidget->indexOfTopLevelItem(
-		ui->treeWidget->currentItem())){
+		ui->treeWidget->currentItem())) {
 	case -1:
 		ui->settingsPages->setCurrentIndex(5);
 		ui->ControlsStackedWidget->setCurrentIndex(
-			ui->treeWidget->currentIndex().row()+1);
+			ui->treeWidget->currentIndex().row() + 1);
 		break;
 	case 5:
 		ui->settingsPages->setCurrentIndex(5);
 		ui->ControlsStackedWidget->setCurrentIndex(0);
 		break;
 	default:
-		ui->settingsPages->setCurrentIndex(ui->treeWidget->currentIndex().row());
+		ui->settingsPages->setCurrentIndex(
+			ui->treeWidget->currentIndex().row());
 		break;
 	}
-
 }
 OBSBasicSettings::~OBSBasicSettings()
 {
@@ -877,7 +878,6 @@ OBSBasicSettings::~OBSBasicSettings()
 	int Iloopsize = main->InputNames.size();
 	int Oloopsize = main->OutputNames.size();
 
-
 	for (int i = 0; i < loopsize; i++) {
 
 		ui->ControlsStackedWidget->removeWidget(
@@ -886,33 +886,33 @@ OBSBasicSettings::~OBSBasicSettings()
 	}
 	for (int i = 0; i < Iloopsize; i++) {
 
-		ui->sw_input_widgets->removeWidget(
-			main->InputPages.at(i));
+		ui->sw_input_widgets->removeWidget(main->InputPages.at(i));
 		main->InputPages.at(i)->setParent(nullptr);
 	}
 	for (int i = 0; i < Oloopsize; i++) {
 
-		ui->sw_output_widgets->removeWidget(
-			main->OutputPages.at(i));
+		ui->sw_output_widgets->removeWidget(main->OutputPages.at(i));
 		main->OutputPages.at(i)->setParent(nullptr);
 	}
 	delete obshw;
 	delete obsaw;
 }
-obs_data_t* OBSBasicSettings::MakeMap() {
+obs_data_t *OBSBasicSettings::MakeMap()
+{
 	// emit get input, emit getoutput, then grab string values and add to ui
 	OBSDataAutoRelease makemap = obs_data_create();
-	
+
 	obs_data_set_string(
 		makemap, "triggertype",
 		ui->cb_input_select->currentText().toStdString().c_str());
 	obs_data_set_string(
 		makemap, "actiontype",
 		ui->cb_output_select->currentText().toStdString().c_str());
-	obs_data_set_string(makemap, "triggerstring", obs_data_get_json(inputaction));
-	obs_data_set_string(makemap, "actionstring", obs_data_get_json(outputaction));
+	obs_data_set_string(makemap, "triggerstring",
+			    obs_data_get_json(inputaction));
+	obs_data_set_string(makemap, "actionstring",
+			    obs_data_get_json(outputaction));
 	return makemap;
-
 }
 
 void OBSBasicSettings::SaveCombo(QComboBox *widget, const char *section,
@@ -1797,7 +1797,7 @@ OBSBasicSettings::CreateEncoderPropertyView(const char *encoder,
 		if (ret > 0) {
 			OBSDataAutoRelease data =
 				obs_data_create_from_json_file_safe(
-				encoderJsonPath, "bak");
+					encoderJsonPath, "bak");
 			obs_data_apply(settings, data);
 			obs_data_release(data);
 		}
@@ -2550,7 +2550,6 @@ void OBSBasicSettings::LoadAdvancedSettings()
 	loading = false;
 }
 
-
 void OBSBasicSettings::LoadSettings(bool changedOnly)
 {
 	if (!changedOnly || generalChanged)
@@ -3293,7 +3292,7 @@ void OBSBasicSettings::SaveSettings()
 			AddChangedVal(changed, "audio");
 		if (videoChanged)
 			AddChangedVal(changed, "video");
-		
+
 		if (advancedChanged)
 			AddChangedVal(changed, "advanced");
 
@@ -3304,9 +3303,6 @@ void OBSBasicSettings::SaveSettings()
 	bool langChanged = (ui->language->currentIndex() != prevLangIndex);
 	bool audioRestart = (ui->channelSetup->currentIndex() != channelIndex ||
 			     ui->sampleRate->currentIndex() != sampleRateIndex);
-
-
-	
 }
 
 bool OBSBasicSettings::QueryChanges()
@@ -4481,8 +4477,7 @@ QIcon OBSBasicSettings::GetHotkeysIcon() const
 }
 QIcon OBSBasicSettings::GetControlsIcon() const
 {
-		return controlsIcon;
-
+	return controlsIcon;
 }
 QIcon OBSBasicSettings::GetAdvancedIcon() const
 {
@@ -4492,16 +4487,12 @@ QIcon OBSBasicSettings::GetAdvancedIcon() const
 void OBSBasicSettings::SetGeneralIcon(const QIcon &icon)
 {
 	ui->treeWidget->topLevelItem(0)->setIcon(0, icon);
-
 }
 
 void OBSBasicSettings::SetStreamIcon(const QIcon &icon)
 {
 
 	ui->treeWidget->topLevelItem(1)->setIcon(0, icon);
-
-
-
 }
 
 void OBSBasicSettings::SetOutputIcon(const QIcon &icon)
@@ -4551,12 +4542,14 @@ QStringList OBSBasicSettings::getControlsList()
 {
 	return ControlsList;
 }
-void OBSBasicSettings::FilterTable(QString filter) {
-	for (int i = 0; i <  ui->tableWidget->rowCount(); ++i) {
+void OBSBasicSettings::FilterTable(QString filter)
+{
+	for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
 		bool match = false;
 		for (int j = 0; j < ui->tableWidget->columnCount(); ++j) {
 			QTableWidgetItem *item = ui->tableWidget->item(i, j);
-			if (item->text().contains(filter,Qt::CaseInsensitive)) {
+			if (item->text().contains(filter,
+						  Qt::CaseInsensitive)) {
 				match = true;
 				break;
 			}
@@ -4568,14 +4561,13 @@ void OBSBasicSettings::FilterTriggers(QString filter)
 {
 	for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
 		bool match = false;
-		
+
 		QTableWidgetItem *item = ui->tableWidget->item(i, 0);
-		if (item->text().contains(filter,
-						Qt::CaseInsensitive)) {
+		if (item->text().contains(filter, Qt::CaseInsensitive)) {
 			match = true;
 			break;
 		}
-		
+
 		ui->tableWidget->setRowHidden(i, !match);
 	}
 }
@@ -4583,14 +4575,13 @@ void OBSBasicSettings::FilterActions(QString filter)
 {
 	for (int i = 0; i < ui->tableWidget->rowCount(); ++i) {
 		bool match = false;
-	
+
 		QTableWidgetItem *item = ui->tableWidget->item(i, 2);
-		if (item->text().contains(filter,
-						Qt::CaseInsensitive)) {
+		if (item->text().contains(filter, Qt::CaseInsensitive)) {
 			match = true;
 			break;
 		}
-		
+
 		ui->tableWidget->setRowHidden(i, !match);
 	}
 }
@@ -4599,10 +4590,10 @@ void OBSBasicSettings::loadControlWindows()
 
 	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
 	ControlMapper *map = main->mapper;
-	connect(this, SIGNAL(EditAction(QString, obs_data_t*)), map,
-		SIGNAL(EditAction(QString, obs_data_t*)));
-	connect(this, SIGNAL(EditTrigger(QString, obs_data_t*)), map,
-		SIGNAL(EditTrigger(QString, obs_data_t*)));
+	connect(this, SIGNAL(EditAction(QString, obs_data_t *)), map,
+		SIGNAL(EditAction(QString, obs_data_t *)));
+	connect(this, SIGNAL(EditTrigger(QString, obs_data_t *)), map,
+		SIGNAL(EditTrigger(QString, obs_data_t *)));
 	connect(ui->btn_obs_save_control, SIGNAL(clicked()), map,
 		SLOT(AddorEditMapping()));
 	ui->btn_obs_delete_control->hide();
@@ -4614,21 +4605,29 @@ void OBSBasicSettings::loadControlWindows()
 	TriggerFilter = new QComboBox();
 	ActionsFilter = new QComboBox;
 	QAction *newa = new QAction(TriggerFilter);
-	connect(ui->btn_obs_delete_control, SIGNAL(clicked()), this, SLOT(DeleteRow()));
+	connect(ui->btn_obs_delete_control, SIGNAL(clicked()), this,
+		SLOT(DeleteRow()));
 	//ui->tableWidget->setVerticalHeaderItem(0,)
 	connect(ui->SearchEdit, SIGNAL(textChanged(QString)), this,
 		SLOT(FilterTable(QString)));
 	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
 		SLOT(do_table_selection(int, int)));
-	connect(map, SIGNAL(AddTableRow(QString,obs_data_t*, QString, obs_data_t*)),
-		this, SLOT(AddRow(QString, obs_data_t*, QString, obs_data_t*)));
-	connect(map, SIGNAL(EditTableRow(int, QString,obs_data_t*, QString, obs_data_t*)),
-		this, SLOT(EditRow(int, QString, obs_data_t*, QString, obs_data_t*)));
+	connect(map,
+		SIGNAL(AddTableRow(QString, obs_data_t *, QString,
+				   obs_data_t *)),
+		this,
+		SLOT(AddRow(QString, obs_data_t *, QString, obs_data_t *)));
+	connect(map,
+		SIGNAL(EditTableRow(int, QString, obs_data_t *, QString,
+				    obs_data_t *)),
+		this,
+		SLOT(EditRow(int, QString, obs_data_t *, QString,
+			     obs_data_t *)));
 	connect(ui->btn_obs_add_control, SIGNAL(clicked()), map,
 		SIGNAL(ResetToDefaults()));
 	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
 	connect(map, SIGNAL(ClearTable()), this, SLOT(ClearTable()));
-	
+
 	int controlloopsize = main->ControlNames.size();
 	int inputloopsize = main->InputNames.size();
 	int outputloopsize = main->OutputNames.size();
@@ -4645,36 +4644,41 @@ void OBSBasicSettings::loadControlWindows()
 				(QWidget *)main->ControlPages.at(i));
 		}
 
-
 	} else {
 		//ui->FiltersSplitter->hide();
 		blog(1, "control doesnt have any configuration window widgets");
-
 	}
 	if (inputloopsize > 0) {
 		for (int i = 0; i < inputloopsize; i++) {
-			ui->cb_input_select->addItem((QString)*main->InputNames.at(i));
-			TriggerFilter->addItem((QString)*main->InputNames.at(i));
-			ui->sw_input_widgets->addWidget((QWidget *)main->InputPages.at(i));
+			ui->cb_input_select->addItem(
+				(QString)*main->InputNames.at(i));
+			TriggerFilter->addItem(
+				(QString)*main->InputNames.at(i));
+			ui->sw_input_widgets->addWidget(
+				(QWidget *)main->InputPages.at(i));
 		}
 	} else {
-		
+
 		ui->splitter_input->hide();
 		ui->tableWidget->hideColumn(0);
 		ui->label_70->setText("Hotkeys");
-		
+
 		ui->btn_obs_add_control->setText("Add Hotkey");
 		ui->btn_obs_delete_control->setText("Delete");
 		ui->btn_obs_save_control->setText("Save");
-		ui->tableWidget->setHorizontalHeaderLabels(QStringList{QString("null"), QString("Hotkeys"),
+		ui->tableWidget->setHorizontalHeaderLabels(
+			QStringList{QString("null"), QString("Hotkeys"),
 				    QString("null"), QString("Action")});
 		blog(1, "doesnt have any input widgets");
 	}
 	if (outputloopsize > 0) {
 		for (int i = 0; i < outputloopsize; i++) {
-			ui->cb_output_select->addItem((QString)*main->OutputNames.at(i));
-			ActionsFilter->addItem((QString)*main->OutputNames.at(i));
-			ui->sw_output_widgets->addWidget((QWidget *)main->OutputPages.at(i));
+			ui->cb_output_select->addItem(
+				(QString)*main->OutputNames.at(i));
+			ActionsFilter->addItem(
+				(QString)*main->OutputNames.at(i));
+			ui->sw_output_widgets->addWidget(
+				(QWidget *)main->OutputPages.at(i));
 		}
 	} else {
 		ui->output_splitter->hide();
@@ -4682,12 +4686,13 @@ void OBSBasicSettings::loadControlWindows()
 		blog(1, "doesnt have any output widgets");
 	}
 }
-void OBSBasicSettings::do_table_selection(int row, int col) {
+void OBSBasicSettings::do_table_selection(int row, int col)
+{
 	//get row data, show edit elements.
 	ControlMapper *mapper = (ControlMapper *)obs_frontend_get_mapper();
 	mapper->EditMode = true;
 	mapper->editRow = row;
-	
+
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
 	QString triggertype = ui->tableWidget->item(row, 0)->text();
@@ -4700,33 +4705,48 @@ void OBSBasicSettings::do_table_selection(int row, int col) {
 	ui->cb_output_select->setCurrentText(actiontype);
 	emit(EditAction(actiontype, actionstring));
 	emit(EditTrigger(triggertype, triggerstring));
-
-
 }
 
 void OBSBasicSettings::AddRow(QString TType, obs_data_t *TString, QString AType,
-			     obs_data_t *AString)
+			      obs_data_t *AString)
 {
 	int row = ui->tableWidget->rowCount();
 	ui->tableWidget->insertRow(row);
-	ui->tableWidget->setItem(row, 0, new QTableWidgetItem(TType.simplified()));
-	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString(obs_data_get_json(TString)).simplified()));
-	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
-	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString(obs_data_get_json(AString)).simplified()));
+	ui->tableWidget->setItem(row, 0,
+				 new QTableWidgetItem(TType.simplified()));
+	ui->tableWidget->setItem(
+		row, 1,
+		new QTableWidgetItem(
+			QString(obs_data_get_json(TString)).simplified()));
+	ui->tableWidget->setItem(row, 2,
+				 new QTableWidgetItem(AType.simplified()));
+	ui->tableWidget->setItem(
+		row, 3,
+		new QTableWidgetItem(
+			QString(obs_data_get_json(AString)).simplified()));
 }
-void OBSBasicSettings::EditRow(int row, QString TType, obs_data_t *TString, QString AType,
-			     obs_data_t *AString)
+void OBSBasicSettings::EditRow(int row, QString TType, obs_data_t *TString,
+			       QString AType, obs_data_t *AString)
 {
-	
+
 	//ui->tableWidget->removeRow(row);
 	//ui->tableWidget->insertRow(row);
-	ui->tableWidget->setItem(row, 0, new QTableWidgetItem(TType.simplified()));
-	ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString(obs_data_get_json(TString)).simplified()));
-	ui->tableWidget->setItem(row, 2, new QTableWidgetItem(AType.simplified()));
-	ui->tableWidget->setItem(row, 3, new QTableWidgetItem(QString(obs_data_get_json(AString)).simplified()));
+	ui->tableWidget->setItem(row, 0,
+				 new QTableWidgetItem(TType.simplified()));
+	ui->tableWidget->setItem(
+		row, 1,
+		new QTableWidgetItem(
+			QString(obs_data_get_json(TString)).simplified()));
+	ui->tableWidget->setItem(row, 2,
+				 new QTableWidgetItem(AType.simplified()));
+	ui->tableWidget->setItem(
+		row, 3,
+		new QTableWidgetItem(
+			QString(obs_data_get_json(AString)).simplified()));
 	ui->tableWidget->update();
 }
-void OBSBasicSettings::DeleteRow() {
+void OBSBasicSettings::DeleteRow()
+{
 	//ui->tableWidget->removeRow(row);
 	int row2 = ui->tableWidget->selectedItems().at(0)->row();
 	blog(1, "deleterow-> %i", row2);

@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 
-
 #include <vector>
 #include <QtCore/QString>
 #include <QtWidgets/QSpinBox>
@@ -20,15 +19,13 @@ namespace Ui {
 class OBSActionsWidget;
 }
 
-
-	class OBSActionsWidget : public QWidget {
+class OBSActionsWidget : public QWidget {
 	Q_OBJECT
 public:
 	OBSActionsWidget();
 	~OBSActionsWidget();
 
 private:
-
 	QGridLayout *layout;
 	QStringList SL_filters = {};
 	QStringList encoders = {};
@@ -37,12 +34,11 @@ private:
 	QStringList SL_scenes = {};
 	QStringList SL_sources = {};
 
-
 	QStringList GetScenes();
 	QStringList *items;
 	QString sceneName;
 	bool switching = false;
-	bool DoMap(obs_data_t* map);
+	bool DoMap(obs_data_t *map);
 	QStringList FrontendActions = {"Start Streaming",
 				       "Stop Streaming",
 				       "Toggle Start/Stop Streaming",
@@ -61,25 +57,16 @@ private:
 	QStringList filterActions = {"Enable Source Filter",
 				     "Disable Source Filter",
 				     "Toggle Source Filter"};
-	
-				     
 
-	QStringList sceneActions = {"Reset Scene Item",
-				    "Set Current Scene",
+	QStringList sceneActions = {"Reset Scene Item", "Set Current Scene",
 				    "Set Scene Transition Override",
 				    "Set Current Transition"};
 
-	QStringList sourceActions = {"Toggle Mute",
-				     "Take Source Screenshot"};
+	QStringList sourceActions = {"Toggle Mute", "Take Source Screenshot"};
 
-
-
-	QStringList mediaActions = {"Play/Pause Media",
-				    "Restart Media",
-				    "Stop Media",
-				    "Next Media",
+	QStringList mediaActions = {"Play/Pause Media", "Restart Media",
+				    "Stop Media", "Next Media",
 				    "Previous Media"};
-
 
 	QStringList AllActions = {};
 
@@ -126,22 +113,20 @@ private:
 		"control.action.Transition",
 		"control.action.Unpause_Recording"};
 
-	QStringList AdvancedSourceActions = {
-					     "Set Mute",
+	QStringList AdvancedSourceActions = {"Set Mute",
 					     "Set Source Name",
 					     "Set Sync Offset",
 					     "Set Source Settings",
 					     "Set Source Filter Visibility",
 					     "Set Audio Monitor Type"};
-	QStringList AdvancedMediaActions = {
-					    "Scrub Media"};
+	QStringList AdvancedMediaActions = {"Scrub Media"};
 
 	QStringList AdvancedFilterActions = {"Set Gain Filter"};
 	QStringList AdvancedSceneActions = {"Set Scene Item Render",
 					    "Set Scene Item Position",
 					    "Set Scene Item Transform",
 					    "Set Scene Item Crop"};
-	
+
 	QStringList intActions = {
 		"Set Volume",
 		"Set Media Time",
@@ -163,7 +148,7 @@ private:
 	void HidePair(QString pair);
 	void ShowHideAdvanced(bool state);
 public slots:
-	bool MapCall(QString plugin, obs_data_t* map);
+	bool MapCall(QString plugin, obs_data_t *map);
 private slots:
 	QStringList GetSources(QString scene);
 	void obs_actions_filter_select(int);
@@ -171,8 +156,8 @@ private slots:
 	QStringList GetTransitions();
 	void obs_actions_select(QString action);
 	void check_advanced_switch(bool state);
-	
-	void EditAction(QString ActionType, obs_data_t* TriggerType);
+
+	void EditAction(QString ActionType, obs_data_t *TriggerType);
 	void ResetToDefaults();
 	void onChange();
 	void on_source_change(QString source);
@@ -180,11 +165,7 @@ private slots:
 signals:
 	void changed(QString type, obs_data_t *change);
 
-
 private:
 	Ui::OBSActionsWidget *ui;
 	QListView *listview;
-	
-	
-	
-	};
+};

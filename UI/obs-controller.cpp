@@ -66,9 +66,9 @@ void OBSController::SetPreviewScene(const char *sceneName)
 /**
  * Change the active scene collection.
  */
-void OBSController::SetCurrentSceneCollection(const char * sceneCollection)
+void OBSController::SetCurrentSceneCollection(const char *sceneCollection)
 {
-	if (sceneCollection =="") {
+	if (sceneCollection == "") {
 		throw("Scene Collection name is empty");
 	}
 
@@ -114,14 +114,14 @@ void OBSController::TransitionToProgram()
  * Transitions the currently previewed scene to the main output using specified transition.
  * transitionDuration is optional. (milliseconds)
  */
-void OBSController::TransitionToProgram(const char * transitionName,
+void OBSController::TransitionToProgram(const char *transitionName,
 					int transitionDuration)
 {
 	if (!obs_frontend_preview_program_mode_active()) {
 		throw("studio mode not enabled");
 	}
 
-	if (transitionName=="") {
+	if (transitionName == "") {
 		throw("transition name can not be empty");
 	}
 	bool success = Utils::SetTransitionByName(transitionName);
@@ -136,7 +136,7 @@ void OBSController::TransitionToProgram(const char * transitionName,
 /**
  * Set the active transition.
  */
-void OBSController::SetCurrentTransition(const char * name)
+void OBSController::SetCurrentTransition(const char *name)
 {
 	bool success = Utils::SetTransitionByName(name);
 	if (!success) {
@@ -159,14 +159,13 @@ void OBSController::ToggleSourceVisibility() {} //DOESNT EXIST
 /**
 * Inverts the mute status of a specified source.
 */
-void OBSController::ToggleMute(const char * sourceName)
+void OBSController::ToggleMute(const char *sourceName)
 {
 	if (sourceName == "") {
 		throw("sourceName is empty");
 	}
 
-	OBSSourceAutoRelease source =
-		obs_get_source_by_name(sourceName);
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
 		throw("sourceName not found");
 	}
@@ -177,14 +176,13 @@ void OBSController::ToggleMute(const char * sourceName)
 /**
  * Sets the mute status of a specified source.
  */
-void OBSController::SetMute(const char * sourceName, bool mute)
+void OBSController::SetMute(const char *sourceName, bool mute)
 {
 	if (sourceName == "") {
 		throw("sourceName is empty");
 	}
 
-	OBSSourceAutoRelease source =
-		obs_get_source_by_name(sourceName);
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
 		throw("specified source doesn't exist");
 	}
@@ -331,7 +329,7 @@ void OBSController::SaveReplayBuffer()
 	calldata_free(&cd);
 }
 
-void OBSController::SetCurrentProfile(const char * profileName)
+void OBSController::SetCurrentProfile(const char *profileName)
 {
 	if (profileName == "") {
 		throw("profile name is empty");
@@ -347,7 +345,7 @@ void OBSController::SetBrowserSourceURL() {}
 
 void OBSController::ReloadBrowserSource() {}
 
-void OBSController::TakeSourceScreenshot(const char * source) {}
+void OBSController::TakeSourceScreenshot(const char *source) {}
 
 void OBSController::EnableSourceFilter() {}
 
@@ -359,10 +357,9 @@ void OBSController::ToggleSourceFilter() {}
 // CC ACTIONS //
 ////////////////
 
-void OBSController::SetVolume(const char * source, float volume)
+void OBSController::SetVolume(const char *source, float volume)
 {
-	OBSSourceAutoRelease obsSource =
-		obs_get_source_by_name(source);
+	OBSSourceAutoRelease obsSource = obs_get_source_by_name(source);
 	if (!obsSource) {
 		return; // source does not exist
 	}
@@ -373,14 +370,14 @@ void OBSController::SetVolume(const char * source, float volume)
 /**
  * Set the audio sync offset of a specified source.
  */
-void OBSController::SetSyncOffset(const char * sourceName, int64_t sourceSyncOffset)
+void OBSController::SetSyncOffset(const char *sourceName,
+				  int64_t sourceSyncOffset)
 {
 	if (sourceName == "") {
 		throw("source name is empty");
 	}
 
-	OBSSourceAutoRelease source =
-		obs_get_source_by_name(sourceName);
+	OBSSourceAutoRelease source = obs_get_source_by_name(sourceName);
 	if (!source) {
 		throw("specified source doesn't exist");
 	}
@@ -414,7 +411,8 @@ std::map<QString, function<void(obs_data_t *)>> funcMap = {
 	 }},
 	{"control.action.Set_Current_Scene_Collection",
 	 [](obs_data_t *data) {
-		 OBSController::SetCurrentSceneCollection(obs_data_get_string(data, "scene_collection"));
+		 OBSController::SetCurrentSceneCollection(
+			 obs_data_get_string(data, "scene_collection"));
 	 }},
 	{"control.action.Reset_Scene_Item",
 	 [](obs_data_t *data) {
@@ -423,106 +421,109 @@ std::map<QString, function<void(obs_data_t *)>> funcMap = {
 			 obs_data_get_string(data, "item"));
 	 }},
 	{"control.action.Transition_To_Program",
-	 [](obs_data_t *data) {
-		
-			  OBSController::TransitionToProgram();
-		
-	 }},
+	 [](obs_data_t *data) { OBSController::TransitionToProgram(); }},
 	{"control.action.Set_Current_Transition",
 	 [](obs_data_t *data) {
-		 OBSController::SetCurrentTransition(obs_data_get_string(data, "transition"));
+		 OBSController::SetCurrentTransition(
+			 obs_data_get_string(data, "transition"));
 	 }},
 	{"control.action.Set_Transition_Duration",
 	 [](obs_data_t *data) {
-		OBSController::SetTransitionDuration(obs_data_get_int(data, "value"));
-		
-	 }
-	 },
+		 OBSController::SetTransitionDuration(
+			 obs_data_get_int(data, "value"));
+	 }},
 	{"control.action.Toggle_Mute",
-	  [](obs_data_t *data) {
-		  OBSController::ToggleMute(obs_data_get_string(data, "audio_source"));
-	  }},
+	 [](obs_data_t *data) {
+		 OBSController::ToggleMute(
+			 obs_data_get_string(data, "audio_source"));
+	 }},
 	{"control.action.Set_Mute",
-	  [](obs_data_t *data) {
-		  OBSController::SetMute(obs_data_get_string(data, "audio_source"), obs_data_get_int(data, "value"));
-	  }},
+	 [](obs_data_t *data) {
+		 OBSController::SetMute(obs_data_get_string(data,
+							    "audio_source"),
+					obs_data_get_int(data, "value"));
+	 }},
 	{"control.action.Start_Stop_Streaming",
-	  [](obs_data_t *data) { OBSController::StartStopStreaming(); }},
+	 [](obs_data_t *data) { OBSController::StartStopStreaming(); }},
 	{"control.action.Start_Streaming",
-	  [](obs_data_t *data) { OBSController::StartStreaming(); }},
+	 [](obs_data_t *data) { OBSController::StartStreaming(); }},
 	{"control.action.Stop_Streaming",
 	 [](obs_data_t *data) { OBSController::StopStreaming(); }},
 	{"control.action.Start_Stop_Recording",
-	  [](obs_data_t *data) { OBSController::StartStopRecording(); }},
+	 [](obs_data_t *data) { OBSController::StartStopRecording(); }},
 	{"control.action.Start_Recording",
-	  [](obs_data_t *data) { OBSController::StartRecording(); }},
+	 [](obs_data_t *data) { OBSController::StartRecording(); }},
 	{"control.action.Stop_Recording",
-	  [](obs_data_t *data) { OBSController::StopRecording(); }},
+	 [](obs_data_t *data) { OBSController::StopRecording(); }},
 	{"control.action.Pause_Recording",
-	  [](obs_data_t *data) { OBSController::PauseRecording(); }},
-	 {"control.action.Resume_Recording",
-	  [](obs_data_t *data) { OBSController::ResumeRecording(); }},
+	 [](obs_data_t *data) { OBSController::PauseRecording(); }},
+	{"control.action.Resume_Recording",
+	 [](obs_data_t *data) { OBSController::ResumeRecording(); }},
 	{"control.action.Start_Stop_Replay_Buffer",
-	  [](obs_data_t *data) { OBSController::StartStopReplayBuffer(); }},
-	 {"control.action.Start Replay Buffer",
-	  [](obs_data_t *data) { OBSController::StartReplayBuffer(); }},
+	 [](obs_data_t *data) { OBSController::StartStopReplayBuffer(); }},
+	{"control.action.Start Replay Buffer",
+	 [](obs_data_t *data) { OBSController::StartReplayBuffer(); }},
 	{"control.action.Stop_Replay_Buffer",
-	  [](obs_data_t *data) { OBSController::StopReplayBuffer(); }},
-	 {"control.action.Save_Replay_Buffer",
-	  [](obs_data_t *data) { OBSController::SaveReplayBuffer(); }},
-	 {"control.action.Set_Current_Profile",
-	  [](obs_data_t *data) {
-		  OBSController::SetCurrentProfile(obs_data_get_string(data, "profile"));
-	  }},
-	 {"control.action.Set_Text_GDIPlus_Text",
-	  [](obs_data_t *data) { OBSController::SetTextGDIPlusText(); }},
-	 {"control.action.Set_Browser_Source_URL",
-	  [](obs_data_t *data) { OBSController::SetBrowserSourceURL(); }},
-	 {"control.action.Reload_Browser_Source",
-	  [](obs_data_t *data) { OBSController::ReloadBrowserSource(); }},
-	 {"control.action.Take_Source_Screenshot",
-	  [](obs_data_t *data) {
-		  OBSController::TakeSourceScreenshot(
-			  obs_data_get_string(data, "source"));
-	  }},
-	 {"control.action.Enable_Source_Filter",
-	  [](obs_data_t *data) { OBSController::EnableSourceFilter(); }},
-	 {"control.action.Disable_Source_Filter",
-	  [](obs_data_t *data) { OBSController::DisableSourceFilter(); }},
-	 {"control.action.Toggle_Source_Filter",
-	  [](obs_data_t *data) { OBSController::ToggleSourceFilter(); }},
-	 // CC ACTIONS
-	 {"control.action.Set_Volume",
-	  [](obs_data_t *data) {
+	 [](obs_data_t *data) { OBSController::StopReplayBuffer(); }},
+	{"control.action.Save_Replay_Buffer",
+	 [](obs_data_t *data) { OBSController::SaveReplayBuffer(); }},
+	{"control.action.Set_Current_Profile",
+	 [](obs_data_t *data) {
+		 OBSController::SetCurrentProfile(
+			 obs_data_get_string(data, "profile"));
+	 }},
+	{"control.action.Set_Text_GDIPlus_Text",
+	 [](obs_data_t *data) { OBSController::SetTextGDIPlusText(); }},
+	{"control.action.Set_Browser_Source_URL",
+	 [](obs_data_t *data) { OBSController::SetBrowserSourceURL(); }},
+	{"control.action.Reload_Browser_Source",
+	 [](obs_data_t *data) { OBSController::ReloadBrowserSource(); }},
+	{"control.action.Take_Source_Screenshot",
+	 [](obs_data_t *data) {
+		 OBSController::TakeSourceScreenshot(
+			 obs_data_get_string(data, "source"));
+	 }},
+	{"control.action.Enable_Source_Filter",
+	 [](obs_data_t *data) { OBSController::EnableSourceFilter(); }},
+	{"control.action.Disable_Source_Filter",
+	 [](obs_data_t *data) { OBSController::DisableSourceFilter(); }},
+	{"control.action.Toggle_Source_Filter",
+	 [](obs_data_t *data) { OBSController::ToggleSourceFilter(); }},
+	// CC ACTIONS
+	{"control.action.Set_Volume",
+	 [](obs_data_t *data) {
 		 OBSDataAutoRelease val = obs_data_create_from_json(
 			 obs_data_get_string(data, "value"));
-		  OBSController::SetVolume(obs_data_get_string(data, "audio_source"),
-			  pow(Utils::mapper(obs_data_get_int(val, "int")),3.0));
+		 OBSController::SetVolume(
+			 obs_data_get_string(data, "audio_source"),
+			 pow(Utils::mapper(obs_data_get_int(val, "int")), 3.0));
 		 obs_data_release(val);
 		 obs_data_release(data);
-	  }},
-	 {"control.action.Set_Sync_Offset",
-	  [](obs_data_t *data) {
-		  OBSController::SetSyncOffset(obs_data_get_string(data, "scene"),(int64_t)obs_data_get_int(data, "value"));
-	  }},
-	 {"control.action.Set_Source_Position",
-	  [](obs_data_t *data) { OBSController::SetSourcePosition(); }},
-	 {"control.action.Set_Source_Rotation",
-	  [](obs_data_t *data) { OBSController::SetSourceRotation(); }},
-	 {"control.action.Set_Source_Scale",
-	  [](obs_data_t *data) { OBSController::SetSourceScale(); }},
-	 {"control.action.Set_Gain_Filter",
-	  [](obs_data_t *data) { OBSController::SetGainFilter(); }},
-	 {"control.action.Set_Opacity",
-	  [](obs_data_t *data) { OBSController::SetOpacity(); }}};
-
+	 }},
+	{"control.action.Set_Sync_Offset",
+	 [](obs_data_t *data) {
+		 OBSController::SetSyncOffset(
+			 obs_data_get_string(data, "scene"),
+			 (int64_t)obs_data_get_int(data, "value"));
+	 }},
+	{"control.action.Set_Source_Position",
+	 [](obs_data_t *data) { OBSController::SetSourcePosition(); }},
+	{"control.action.Set_Source_Rotation",
+	 [](obs_data_t *data) { OBSController::SetSourceRotation(); }},
+	{"control.action.Set_Source_Scale",
+	 [](obs_data_t *data) { OBSController::SetSourceScale(); }},
+	{"control.action.Set_Gain_Filter",
+	 [](obs_data_t *data) { OBSController::SetGainFilter(); }},
+	{"control.action.Set_Opacity",
+	 [](obs_data_t *data) { OBSController::SetOpacity(); }}};
 
 QString Controller::TranslateActions(obs_data_t *data)
 {
 	return tr(obs_data_get_string(data, "action"));
 }
 
-void Controller::execute(obs_data_t *data) {
+void Controller::execute(obs_data_t *data)
+{
 	try {
 
 		funcMap[QString(obs_data_get_string(data, "action"))](data);

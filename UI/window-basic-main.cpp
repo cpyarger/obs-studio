@@ -2129,12 +2129,11 @@ void OBSBasic::InitHotkeys()
 void OBSBasic::ProcessHotkey(obs_hotkey_id id, bool pressed)
 {
 	obs_hotkey_trigger_routed_callback(id, pressed);
-	
 }
 
 void OBSBasic::HotkeyTriggered(void *data, obs_hotkey_id id, bool pressed)
 {
-	
+
 	OBSBasic &basic = *static_cast<OBSBasic *>(data);
 	QMetaObject::invokeMethod(&basic, "ProcessHotkey",
 				  Q_ARG(obs_hotkey_id, id),
@@ -8046,7 +8045,7 @@ void *OBSBasic::AddControlPage(QIcon *icon, QString *name, QWidget *page)
 	ControlPages.append(page);
 	return (QString *)name;
 };
-void *OBSBasic::AddInputControl( QString *name, QWidget *page)
+void *OBSBasic::AddInputControl(QString *name, QWidget *page)
 {
 	InputNames.append(name);
 	InputPages.append(page);

@@ -18,7 +18,6 @@
 
 #pragma once
 
-
 #include <util/util.hpp>
 #include <QDialog>
 #include <QPointer>
@@ -111,7 +110,6 @@ private:
 
 	std::shared_ptr<Auth> auth;
 	ControlMapper *mapper;
-
 
 	bool generalChanged = false;
 	bool stream1Changed = false;
@@ -236,9 +234,6 @@ private:
 	void OnAuthConnected();
 	QString lastService;
 
-	
-
-
 private slots:
 	void UpdateServerList();
 	void UpdateKeyLink();
@@ -248,7 +243,6 @@ private slots:
 	void on_disconnectAccount_clicked();
 	void on_useStreamKey_clicked();
 	void on_useAuth_toggled();
-
 
 private:
 	bool startup = true;
@@ -314,8 +308,6 @@ private:
 	int CurrentFLVTrack();
 
 	QStringList ControlsList;
-
-
 
 private slots:
 	void on_theme_activated(int idx);
@@ -398,9 +390,6 @@ public:
 	void loadControlWindows();
 	obs_data_t *inputaction;
 	obs_data_t *outputaction;
-	
-
-
 
 private:
 	QComboBox *TriggerFilter;
@@ -413,10 +402,11 @@ signals:
 	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
 	void EditAction(QString ActionType, obs_data_t *TriggerType);
 public slots:
-	void AddRow(QString TType, obs_data_t *TString, QString AType, obs_data_t *AString);
-	void EditRow(int row, QString TType, obs_data_t *TString, QString AType, obs_data_t *AString);
+	void AddRow(QString TType, obs_data_t *TString, QString AType,
+		    obs_data_t *AString);
+	void EditRow(int row, QString TType, obs_data_t *TString, QString AType,
+		     obs_data_t *AString);
 	void DeleteRow();
 	void ResetToDefaults();
 	void ClearTable();
-
 };

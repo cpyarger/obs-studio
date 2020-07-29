@@ -24,26 +24,21 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <map>
 #include <iostream>
 #include <utility>
-#include "../test-control.hpp""
+#include "../test-control.hpp"
+	 "
 
 #include "settings-dialog.h"
 #include <qdialogbuttonbox.h>
 #include <qcheckbox.h>
-#include<QWidget>
+#include <QWidget>
 #include <QMainWindow>
 SettingsDialog *settings_dialog = nullptr;
-SettingsDialog::SettingsDialog()
-        :ui(new Ui::SettingsDialog)
+SettingsDialog::SettingsDialog() : ui(new Ui::SettingsDialog)
 {
-        ui->setupUi(this);
-
-
-
+	ui->setupUi(this);
 }
-
-
 
 SettingsDialog::~SettingsDialog()
 {
-        delete ui;
+	delete ui;
 }

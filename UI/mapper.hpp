@@ -17,7 +17,6 @@
 #include <map>
 #include <QHotkey/QHotkey/QHotkey>
 
-
 /************************Hotkeys bits*************************/
 class HKC : public QObject {
 	Q_OBJECT
@@ -28,7 +27,7 @@ public:
 		bool pressed;
 		QHotkey *hotkey;
 	};
-	QMap<QKeySequence, KPair*> pressmap;
+	QMap<QKeySequence, KPair *> pressmap;
 	HKC();
 	~HKC();
 	void DoHK(obs_key_combination_t event, bool pressed);
@@ -40,31 +39,27 @@ signals:
 public slots:
 	void loadmap(obs_data_t *map);
 	void DoQHK();
-
-
 };
-
 
 class ControlMapper : public QObject {
 	Q_OBJECT
 
 public:
-
 	ControlMapper();
 	~ControlMapper();
 
-	bool DebugEnabled=true;
-	bool AlertsEnabled=false;
-	int editRow=-1;
-	bool EditMode=false;
+	bool DebugEnabled = true;
+	bool AlertsEnabled = false;
+	int editRow = -1;
+	bool EditMode = false;
 	bool SettingsLoaded;
 	bool LoadMapping();
-	config_t* GetMappingStore();
-	
-	OBSDataAutoRelease CurrentTriggerString=obs_data_create();
-	QString CurrentTriggerType="Hotkeys";
+	config_t *GetMappingStore();
+
+	OBSDataAutoRelease CurrentTriggerString = obs_data_create();
+	QString CurrentTriggerType = "Hotkeys";
 	OBSDataAutoRelease CurrentActionString = obs_data_create();
-	QString CurrentActionType="OBS";
+	QString CurrentActionType = "OBS";
 
 	OBSDataAutoRelease PreviousTriggerString;
 	QString PreviousTriggerType;
@@ -73,35 +68,33 @@ public:
 	int MappingExists(obs_data_t *triggerstring);
 signals:
 
-
-
-	void EditTrigger(QString TriggerType,obs_data_t *TriggerString);
+	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
 	void EditAction(QString ActionType, obs_data_t *Action);
-	void AddTableRow(QString TriggerType,obs_data_t *TriggerString,
-			   QString ActionType,obs_data_t *actionstring);
-	void EditTableRow(int row, QString TriggerType,obs_data_t *TriggerString,
-			   QString ActionType,obs_data_t *actionstring);
+	void AddTableRow(QString TriggerType, obs_data_t *TriggerString,
+			 QString ActionType, obs_data_t *actionstring);
+	void EditTableRow(int row, QString TriggerType,
+			  obs_data_t *TriggerString, QString ActionType,
+			  obs_data_t *actionstring);
 	void ResetToDefaults();
 	void ClearTable();
-	void DoAction(obs_data_t*actionString);
+	void DoAction(obs_data_t *actionString);
 	void mapLoadAction(obs_data_t *map);
 public slots:
-	void UpdateTrigger(QString type,obs_data_t *string);
-	void UpdateAction(QString type,obs_data_t *string);
+	void UpdateTrigger(QString type, obs_data_t *string);
+	void UpdateAction(QString type, obs_data_t *string);
 	void SaveMapping();
 	void AddorEditMapping();
-	void TriggerEvent(QString triggertype,obs_data_t *TriggerString);
-	
-	void deleteEntry(int row);
+	void TriggerEvent(QString triggertype, obs_data_t *TriggerString);
 
+	void deleteEntry(int row);
 
 private:
 	void SetDefaults();
 	config_t *MapConfig;
 	OBSDataArrayAutoRelease MapArray;
 	Controller *controller;
-	
-	public:
+
+public:
 	HKC *hotkeyController;
 	QStringList AllActions = {
 		"control.action.Disable_Preview",
@@ -146,5 +139,3 @@ private:
 		"control.action.Transition",
 		"control.action.Unpause_Recording"};
 };
-
-

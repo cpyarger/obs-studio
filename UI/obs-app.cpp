@@ -189,14 +189,16 @@ QObject *CreateShortcutFilter()
 					event->nativeVirtualKey());
 			}
 
-			hotkey.modifiers = TranslateQtKeyboardEventModifiers(event->modifiers());
-			ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
+			hotkey.modifiers = TranslateQtKeyboardEventModifiers(
+				event->modifiers());
+			ControlMapper *map =
+				(ControlMapper *)obs_frontend_get_mapper();
 			obs_hotkey_inject_event(hotkey, pressed);
-			
+			obs_hotkey_inject_event(hotkey, pressed);
+
 			return true;
 		};
-		
-		
+
 		switch (event->type()) {
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
@@ -207,10 +209,9 @@ QObject *CreateShortcutFilter()
 		case QEvent::Wheel:*/
 		case QEvent::KeyPress:
 		case QEvent::KeyRelease:
-			
-		
+
 			return key_event(static_cast<QKeyEvent *>(event));
-			
+
 		default:
 			return false;
 		}

@@ -139,9 +139,9 @@ static void hotkey_signal(const char *signal, obs_hotkey_t *hotkey)
 
 	calldata_t data;
 	calldata_init(&data);
-	calldata_set_ptr(&data, "key", hotkey);	
+	calldata_set_ptr(&data, "key", hotkey);
 	signal_handler_signal(obs->hotkeys.signals, signal, &data);
-		calldata_free(&data);
+	calldata_free(&data);
 }
 
 static inline void fixup_pointers(void);
@@ -1204,7 +1204,7 @@ static inline bool modifiers_match(obs_hotkey_binding_t *binding,
 
 static inline bool is_pressed(obs_key_t key)
 {
-	
+
 	return obs_hotkeys_platform_is_pressed(obs->hotkeys.platform_context,
 					       key);
 }
@@ -1349,8 +1349,6 @@ static inline bool query_hotkey(void *data, size_t idx,
 	handle_binding(binding, param->modifiers, param->no_press,
 		       param->strict_modifiers, NULL);
 
-
-
 	return true;
 }
 
@@ -1371,8 +1369,7 @@ static inline void query_hotkeys()
 		obs->hotkeys.thread_disable_press,
 		obs->hotkeys.strict_modifiers,
 	};
-	
-	
+
 	enum_bindings(query_hotkey, &param);
 }
 

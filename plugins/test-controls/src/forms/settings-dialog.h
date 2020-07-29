@@ -22,7 +22,7 @@ namespace Ui {
 class SettingsDialog;
 }
 
-class SettingsDialog :public QWidget {
+class SettingsDialog : public QWidget {
 	Q_OBJECT
 
 public:
@@ -30,9 +30,7 @@ public:
 
 	~SettingsDialog();
 
-
 private:
 	Ui::SettingsDialog *ui;
-
 };
 extern SettingsDialog *settings_dialog;

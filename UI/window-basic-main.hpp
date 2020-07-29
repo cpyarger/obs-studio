@@ -165,7 +165,7 @@ class OBSBasic : public OBSMainWindow {
 	friend class ReplayBufferButton;
 	friend class ExtraBrowsersModel;
 	friend class ExtraBrowsersDelegate;
-	
+
 	friend struct OBSStudioAPI;
 
 	enum class MoveDir { Up, Down, Left, Right };
@@ -703,8 +703,7 @@ private:
 	void copyActionsDynamicProperties();
 
 	static void HotkeyTriggered(void *data, obs_hotkey_id id, bool pressed);
-	
-	
+
 	void AutoRemux();
 
 	void UpdatePause(bool activate = true);
@@ -819,17 +818,18 @@ public:
 	QIcon GetSceneIcon() const;
 	bool startup = true;
 	void *AddControlPage(QIcon *icon, QString *name, QWidget *page);
-	QList<QIcon *>   ControlIcons;
+	QList<QIcon *> ControlIcons;
 	QList<QString *> ControlNames;
 	QList<QWidget *> ControlPages;
 	void *AddInputControl(QString *name, QWidget *page);
 	QList<QString *> InputNames;
 	QList<QWidget *> InputPages;
 	void *AddOutputControl(QString *name, QWidget *page);
-	
+
 	QList<QString *> OutputNames;
 	QList<QWidget *> OutputPages;
-	protected:
+
+protected:
 	virtual void closeEvent(QCloseEvent *event) override;
 	virtual void changeEvent(QEvent *event) override;
 signals:
@@ -1018,10 +1018,11 @@ private:
 	std::unique_ptr<Ui::OBSBasic> ui;
 
 protected:
-void keyPressEvent(QKeyEvent *event) override
+	void keyPressEvent(QKeyEvent *event) override
 	{
-	obs_data_t *hk  = obs_data_create();
-		obs_data_set_string(hk, "Hotkey", event->text().toStdString().c_str());
+		obs_data_t *hk = obs_data_create();
+		obs_data_set_string(hk, "Hotkey",
+				    event->text().toStdString().c_str());
 		mapper->TriggerEvent("Hotkeys", hk);
 		blog(1, "event -- %s", event->text().toStdString().c_str());
 		obs_data_release(hk);
