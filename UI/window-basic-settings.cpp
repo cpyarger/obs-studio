@@ -901,7 +901,7 @@ OBSBasicSettings::~OBSBasicSettings()
 }
 obs_data_t* OBSBasicSettings::MakeMap() {
 	// emit get input, emit getoutput, then grab string values and add to ui
-	obs_data_t *makemap = obs_data_create();
+	OBSDataAutoRelease makemap = obs_data_create();
 	
 	obs_data_set_string(
 		makemap, "triggertype",
@@ -1795,7 +1795,8 @@ OBSBasicSettings::CreateEncoderPropertyView(const char *encoder,
 		int ret = GetProfilePath(encoderJsonPath,
 					 sizeof(encoderJsonPath), path);
 		if (ret > 0) {
-			obs_data_t *data = obs_data_create_from_json_file_safe(
+			OBSDataAutoRelease data =
+				obs_data_create_from_json_file_safe(
 				encoderJsonPath, "bak");
 			obs_data_apply(settings, data);
 			obs_data_release(data);
@@ -4690,9 +4691,11 @@ void OBSBasicSettings::do_table_selection(int row, int col) {
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
 	QString triggertype = ui->tableWidget->item(row, 0)->text();
-	obs_data_t *triggerstring = obs_data_create_from_json(ui->tableWidget->item(row,1)->text().toStdString().c_str());
+	OBSDataAutoRelease triggerstring = obs_data_create_from_json(
+		ui->tableWidget->item(row, 1)->text().toStdString().c_str());
 	QString actiontype = ui->tableWidget->item(row, 2)->text();
-	obs_data_t* actionstring = obs_data_create_from_json( ui->tableWidget->item(row, 3)->text().toStdString().c_str());
+	OBSDataAutoRelease actionstring = obs_data_create_from_json(
+		ui->tableWidget->item(row, 3)->text().toStdString().c_str());
 	ui->cb_input_select->setCurrentText(triggertype);
 	ui->cb_output_select->setCurrentText(actiontype);
 	emit(EditAction(actiontype, actionstring));

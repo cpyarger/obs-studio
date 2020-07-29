@@ -26,8 +26,9 @@ public:
 	struct KPair {
 		QKeySequence Sequence;
 		bool pressed;
+		QHotkey *hotkey;
 	};
-	QMap<QKeySequence, bool> pressmap;
+	QMap<QKeySequence, KPair*> pressmap;
 	HKC();
 	~HKC();
 	void DoHK(obs_key_combination_t event, bool pressed);
@@ -60,14 +61,14 @@ public:
 	bool LoadMapping();
 	config_t* GetMappingStore();
 	
-	obs_data_t *CurrentTriggerString=obs_data_create();
+	OBSDataAutoRelease CurrentTriggerString=obs_data_create();
 	QString CurrentTriggerType="Hotkeys";
-	obs_data_t *CurrentActionString=obs_data_create();
+	OBSDataAutoRelease CurrentActionString = obs_data_create();
 	QString CurrentActionType="OBS";
 
-	obs_data_t *PreviousTriggerString;
+	OBSDataAutoRelease PreviousTriggerString;
 	QString PreviousTriggerType;
-	obs_data_t *PreviousActionString;
+	OBSDataAutoRelease PreviousActionString;
 	QString PreviousActionType;
 	int MappingExists(obs_data_t *triggerstring);
 signals:
@@ -97,7 +98,7 @@ public slots:
 private:
 	void SetDefaults();
 	config_t *MapConfig;
-	obs_data_array_t *MapArray;
+	OBSDataArrayAutoRelease MapArray;
 	Controller *controller;
 	
 	public:

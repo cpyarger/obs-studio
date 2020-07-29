@@ -86,7 +86,7 @@ void OBSController::ResetSceneItem(const char *sceneName, const char *itemName)
 		throw("requested scene doesn't exist");
 	}
 
-	obs_data_t *params = obs_data_create();
+	OBSDataAutoRelease params = obs_data_create();
 	obs_data_set_string(params, "scene-name", sceneName);
 	OBSDataItemAutoRelease itemField = obs_data_item_byname(params, "item");
 
@@ -494,7 +494,8 @@ std::map<QString, function<void(obs_data_t *)>> funcMap = {
 	 // CC ACTIONS
 	 {"control.action.Set_Volume",
 	  [](obs_data_t *data) {
-		 obs_data_t *val = obs_data_create_from_json(obs_data_get_string(data, "value"));
+		 OBSDataAutoRelease val = obs_data_create_from_json(
+			 obs_data_get_string(data, "value"));
 		  OBSController::SetVolume(obs_data_get_string(data, "audio_source"),
 			  pow(Utils::mapper(obs_data_get_int(val, "int")),3.0));
 		 obs_data_release(val);

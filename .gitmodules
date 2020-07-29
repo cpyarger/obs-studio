@@ -22,3 +22,6 @@
 [submodule "UI/QHotkey"]
 	path = UI/QHotkey
 	url = git@github.com:Skycoder42/QHotkey.git
+[submodule ".\\plugins\\obs-midi"]
+	path = .\\plugins\\obs-midi
+	url = https://github.com/cpyarger/obs-midi.git

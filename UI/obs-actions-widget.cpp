@@ -398,7 +398,7 @@ if (type == "OBS") {
 
 }
 void OBSActionsWidget::onChange() {
-	obs_data_t *data = obs_data_create();
+	OBSDataAutoRelease  data = obs_data_create();
 	obs_data_set_string(data, "action",AllActions_raw.at(AllActions.indexOf(ui->cb_obs_output_action->currentText())).toStdString().c_str());
 	obs_data_set_string(data, "scene",ui->cb_obs_output_scene->currentText().toStdString().c_str());
 	obs_data_set_string(data, "source",ui->cb_obs_output_source->currentText().toStdString().c_str());

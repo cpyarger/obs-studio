@@ -51,11 +51,16 @@ HKC::HKC() {
 
 void HKC::AddHK(QKeySequence ks)
 {
-	
-auto hotkey = new QHotkey(QKeySequence(ks), true, this);
-qDebug() << "Is Registered: " << hotkey->isRegistered();
-pressmap.insert(ks, false);
-QObject::connect(hotkey, &QHotkey::activated, this, &HKC::DoQHK);
+	if (!pressmap.contains(ks)) {
+		auto x = new KPair();
+		x->Sequence = ks;
+		x->pressed = false;
+		x->hotkey = new QHotkey(QKeySequence(ks), true, this);
+		pressmap.insert(ks, x);
+		qDebug() << "Is Registered: " << x->hotkey->isRegistered();
+		QObject::connect(x->hotkey, &QHotkey::activated, this,
+				 &HKC::DoQHK);
+	}
 }
 	
 
@@ -63,23 +68,23 @@ void HKC::DoQHK()
 {
 
 	//obs_data_t *data = obs_data_create();
-	obs_data_t *data = obs_data_create();
+	OBSDataAutoRelease data = obs_data_create();
 	QHotkey *x = qobject_cast<QHotkey *>(sender());
 	auto y = x->shortcut();
-	if (!pressmap[y]) {
-	
-		blog(1, "Qhotkey Pressed  -- %s", y.toString().toStdString().c_str());
-		obs_data_set_string(data, "Hotkey", y.toString().simplified().toStdString().c_str());
-		emit(Trigger("Hotkeys", data));
-		pressmap[y] = true;
-	} else {
-		blog(1, "Qhotkey Released  -- %s", y.toString().toStdString().c_str());
-		pressmap[y] = false;
-	}
+//if (!pressmap[y]->pressed) {
+	blog(1, "Qhotkey Pressed  -- %s", y.toString().toStdString().c_str());
+	obs_data_set_string(data, "Hotkey", y.toString().simplified().toStdString().c_str());
+//	pressmap[y]->pressed = true;
+	emit(Trigger("Hotkeys", data));
+		
+//	} else {
+// blog(1, "Qhotkey Released  -- %s", y.toString().toStdString().c_str());
+//  pressmap[y]->pressed = false;
+//	}
 }
 void HKC::DoHK(obs_key_combination_t hotkey, bool pressed)
 {
-	obs_data_t * data = obs_data_create();
+	OBSDataAutoRelease data = obs_data_create();
 	DStr str;
 	obs_key_combination_to_str(hotkey, str);
 	auto tstring = QT_UTF8(str);	
@@ -94,7 +99,7 @@ void HKC::DoHK(obs_key_combination_t hotkey, bool pressed)
 
 void HKC::loadmap(obs_data_t *map) {
 	if (QString(obs_data_get_string(map, "triggertype")).simplified() == "Hotkeys") {
-		obs_data_t *ts = obs_data_create_from_json(obs_data_get_string(map, "triggerstring"));
+		OBSDataAutoRelease ts = obs_data_create_from_json(obs_data_get_string(map, "triggerstring"));
 		
 		AddHK(QKeySequence(obs_data_get_string(ts,"Hotkey")));
 	}
@@ -102,7 +107,15 @@ void HKC::loadmap(obs_data_t *map) {
 
 HKC::~HKC()
 {
+
+	QMapIterator<QKeySequence, KPair*> i(pressmap);
+	while (i.hasNext()) {
+		i.next();
+		i.value()->hotkey->~QHotkey();
+		
+	}
 	delete this;
+
 }
 
 ControlMapper::~ControlMapper()
@@ -135,7 +148,7 @@ void ControlMapper::AddorEditMapping()
 	MapConfig = GetMappingStore();
 	
 	
-	obs_data_t *data = obs_data_create();
+	OBSDataAutoRelease data = obs_data_create();
 	config_set_bool(MapConfig, SECTION_NAME, PARAM_DEBUG, DebugEnabled);
 	config_set_bool(MapConfig, SECTION_NAME, PARAM_ALERT, AlertsEnabled);
 
@@ -164,7 +177,7 @@ void ControlMapper::AddorEditMapping()
 	editRow = -1;
 }
 void ControlMapper::SaveMapping() {
-	obs_data_t *newdata = obs_data_create();
+	OBSDataAutoRelease newdata = obs_data_create();
 	obs_data_set_array(newdata, "mapper", MapArray);
 
 	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES,
@@ -182,11 +195,11 @@ bool ControlMapper::LoadMapping()
 	DebugEnabled = config_get_bool(MapConfig, SECTION_NAME, PARAM_DEBUG);
 	AlertsEnabled = config_get_bool(MapConfig, SECTION_NAME, PARAM_ALERT);
 
-	obs_data_t *Data = obs_data_create_from_json(
-		config_get_string(
-			MapConfig, SECTION_NAME, PARAM_DEVICES));
+	OBSDataAutoRelease Data = obs_data_create_from_json(
+		config_get_string(MapConfig, SECTION_NAME, PARAM_DEVICES));
 	
 	MapArray = obs_data_get_array(Data, "mapper");
+	
 	emit(ClearTable());
 	for (int i = 0; i < obs_data_array_count(MapArray); i++) {
 		obs_data_t * data = obs_data_array_item(MapArray, i);
@@ -211,7 +224,7 @@ void ControlMapper::deleteEntry(int entry) {
 	
 	MapConfig = GetMappingStore();
 	obs_data_array_erase(MapArray, entry);
-	obs_data_t *newdata = obs_data_create();
+	OBSDataAutoRelease newdata = obs_data_create();
 	obs_data_set_array(newdata, "mapper", MapArray);
 	config_set_string(MapConfig, SECTION_NAME, PARAM_DEVICES, obs_data_get_json(newdata));
 	config_save(MapConfig);
@@ -237,7 +250,7 @@ int ControlMapper::MappingExists(obs_data_t *mapping)
 
 	for (int i = 0; i < count; i++) {
 		obs_data_t *item = obs_data_array_item(MapArray, i);
-		obs_data_t *listitem = obs_data_create_from_json(obs_data_get_string(item, "triggerstring"));
+		OBSDataAutoRelease listitem = obs_data_create_from_json(obs_data_get_string(item, "triggerstring"));
 		obs_data_set_string(listitem, "value", "");
 
 		if (QString(obs_data_get_json(mapping)).simplified() == QString(obs_data_get_json(listitem)).simplified()) {
@@ -257,7 +270,7 @@ void ControlMapper::TriggerEvent(QString type,obs_data_t *triggerstring )
 	int x = MappingExists(triggerstring);
 	if (x!=-1) {
 		obs_data_t *data = obs_data_array_item(MapArray, x);
-		obs_data_t *senddata = obs_data_create_from_json(obs_data_get_string(data, "actionstring"));
+		OBSDataAutoRelease senddata = obs_data_create_from_json(obs_data_get_string(data, "actionstring"));
 		obs_data_set_string(senddata, "value",obs_data_get_string(triggerstring, "value"));	   
 		//controller->execute(senddata);
 		emit(DoAction(senddata));
