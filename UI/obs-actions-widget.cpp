@@ -544,9 +544,7 @@ void OBSActionsWidget::obs_actions_select(QString action)
 			 here->ShowPair("item");
 		 }},
 		{"control.action.Set_Current_Scene",
-		 [](OBSActionsWidget *here) {
-			 here->ShowPair("scene");
-		 }},
+		 [](OBSActionsWidget *here) { here->ShowPair("scene"); }},
 		{"control.action.Set_Scene_Transition_Override",
 		 [](OBSActionsWidget *here) {
 			 here->ShowPair("scene");
