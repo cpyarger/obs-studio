@@ -4,7 +4,6 @@
 
 #include "obs-app.hpp"
 #include "qt-wrappers.hpp"
-#include "window-basic-main.hpp"
 #include "obs-hotkeys-widget.hpp"
 
 static inline bool operator!=(const obs_key_combination_t &c1,
@@ -23,8 +22,8 @@ OBSHotkeysWidget::OBSHotkeysWidget() : ui(new Ui::OBSHotkeysWidget)
 {
 	ui->setupUi(this);
 
-	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
-	ControlMapper *map = main->mapper;
+
+	ControlMapper *map = (ControlMapper *)obs_frontend_get_mapper();
 
 	connect(map, SIGNAL(EditTrigger(QString, obs_data_t *)), this,
 		SLOT(EditTrigger(QString, obs_data_t *)));
@@ -56,7 +55,7 @@ void OBSHotkeysWidget::dothing(QKeySequence edit)
 void OBSHotkeysWidget::EditTrigger(QString type, obs_data_t *trigger)
 {
 
-	if (type == "Hotkeys") {
+	if (obs_data_get_string(trigger, "Type") == "Hotkeys") {
 
 		ui->keySequenceEdit->setKeySequence(
 			QKeySequence(obs_data_get_string(trigger, "Hotkey")));

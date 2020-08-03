@@ -41,8 +41,6 @@ class OBSControlWidget;
 class OBSActionsWidget;
 #include "ui_OBSBasicSettings.h"
 #include "mapper.hpp"
-#include "obs-actions-widget.hpp"
-#include "obs-hotkeys-widget.hpp"
 #include "obs-frontend-api.h"
 #define VOLUME_METER_DECAY_FAST 23.53
 #define VOLUME_METER_DECAY_MEDIUM 11.76
@@ -394,18 +392,15 @@ public:
 private:
 	QComboBox *TriggerFilter;
 	QComboBox *ActionsFilter;
-	OBSActionsWidget *obsaw = new OBSActionsWidget();
-	OBSHotkeysWidget *obshw = new OBSHotkeysWidget();
+
 
 signals:
 	void onControlChange(QString Change);
 	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
 	void EditAction(QString ActionType, obs_data_t *TriggerType);
 public slots:
-	void AddRow(QString TType, obs_data_t *TString, QString AType,
-		    obs_data_t *AString);
-	void EditRow(int row, QString TType, obs_data_t *TString, QString AType,
-		     obs_data_t *AString);
+	void AddRow(obs_data_t *TString, obs_data_t *AString);
+	void EditRow(int row, obs_data_t *TString, obs_data_t *AString);
 	void DeleteRow();
 	void ResetToDefaults();
 	void ClearTable();

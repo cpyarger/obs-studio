@@ -13,33 +13,68 @@
 #include <QDoubleSpinBox>
 #include <QStackedWidget>
 #include <vector>
-#include "obs-controller.hpp"
 #include <map>
-#include <QHotkey/QHotkey/QHotkey>
 
-/************************Hotkeys bits*************************/
-class HKC : public QObject {
-	Q_OBJECT
 
-public:
-	struct KPair {
-		QKeySequence Sequence;
-		bool pressed;
-		QHotkey *hotkey;
+typedef struct {
+	obs_data_t *data;
+	obs_data_t *value;
+	const char *Type = obs_data_get_string(data, "Type");
+	void setType(const char *type)
+	{
+		obs_data_set_string(data, "Type", type);
 	};
-	QMap<QKeySequence, KPair *> pressmap;
-	HKC();
-	~HKC();
-	void DoHK(obs_key_combination_t event, bool pressed);
-	void AddHK(QKeySequence hk);
-	void remaphk(obs_data_t *map);
-signals:
-	void EmitHotkey(QString actiontype, QString action);
-	void Trigger(QString actiontype, obs_data_t *action);
-public slots:
-	void loadmap(obs_data_t *map);
-	void DoQHK();
-};
+	void setType(QString type)
+	{
+		obs_data_set_string(data, "Type", type.toStdString().c_str());
+	};
+	QString String = QString(Type);
+} Trigger;
+typedef struct {
+	
+	obs_data_t *data;
+	obs_data_t *value;
+	const char *Type = obs_data_get_string(data, "Type");
+
+	void setType(const char *type)
+	{
+		obs_data_set_string(data, "Type", type);
+	};
+	void setType(QString type)
+	{
+		obs_data_set_string(data, "Type", type.toStdString().c_str());
+	};
+	QString String = QString(Type);
+} Action;
+typedef struct {
+
+	Trigger trigger;
+	Action action;
+	obs_data_t *map;
+	void init(const char *mapson)
+	{
+		map = obs_data_create_from_json(mapson);
+		trigger.data = obs_data_create_from_json(obs_data_get_string(map,"trigger"));
+		action.data = obs_data_create_from_json(obs_data_get_string(map, "action"));
+
+	}
+	void init(obs_data_t *mapson) { init(obs_data_get_json(mapson));}
+	void init()
+	{
+		map = obs_data_create();
+		trigger.data = obs_data_create();
+		action.data = obs_data_create();
+	}
+	obs_data_t * setdata()
+	{
+		obs_data_set_string(map, "trigger",
+				    obs_data_get_json(trigger.data));
+		obs_data_set_string(map, "action",
+				    obs_data_get_json(action.data));
+		return map;
+	}
+	const char *GetJSON() { return obs_data_get_json(map); }
+} Mapping;
 
 class ControlMapper : public QObject {
 	Q_OBJECT
@@ -56,86 +91,42 @@ public:
 	bool LoadMapping();
 	config_t *GetMappingStore();
 
-	OBSDataAutoRelease CurrentTriggerString = obs_data_create();
+	obs_data_t * CurrentTriggerString = obs_data_create();
 	QString CurrentTriggerType = "Hotkeys";
-	OBSDataAutoRelease CurrentActionString = obs_data_create();
+	obs_data_t * CurrentActionString = obs_data_create();
 	QString CurrentActionType = "OBS";
 
-	OBSDataAutoRelease PreviousTriggerString;
+	obs_data_t * PreviousTriggerString;
 	QString PreviousTriggerType;
-	OBSDataAutoRelease PreviousActionString;
+	obs_data_t * PreviousActionString;
 	QString PreviousActionType;
 	int MappingExists(obs_data_t *triggerstring);
 signals:
-
-	void EditTrigger(QString TriggerType, obs_data_t *TriggerString);
-	void EditAction(QString ActionType, obs_data_t *Action);
-	void AddTableRow(QString TriggerType, obs_data_t *TriggerString,
-			 QString ActionType, obs_data_t *actionstring);
-	void EditTableRow(int row, QString TriggerType,
-			  obs_data_t *TriggerString, QString ActionType,
-			  obs_data_t *actionstring);
-	void ResetToDefaults();
-	void ClearTable();
+	void AddTableRow(obs_data_t* mapdata);
+	void EditTableRow(int row, obs_data_t *mapdata);
+	void EditTableRow(int row, obs_data_t *triggerdata,obs_data_t * actiondata);
+	void AddTableRow(obs_data_t *triggerdata, obs_data_t * actiondata);
 	void DoAction(obs_data_t *actionString);
 	void mapLoadAction(obs_data_t *map);
+	void ClearTable();
+	void EditAction(QString type, obs_data_t * data);
+	void EditTrigger(QString type, obs_data_t * data);
+	void ResetToDefaults();
 public slots:
 	void UpdateTrigger(QString type, obs_data_t *string);
 	void UpdateAction(QString type, obs_data_t *string);
 	void SaveMapping();
 	void AddorEditMapping();
+	void doload(obs_data_t *map);
 	void TriggerEvent(QString triggertype, obs_data_t *TriggerString);
 
 	void deleteEntry(int row);
 
 private:
+
 	void SetDefaults();
 	config_t *MapConfig;
-	OBSDataArrayAutoRelease MapArray;
-	Controller *controller;
+	obs_data_array* MapArray;
 
-public:
-	HKC *hotkeyController;
-	QStringList AllActions = {
-		"control.action.Disable_Preview",
-		"control.action.Disable_Source_Filter",
-		"control.action.Enable_Preview",
-		"control.action.Enable_Source_Filter",
-		"control.action.Next_Media",
-		"control.action.Pause_Recording",
-		"control.action.Play_Pause_Media",
-		"control.action.Previous_Media",
-		"control.action.Reset_Scene_Item",
-		"control.action.Reset_Stats",
-		"control.action.Restart_Media",
-		"control.action.Set_Audio_Monitor_Type",
-		"control.action.Set_Current_Scene",
-		"control.action.Set_Current_Transition",
-		"control.action.Set_Gain_Filter",
-		"control.action.Set_Media_Time",
-		"control.action.Set_Mute",
-		"control.action.Set_Scene_Item_Crop",
-		"control.action.Set_Scene_Item_Position",
-		"control.action.Set_Scene_Item_Render",
-		"control.action.Set_Scene_Item_Transform",
-		"control.action.Set_Scene_Transition_Override",
-		"control.action.Set_Source_Filter_Visibility",
-		"control.action.Set_Source_Name",
-		"control.action.Set_Source_Settings",
-		"control.action.Set_Sync_Offset",
-		"control.action.Set_Volume",
-		"control.action.Start_Recording",
-		"control.action.Start_Replay_Buffer",
-		"control.action.Start_Streaming",
-		"control.action.Stop_Media",
-		"control.action.Stop_Recording",
-		"control.action.Stop_Replay_Buffer",
-		"control.action.Stop_Streaming",
-		"control.action.Studio_Mode",
-		"control.action.Take_Source_Screenshot",
-		"control.action.Toggle_Mute",
-		"control.action.Toggle_Source_Filter",
-		"control.action.Toggle_Start_Stop_Streaming",
-		"control.action.Transition",
-		"control.action.Unpause_Recording"};
+
 };

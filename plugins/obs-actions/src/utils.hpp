@@ -46,6 +46,9 @@ class OBSActionsWidget;
 float mapper(int x);
 int mapper2(double x);
 bool is_number(const std::string &s);
+bool isJSon(QString val);
+
+
 std::string getMidiMessageType(int in);
 QStringList GetMediaSourceNames();
 QStringList GetAudioSourceNames();

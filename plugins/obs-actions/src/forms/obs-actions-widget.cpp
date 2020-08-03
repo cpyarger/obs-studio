@@ -21,8 +21,7 @@
 #include <qcheckbox.h>
 #include <QWidget>
 #include <QMainWindow>
-#include "utils.hpp"
-#include "window-basic-main.hpp"
+#include "../utils.hpp"
 
 OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget)
 {
@@ -40,8 +39,7 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget)
 	ui->cb_obs_output_audio_source->addItems(Utils::GetAudioSourceNames());
 	ui->cb_obs_output_media_source->addItems(Utils::GetMediaSourceNames());
 	ui->cb_obs_output_transition->addItems(Utils::GetTransitionsList());
-	OBSBasic *main = (OBSBasic *)obs_frontend_get_main_window();
-	ControlMapper *map = main->mapper;
+	ControlMapper *map = (ControlMapper*)obs_frontend_get_mapper();
 	TranslateActions();
 	connect(map, SIGNAL(EditAction(QString, obs_data_t *)), this,
 		SLOT(EditAction(QString, obs_data_t *)));
@@ -73,6 +71,8 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget)
 		this, SLOT(onChange()));
 	connect(ui->cb_obs_output_filter, SIGNAL(currentTextChanged(QString)),
 		this, SLOT(onChange()));
+
+
 	connect(ui->cb_obs_output_transition,
 		SIGNAL(currentTextChanged(QString)), this, SLOT(onChange()));
 	connect(ui->cb_obs_output_audio_source,
@@ -82,6 +82,10 @@ OBSActionsWidget::OBSActionsWidget() : ui(new Ui::OBSActionsWidget)
 	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
 	connect(this, SIGNAL(changed(QString, obs_data_t *)), map,
 		SLOT(UpdateAction(QString, obs_data_t *)));
+
+
+
+
 	setStyleSheet("QComboBox { min-width: 60px; }"
 		      "QComboBox QAbstractItemView { min-height: 100px;}");
 	this->listview = new QListView(this->ui->cb_obs_output_action);
@@ -413,7 +417,7 @@ void OBSActionsWidget::EditAction(QString type, obs_data_t *actions)
 }
 void OBSActionsWidget::onChange()
 {
-	OBSDataAutoRelease data = obs_data_create();
+	obs_data_t * data = obs_data_create();
 	obs_data_set_string(
 		data, "action",
 		AllActions_raw
@@ -445,6 +449,7 @@ void OBSActionsWidget::onChange()
 			    ui->cb_obs_output_media_source->currentText()
 				    .toStdString()
 				    .c_str());
+	obs_data_set_string(data, "Type", "OBS");
 	emit(changed("OBS", data));
 	//obs_data_release(data);
 }

@@ -16,7 +16,11 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include <iostream>
-#include "obs-frontend-api.h"
+#if __has_include(<obs-frontend-api.h>)
+#include <obs-frontend-api.h>
+#else
+#include <obs-frontend-api/obs-frontend-api.h>
+#endif
 #include "obs-controller.hpp"
 #include <QtCore/QSharedPointer>
 #include <obs.hpp>

@@ -75,6 +75,10 @@ bool Utils::is_number(const std::string &s)
 		++it;
 	return !s.empty() && it == s.end();
 }
+bool Utils::isJSon(QString val)
+{
+	return (val.startsWith(QChar('[')) || val.startsWith(QChar('{')));
+}
 bool Utils::inrange(int low, int high, int x)
 {
 

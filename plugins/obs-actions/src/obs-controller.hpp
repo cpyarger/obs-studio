@@ -80,7 +80,6 @@ public:
 	Controller();
 	~Controller();
 	QString TranslateActions(obs_data_t *actionData);
-	QString TranslateActions(obs_data_t *actionData);
 public slots:
 	void execute(obs_data_t *data);
 };

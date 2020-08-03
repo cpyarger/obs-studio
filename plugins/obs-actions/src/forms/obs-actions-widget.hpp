@@ -10,7 +10,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QListWidget>
-#include <QtWidgets/QSystemTrayIcon>
 #include <mapper.hpp>
 #include <obs.hpp>
 #include "ui_OBSActionsWidget.h"

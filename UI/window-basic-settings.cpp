@@ -348,10 +348,7 @@ OBSBasicSettings::OBSBasicSettings(QWidget *parent)
 	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	ui->setupUi(this);
-	ui->sw_output_widgets->addWidget(obsaw);
-	ui->cb_output_select->addItem("OBS");
-	ui->sw_input_widgets->addWidget(obshw);
-	ui->cb_input_select->addItem("Hotkeys");
+
 	main->EnableOutputs(false);
 	loadControlWindows();
 
@@ -894,13 +891,12 @@ OBSBasicSettings::~OBSBasicSettings()
 		ui->sw_output_widgets->removeWidget(main->OutputPages.at(i));
 		main->OutputPages.at(i)->setParent(nullptr);
 	}
-	delete obshw;
-	delete obsaw;
+
 }
 obs_data_t *OBSBasicSettings::MakeMap()
 {
 	// emit get input, emit getoutput, then grab string values and add to ui
-	OBSDataAutoRelease makemap = obs_data_create();
+	obs_data_t * makemap = obs_data_create();
 
 	obs_data_set_string(
 		makemap, "triggertype",
@@ -1795,7 +1791,7 @@ OBSBasicSettings::CreateEncoderPropertyView(const char *encoder,
 		int ret = GetProfilePath(encoderJsonPath,
 					 sizeof(encoderJsonPath), path);
 		if (ret > 0) {
-			OBSDataAutoRelease data =
+			obs_data_t* data =
 				obs_data_create_from_json_file_safe(
 					encoderJsonPath, "bak");
 			obs_data_apply(settings, data);
@@ -4613,16 +4609,13 @@ void OBSBasicSettings::loadControlWindows()
 	connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this,
 		SLOT(do_table_selection(int, int)));
 	connect(map,
-		SIGNAL(AddTableRow(QString, obs_data_t *, QString,
-				   obs_data_t *)),
+		SIGNAL(AddTableRow(obs_data_t *, obs_data_t *)),
 		this,
-		SLOT(AddRow(QString, obs_data_t *, QString, obs_data_t *)));
+		SLOT(AddRow(obs_data_t *,  obs_data_t *)));
 	connect(map,
-		SIGNAL(EditTableRow(int, QString, obs_data_t *, QString,
-				    obs_data_t *)),
+		SIGNAL(EditTableRow(int, obs_data_t *, obs_data_t *)),
 		this,
-		SLOT(EditRow(int, QString, obs_data_t *, QString,
-			     obs_data_t *)));
+		SLOT(EditRow(int, obs_data_t *, obs_data_t *)));
 	connect(ui->btn_obs_add_control, SIGNAL(clicked()), map,
 		SIGNAL(ResetToDefaults()));
 	connect(map, SIGNAL(ResetToDefaults()), this, SLOT(ResetToDefaults()));
@@ -4658,7 +4651,6 @@ void OBSBasicSettings::loadControlWindows()
 				(QWidget *)main->InputPages.at(i));
 		}
 	} else {
-
 		ui->splitter_input->hide();
 		ui->tableWidget->hideColumn(0);
 		ui->label_70->setText("Hotkeys");
@@ -4696,10 +4688,10 @@ void OBSBasicSettings::do_table_selection(int row, int col)
 	ui->btn_obs_add_control->setDisabled(true);
 	ui->btn_obs_delete_control->show();
 	QString triggertype = ui->tableWidget->item(row, 0)->text();
-	OBSDataAutoRelease triggerstring = obs_data_create_from_json(
+	obs_data_t* triggerstring = obs_data_create_from_json(
 		ui->tableWidget->item(row, 1)->text().toStdString().c_str());
 	QString actiontype = ui->tableWidget->item(row, 2)->text();
-	OBSDataAutoRelease actionstring = obs_data_create_from_json(
+	obs_data_t* actionstring = obs_data_create_from_json(
 		ui->tableWidget->item(row, 3)->text().toStdString().c_str());
 	ui->cb_input_select->setCurrentText(triggertype);
 	ui->cb_output_select->setCurrentText(actiontype);
@@ -4707,38 +4699,36 @@ void OBSBasicSettings::do_table_selection(int row, int col)
 	emit(EditTrigger(triggertype, triggerstring));
 }
 
-void OBSBasicSettings::AddRow(QString TType, obs_data_t *TString, QString AType,
-			      obs_data_t *AString)
+void OBSBasicSettings::AddRow(obs_data_t *TString, obs_data_t *AString)
 {
 	int row = ui->tableWidget->rowCount();
 	ui->tableWidget->insertRow(row);
-	ui->tableWidget->setItem(row, 0,
-				 new QTableWidgetItem(TType.simplified()));
+	ui->tableWidget->setItem(row, 0,new QTableWidgetItem(obs_data_get_string(TString,"Type")));
 	ui->tableWidget->setItem(
 		row, 1,
 		new QTableWidgetItem(
 			QString(obs_data_get_json(TString)).simplified()));
 	ui->tableWidget->setItem(row, 2,
-				 new QTableWidgetItem(AType.simplified()));
+		new QTableWidgetItem(obs_data_get_string(AString, "Type")));
 	ui->tableWidget->setItem(
 		row, 3,
 		new QTableWidgetItem(
 			QString(obs_data_get_json(AString)).simplified()));
 }
-void OBSBasicSettings::EditRow(int row, QString TType, obs_data_t *TString,
-			       QString AType, obs_data_t *AString)
+void OBSBasicSettings::EditRow(int row, obs_data_t *TString,
+			       obs_data_t *AString)
 {
 
 	//ui->tableWidget->removeRow(row);
 	//ui->tableWidget->insertRow(row);
 	ui->tableWidget->setItem(row, 0,
-				 new QTableWidgetItem(TType.simplified()));
+		new QTableWidgetItem(obs_data_get_string(TString, "Type")));
 	ui->tableWidget->setItem(
 		row, 1,
 		new QTableWidgetItem(
 			QString(obs_data_get_json(TString)).simplified()));
 	ui->tableWidget->setItem(row, 2,
-				 new QTableWidgetItem(AType.simplified()));
+				 new QTableWidgetItem(obs_data_get_string(AString,"Type")));
 	ui->tableWidget->setItem(
 		row, 3,
 		new QTableWidgetItem(
