@@ -34,21 +34,17 @@ SourceToolbar::SourceToolbar(QWidget *parent, OBSSource source)
 {
 }
 
-SourceToolbar::~SourceToolbar()
-{
-	if (oldData)
-		obs_data_release(oldData);
-}
-
 void SourceToolbar::SaveOldProperties(obs_source_t *source)
 {
 	if (oldData)
 		obs_data_release(oldData);
+
 	oldData = obs_data_create();
 	obs_data_t *oldSettings = obs_source_get_settings(source);
 	obs_data_apply(oldData, oldSettings);
 	obs_data_set_string(oldData, "undo_sname", obs_source_get_name(source));
 	obs_data_release(oldSettings);
+	obs_data_release(oldData);
 }
 
 void SourceToolbar::SetUndoProperties(obs_source_t *source)

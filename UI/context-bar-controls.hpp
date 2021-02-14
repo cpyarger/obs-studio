@@ -29,7 +29,6 @@ protected:
 
 public:
 	SourceToolbar(QWidget *parent, OBSSource source);
-	~SourceToolbar();
 
 	OBSSource GetSource() { return OBSGetStrongRef(weakSource); }
 
