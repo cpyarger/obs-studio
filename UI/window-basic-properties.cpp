@@ -26,6 +26,7 @@
 #include <QScreen>
 #include <QWindow>
 #include <QMessageBox>
+#include <qpointer.h>
 
 using namespace std;
 
@@ -344,7 +345,8 @@ void OBSBasicProperties::on_buttonBox_clicked(QAbstractButton *button)
 
 		std::string scene_name =
 			obs_source_get_name(main->GetCurrentSceneSource());
-		auto undo_redo = [this, scene_name](const std::string &data) {
+
+		auto undo_redo = [scene_name](const std::string &data) {
 			obs_data_t *settings =
 				obs_data_create_from_json(data.c_str());
 			obs_source_t *source = obs_get_source_by_name(
@@ -353,7 +355,9 @@ void OBSBasicProperties::on_buttonBox_clicked(QAbstractButton *button)
 
 			obs_source_t *scene_source =
 				obs_get_source_by_name(scene_name.c_str());
-			main->SetCurrentScene(source);
+
+			OBSBasic::Get()->SetCurrentScene(source);
+
 			obs_source_release(scene_source);
 
 			obs_data_release(settings);
