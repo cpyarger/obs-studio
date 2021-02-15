@@ -27,6 +27,9 @@
 
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <obs-data.h>
+#include <obs.h>
+#include <util/base.h>
 #include <vector>
 #include <string>
 #include <QMenu>
@@ -222,10 +225,9 @@ OBSBasicFilters::~OBSBasicFilters()
 	obs_data_set_array(wrapper, "undo_array", data_array);
 	std::string redo_data(obs_data_get_json(wrapper));
 
-	if (changed && redo_data.compare(gundo_data) != 0)
-		main->undo_s.add_action(
-			QTStr("undo.Filters").arg(obs_source_get_name(source)),
-			undo, undo, gundo_data, redo_data, NULL);
+	// if (changed && redo_data.compare(gundo_data) != 0)
+	// 	main->undo_s.add_action(QTStr("undo.Filters").arg(obs_source_get_name(source)),
+	// 				undo, undo, gundo_data, redo_data, NULL);
 
 	obs_data_release(wrapper);
 	obs_data_array_release(data_array);
@@ -293,16 +295,78 @@ void OBSBasicFilters::UpdatePropertiesView(int row, bool async)
 
 	obs_data_t *settings = obs_source_get_settings(filter);
 
+	auto filter_change = [](void *vp, obs_data_t *old_settings,
+				obs_data_t *new_settings) {
+		obs_source_t *source = reinterpret_cast<obs_source_t *>(vp);
+		obs_source_t *parent = obs_filter_get_parent(source);
+		// obs_data_t *old_settings = obs_source_get_settings(source);
+		OBSBasic *main = OBSBasic::Get();
+
+		obs_data_t *redo_wrapper = obs_data_create();
+		obs_data_set_string(redo_wrapper, "name",
+				    obs_source_get_name(source));
+		obs_data_set_string(redo_wrapper, "settings",
+				    obs_data_get_json(new_settings));
+		obs_data_set_string(redo_wrapper, "parent",
+				    obs_source_get_name(parent));
+
+		obs_data_t *undo_wrapper = obs_data_create();
+		obs_data_set_string(undo_wrapper, "name",
+				    obs_source_get_name(source));
+		obs_data_set_string(undo_wrapper, "settings",
+				    obs_data_get_json(old_settings));
+		obs_data_set_string(undo_wrapper, "parent",
+				    obs_source_get_name(parent));
+
+		auto undo_redo = [](const std::string &data) {
+			obs_data_t *dat =
+				obs_data_create_from_json(data.c_str());
+			obs_source_t *parent_source = obs_get_source_by_name(
+				obs_data_get_string(dat, "parent"));
+			const char *filter_name =
+				obs_data_get_string(dat, "name");
+			obs_source_t *filter = obs_source_get_filter_by_name(
+				parent_source, filter_name);
+			obs_data_t *settings = obs_data_create_from_json(
+				obs_data_get_string(dat, "settings"));
+
+			obs_source_update(filter, settings);
+
+			obs_data_release(dat);
+			obs_data_release(settings);
+			obs_source_release(filter);
+			obs_source_release(parent_source);
+		};
+		std::string name = std::string(obs_source_get_name(source));
+		std::string undo_data = obs_data_get_json(undo_wrapper);
+		std::string redo_data = obs_data_get_json(redo_wrapper);
+		main->undo_s.add_action(QTStr("Undo.Filters").arg(name.c_str()),
+					undo_redo, undo_redo, undo_data,
+					redo_data, NULL);
+
+		obs_data_release(redo_wrapper);
+		obs_data_release(undo_wrapper);
+		obs_data_release(old_settings);
+
+		obs_source_update(source, new_settings);
+		// blog(LOG_DEBUG, "%s\n", obs_source_get_name(t));
+	};
+
 	view = new OBSPropertiesView(
 		settings, filter,
 		(PropertiesReloadCallback)obs_source_properties,
-		(PropertiesUpdateCallback)obs_source_update);
+		(PropertiesUpdateCallback)filter_change);
 
-	auto res = std::find(add_filters.begin(), add_filters.end(),
-			     obs_source_get_name(filter));
-	if (res == add_filters.end())
-		connect(view, &OBSPropertiesView::Changed,
-			[&]() { changed = true; });
+	// FIXME: What if when the filter is created, it state is saved, and then any updated change
+	// aftewards is stored and then passed to undo redo callbacks?
+	//
+	// auto res = std::find(add_filters.begin(), add_filters.end(),
+	// 		     obs_source_get_name(filter));
+	// if (res == add_filters.end())
+	connect(view, &OBSPropertiesView::Changed, [&]() {
+		blog(LOG_DEBUG, "updated");
+		changed = true;
+	});
 
 	updatePropertiesSignal.Connect(obs_source_get_signal_handler(filter),
 				       "update_properties",
@@ -337,6 +401,7 @@ void OBSBasicFilters::AddFilter(OBSSource filter, bool focus)
 	list->addItem(item);
 	if (focus)
 		list->setCurrentItem(item);
+
 	SetupVisibilityItem(list, item, filter);
 }
 

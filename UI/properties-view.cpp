@@ -31,6 +31,7 @@
 
 #include <cstdlib>
 #include <initializer_list>
+#include <obs-data.h>
 #include <string>
 
 using namespace std;
@@ -1885,6 +1886,9 @@ void WidgetInfo::ControlChanged()
 	const char *setting = obs_property_name(property);
 	obs_property_type type = obs_property_get_type(property);
 
+	obs_data_t *old_settings = obs_data_create();
+	obs_data_apply(old_settings, view->settings);
+
 	switch (type) {
 	case OBS_PROPERTY_INVALID:
 		return;
@@ -1934,7 +1938,7 @@ void WidgetInfo::ControlChanged()
 	}
 
 	if (view->callback && !view->deferUpdate)
-		view->callback(view->obj, view->settings);
+		view->callback(view->obj, old_settings, view->settings);
 
 	view->SignalChanged();
 

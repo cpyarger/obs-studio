@@ -10,7 +10,8 @@ class OBSPropertiesView;
 class QLabel;
 
 typedef obs_properties_t *(*PropertiesReloadCallback)(void *obj);
-typedef void (*PropertiesUpdateCallback)(void *obj, obs_data_t *settings);
+typedef void (*PropertiesUpdateCallback)(void *obj, obs_data_t *old_settings,
+					 obs_data_t *new_settings);
 
 /* ------------------------------------------------------------------------- */
 
@@ -142,6 +143,7 @@ public:
 
 	inline obs_data_t *GetSettings() const { return settings; }
 
-	inline void UpdateSettings() { callback(obj, settings); }
+	//FIXME: I have no idea if this works correctly
+	inline void UpdateSettings() { callback(obj, settings, settings); }
 	inline bool DeferUpdate() const { return deferUpdate; }
 };
