@@ -7764,7 +7764,6 @@ void OBSBasic::Nudge(int dist, MoveDir dir)
 		connect(nudge_timer, &QTimer::timeout, nudge_timer,
 			&QTimer::deleteLater);
 		nudge_timer->setSingleShot(true);
-		nudge_timer->start(1000);
 
 		obs_data_release(wrapper);
 	}

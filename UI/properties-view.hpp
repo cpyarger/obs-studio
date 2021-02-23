@@ -1,7 +1,10 @@
 #pragma once
 
 #include "vertical-scroll-area.hpp"
+#include <obs-data.h>
 #include <obs.hpp>
+#include <qtimer.h>
+#include <QPointer>
 #include <vector>
 #include <memory>
 
@@ -12,6 +15,7 @@ class QLabel;
 typedef obs_properties_t *(*PropertiesReloadCallback)(void *obj);
 typedef void (*PropertiesUpdateCallback)(void *obj, obs_data_t *old_settings,
 					 obs_data_t *new_settings);
+typedef void (*PropertiesVisualUpdateCb)(void *obj, obs_data_t *settings);
 
 /* ------------------------------------------------------------------------- */
 
@@ -24,6 +28,9 @@ private:
 	OBSPropertiesView *view;
 	obs_property_t *property;
 	QWidget *widget;
+	QPointer<QTimer> update_timer;
+	bool recently_updated = false;
+	obs_data_t *old_settings_cache;
 
 	void BoolChanged(const char *setting);
 	void IntChanged(const char *setting);
@@ -84,6 +91,7 @@ private:
 	std::string type;
 	PropertiesReloadCallback reloadCallback;
 	PropertiesUpdateCallback callback = nullptr;
+	PropertiesVisualUpdateCb cb = nullptr;
 	int minSize;
 	std::vector<std::unique_ptr<WidgetInfo>> children;
 	std::string lastFocused;
@@ -136,7 +144,9 @@ signals:
 public:
 	OBSPropertiesView(OBSData settings, void *obj,
 			  PropertiesReloadCallback reloadCallback,
-			  PropertiesUpdateCallback callback, int minSize = 0);
+			  PropertiesUpdateCallback callback,
+			  PropertiesVisualUpdateCb cb = nullptr,
+			  int minSize = 0);
 	OBSPropertiesView(OBSData settings, const char *type,
 			  PropertiesReloadCallback reloadCallback,
 			  int minSize = 0);

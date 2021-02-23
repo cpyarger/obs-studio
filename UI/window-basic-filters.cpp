@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************/
 
+#include "properties-view.hpp"
 #include "window-namedialog.hpp"
 #include "window-basic-main.hpp"
 #include "window-basic-filters.hpp"
@@ -299,20 +300,18 @@ void OBSBasicFilters::UpdatePropertiesView(int row, bool async)
 				obs_data_t *new_settings) {
 		obs_source_t *source = reinterpret_cast<obs_source_t *>(vp);
 		obs_source_t *parent = obs_filter_get_parent(source);
-		// obs_data_t *old_settings = obs_source_get_settings(source);
+		const char *source_name = obs_source_get_name(source);
 		OBSBasic *main = OBSBasic::Get();
 
 		obs_data_t *redo_wrapper = obs_data_create();
-		obs_data_set_string(redo_wrapper, "name",
-				    obs_source_get_name(source));
+		obs_data_set_string(redo_wrapper, "name", source_name);
 		obs_data_set_string(redo_wrapper, "settings",
 				    obs_data_get_json(new_settings));
 		obs_data_set_string(redo_wrapper, "parent",
 				    obs_source_get_name(parent));
 
 		obs_data_t *undo_wrapper = obs_data_create();
-		obs_data_set_string(undo_wrapper, "name",
-				    obs_source_get_name(source));
+		obs_data_set_string(undo_wrapper, "name", source_name);
 		obs_data_set_string(undo_wrapper, "settings",
 				    obs_data_get_json(old_settings));
 		obs_data_set_string(undo_wrapper, "parent",
@@ -355,18 +354,18 @@ void OBSBasicFilters::UpdatePropertiesView(int row, bool async)
 	view = new OBSPropertiesView(
 		settings, filter,
 		(PropertiesReloadCallback)obs_source_properties,
-		(PropertiesUpdateCallback)filter_change);
+		(PropertiesUpdateCallback)filter_change,
+		(PropertiesVisualUpdateCb)obs_source_update);
 
-	// FIXME: What if when the filter is created, it state is saved, and then any updated change
 	// aftewards is stored and then passed to undo redo callbacks?
 	//
 	// auto res = std::find(add_filters.begin(), add_filters.end(),
 	// 		     obs_source_get_name(filter));
 	// if (res == add_filters.end())
-	connect(view, &OBSPropertiesView::Changed, [&]() {
-		blog(LOG_DEBUG, "updated");
-		changed = true;
-	});
+	// connect(view, &OBSPropertiesView::Changed, [&]() {
+	// 	blog(LOG_DEBUG, "updated");
+	// 	changed = true;
+	// });
 
 	updatePropertiesSignal.Connect(obs_source_get_signal_handler(filter),
 				       "update_properties",
