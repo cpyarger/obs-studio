@@ -52,6 +52,7 @@ Makefile
 
 #python
 __pycache__
+/.venv/
 
 #sphinx
 /docs/sphinx/_build/*
