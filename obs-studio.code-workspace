@@ -1,0 +1,105 @@
+{
+	"folders": [
+		{
+			"name": "obs-studio",
+			"path": "./"			
+		},
+		{
+			"name": "plugins",
+			"path": "./plugins"
+		}
+	],
+	
+	"settings": {	
+		"C_Cpp.default.includePath": ["./**","/usr/include/**"]
+	},
+	"launch":{
+		"recommendations": [
+			"ms-vscode.cmake-tools",
+			"cschlosser.doxdocgen",
+			"ms-vscode.cpptools-extension-pack",
+			"tonka3000.qtvsctools",
+			"twxs.cmake",
+			"ms-vscode.cpptools-themes",
+			"jeff-hykin.better-cpp-syntax",
+			"github.codespaces"
+		],
+		"configurations": [
+			{
+				"name": "(gdb) Launch",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder:obs-studio}/build/obs-studio-portable/bin/64bit/obs",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder:obs-studio}/build/obs-studio-portable/bin/64bit",
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"preLaunchTask": "linux-build",
+				"setupCommands": [
+					{
+						"description": "Enable pretty-printing for gdb",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"visualizerFile": "${env:HOME}/.config/Code/User/workspaceStorage/0031bfbc26bf10a8938e40bcfe4a4eab/tonka3000.qtvsctools/qt.natvis.xml"
+			}
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "linux-configure",
+				"type": "shell",
+				"command": [
+					"cd build;",
+					"cmake -DUNIX_STRUCTURE=0 -DCMAKE_INSTALL_PREFIX='${workspaceFolder:obs-studio}/build/obs-studio-portable' -DBUILD_BROWSER=ON -DCEF_ROOT_DIR='../../cef_binary_4280_linux64' ..;"
+				]
+			},
+			{
+				"label": "linux-build",
+				"dependsOn": [
+					"linux-configure"
+				],
+				"type": "shell",
+				"command": [
+					"cd build;",
+					"make -w -j8 install;"
+				],
+				"problemMatcher": []
+			},
+			{
+				"label": "Prepare Ubuntu",
+				"type": "shell",
+				"options": {
+					"cwd": "${workspaceFolder:obs-studio}"
+				},
+				"command": [
+					
+					"mkdir -p ./build/OBS ;",
+					"cd ./build/OBS ;",
+					"pkexec apt-get install build-essential checkinstall cmake git libmbedtls-dev libasound2-dev libavcodec-dev libavdevice-dev libavfilter-dev libavformat-dev libavutil-dev libcurl4-openssl-dev libfdk-aac-dev libfontconfig-dev libfreetype6-dev libgl1-mesa-dev libjack-jackd2-dev libjansson-dev libluajit-5.1-dev libpulse-dev libqt5x11extras5-dev libspeexdsp-dev libswresample-dev libswscale-dev libudev-dev libv4l-dev libvlc-dev libwayland-dev libx11-dev libx264-dev libxcb-shm0-dev libxcb-xinerama0-dev libxcomposite-dev libxinerama-dev pkg-config python3-dev qtbase5-dev qtbase5-private-dev libqt5svg5-dev swig libxcb-randr0-dev libxcb-xfixes0-dev libx11-xcb-dev libxcb1-dev libxss-dev libnss3-dev ;",
+					"wget https://cdn-fastly.obsproject.com/downloads/cef_binary_4280_linux64.tar.bz2 ;",
+					"tar -xjf ./cef_binary_4280_linux64.tar.bz2 ;",
+				],
+				"problemMatcher": []
+			},
+			{
+				"label": "grab obs-midi",
+				"type": "shell",
+				"command": [
+					"mkdir -p ${workspaceFolder:obs-studio}/build/OBS ;",
+					"echo plugins/obs-midi >> ${workspaceFolder:obs-studio}/.git/info/exclude ;",
+					"echo plugins/CMakeLists.txt >> ${workspaceFolder:obs-studio}/.git/info/exclude ;",
+					"cd ${workspaceFolder:obs-studio}/plugins ;",
+					"git clone --recursive https://github.com/cpyarger/obs-midi.git ;",
+					"echo 'add_subdirectory(obs-midi)'>>CMakeLists.txt ;"
+				],
+				"problemMatcher": []
+			}
+		]
+	},
+}
