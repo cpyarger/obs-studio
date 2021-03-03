@@ -15,7 +15,8 @@
 		"xaver.clang-format",
 		"go2sh.cmake-integration-vscode",
 		"ms-vscode.cpptools",
-		"ms-azuretools.vscode-docker"
+		"ms-azuretools.vscode-docker",
+		"ms-vscode.cpptools-extension-pack"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

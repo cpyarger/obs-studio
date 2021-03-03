@@ -5,6 +5,8 @@
         "github.codespaces",
         "ms-vscode-remote.remote-containers",
         "xaver.clang-format",
-        "go2sh.cmake-integration-vscode"
+        "go2sh.cmake-integration-vscode",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack"
     ]
 }
