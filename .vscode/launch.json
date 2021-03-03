@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "visualizerFile": "${env:HOME}/.config/Code/User/workspaceStorage/0031bfbc26bf10a8938e40bcfe4a4eab/tonka3000.qtvsctools/qt.natvis.xml"
+            "visualizerFile": "/home/cpyarger/.config/Code/User/workspaceStorage/baea8c1237d17b82e6aacb39a0a4d8ce/tonka3000.qtvsctools/qt.natvis.xml"
         }
     ]
 }
