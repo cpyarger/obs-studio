@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder:obs-studio}/build/obs-studio-portable/bin/64bit/obs",
             "args": [],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder:obs-studio}/build/obs-studio-portable/bin/64bit",
             "environment": [],
             "externalConsole": false,
