@@ -12,6 +12,9 @@
 #include <obs-frontend-api.h>
 #include <qobjectdefs.h>
 
+// Advanced settings are not stored in config like simple settings. This reads in the file where
+// advanced settings are saved and updates them. This triggers a listener in OBS which will reload
+// and apply the settings.
 void change_advanced(Json &parsed)
 {
     char encoderJsonPath[512];
@@ -35,15 +38,16 @@ void change_advanced(Json &parsed)
     }
 }
 
+// We create a data object and apply our stream/key settings to the data object. Then, we create
+// a custom service object based upon rtmp_custom and apply those settings. We then set this service
+// as the current streaming service so when a stream is started this service will get used.
 void change_stream(Json &parsed)
 {
     obs_data_t *service_settings = obs_data_create();
-    obs_data_set_string(service_settings, "server",
-                        parsed["stream"]["server"].string_value().c_str());
+    obs_data_set_string(service_settings, "server", parsed["stream"]["server"].string_value().c_str());
     obs_data_set_string(service_settings, "key", parsed["stream"]["key"].string_value().c_str());
 
-    obs_service_t *mike_service =
-            obs_service_create("rtmp_custom", "MikeService", service_settings, nullptr);
+    obs_service_t *mike_service = obs_service_create("rtmp_custom", "MikeService", service_settings, nullptr);
     obs_frontend_set_streaming_service(mike_service);
 
     obs_service_release(mike_service);
@@ -54,6 +58,8 @@ struct ResolutionParts {
     int x, y;
 };
 
+// Splits up a resolution string into 2 components.
+// Example: 1920x1080 -> 1920 and 1080
 ResolutionParts parse_resolution(std::string resolution)
 {
     auto rp = ResolutionParts{0, 0};
@@ -66,6 +72,7 @@ ResolutionParts parse_resolution(std::string resolution)
     return rp;
 }
 
+// Creates dialog in order to update the server/keys passed from the server.
 class ServerDialog : public QDialog {
     Q_OBJECT
     private:
@@ -84,6 +91,7 @@ class ServerDialog : public QDialog {
         gridLayout->setColumnStretch(2, 1);
         gridLayout->setColumnStretch(3, 1);
 
+        // Creates the inputs
         auto ok_button = new QPushButton("Ok");
         auto cancel_button = new QPushButton("Cancel");
         server = new QLineEdit(curr_server.c_str());
@@ -91,7 +99,7 @@ class ServerDialog : public QDialog {
         auto server_label = new QLabel("Server:");
         auto key_label = new QLabel("Key:");
 
-        // Set this if you want key to be hidden
+        // Uncomment this if you want key to be hidden
         // key->setEchoMode(QLineEdit::EchoMode::Password);
 
         gridLayout->addWidget(server, 1, 0, 1, 4);
@@ -101,12 +109,15 @@ class ServerDialog : public QDialog {
         gridLayout->addWidget(server_label, 0, 0, 1, 3);
         gridLayout->addWidget(key_label, 2, 0, 1, 3);
 
+        // If the accept but is pressed, emit an event (which will save the updated values)
+        // and close the dialog and lastly free resources.
         connect(ok_button, &QPushButton::clicked, [this]() {
             emit accepted(server->text().toStdString(), key->text().toStdString());
             close();
             deleteLater();
         });
 
+        // If the cancel button is pressed, simply close and free resources.
         connect(cancel_button, &QPushButton::clicked, [this]() {
             close();
             deleteLater();
@@ -119,9 +130,10 @@ class ServerDialog : public QDialog {
     void accepted(std::string server_url, std::string key);
 };
 
+// Use the curl callback already defined in login
 extern int curl_string_callback(void *data, int size, int cnt, void *user);
 
-
+// Take the current settings and serialize them in json. Then send them to server
 void DashboardWidget::send_update(std::string url)
 {
     CURL *curl;
@@ -138,28 +150,23 @@ void DashboardWidget::send_update(std::string url)
         headers = curl_slist_append(headers, "Content-Type: application/json");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-        Json user = Json::object {
-        {"id", id},
-        {"name", name}
-        };
+        // User object
+        Json user = Json::object{{"id", id}, {"name", name}};
 
+        // Cpu percentage
         double cpu_usage = os_cpu_usage_info_query(cpu_info);
 
+        // Iterate through our current saved information and serialize it
         Json::array json_servers = Json::array{};
         for (const auto &[key, value] : server_information) {
-            json_servers.emplace_back(Json::object {
-                {"name", key},
-                {"status", value.widget->isChecked()},
-                {"url", value.server},
-                {"key", value.key}
-                });
+            json_servers.emplace_back(Json::object{{"name", key},
+                                                   {"status", value.widget->isChecked()},
+                                                   {"url", value.server},
+                                                   {"key", value.key}});
         }
 
-        Json payload = Json::object{
-        {"user", user},
-        {"cpu", cpu_usage},
-        {"servers", json_servers}
-    };
+        // Put all the stored json objects together to serialize it
+        Json payload = Json::object{{"user", user}, {"cpu", cpu_usage}, {"servers", json_servers}};
 
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.dump().c_str());
         curl_easy_perform(curl);
@@ -167,67 +174,21 @@ void DashboardWidget::send_update(std::string url)
         std::string err;
         Json j = Json::parse(res, err);
 
+        // Verified that the information was sent/received
         if (j["status"].string_value() != "ok" || !err.empty())
-            blog(LOG_ERROR, "Mike Plugin: Error in sending update to server: %s \n Error: %s \n Status: %s", url.c_str(), err.c_str(), res.c_str());
+            blog(LOG_ERROR,
+                 "Mike Plugin: Error in sending update to server: %s \n Error: %s \n Status: %s",
+                 url.c_str(), err.c_str(), res.c_str());
         else
             blog(LOG_DEBUG, "Mike Plugin: Successfull update: %s", url.c_str());
-
     }
     curl_easy_cleanup(curl);
 };
 
-DashboardWidget::DashboardWidget(QWidget *parent, Json parsed) : QWidget(parent)
+
+// Updates all the settings that are stored in config in memory
+void update_settings(Json &parsed)
 {
-    auto parsed_servers = parsed["servers"].array_items();
-
-    cpu_info = os_cpu_usage_info_start();
-
-    id = parsed["user"]["id"].string_value();
-    name = parsed["user"]["name"].string_value();
-
-    gridLayout = new QGridLayout(this);
-
-    int inc = 0;
-    for (const auto &server : parsed_servers) {
-        std::string name = server["name"].string_value();
-
-        Switch *tswitch = new Switch();
-        tswitch->setLayoutDirection(Qt::RightToLeft);
-        tswitch->setChecked(server["status"] == "on");
-
-        connect(tswitch, &SelectionControl::stateChanged, [&]() {
-            send_update("https://mdca.co.com/api/obs_server_update");
-        });
-
-        server_information[name] =
-                ServerInformation{server["url"].string_value(), server["key"].string_value(), tswitch};
-
-        QLabel *label = new QLabel(name.c_str());
-        QFont f("Arial", 12);
-        label->setFont(f);
-
-        QPushButton *button = new QPushButton("Modify");
-        connect(button, &QPushButton::clicked, [name, this]() {
-            ServerInformation &server_info = server_information.at(name);
-
-            ServerDialog *dialog = new ServerDialog(name, server_info.server, server_info.key);
-
-            connect(dialog, &ServerDialog::accepted, [name, this](std::string server_url, std::string key) {
-                server_information[name].server = server_url;
-                server_information[name].key = key;
-                send_update("https://mdca.co.com/api/obs_server_update");
-            });
-
-            dialog->show();
-        });
-
-        gridLayout->addWidget(label, inc, 0);
-        gridLayout->addWidget(button, inc, 1);
-        gridLayout->addWidget(tswitch, inc, 2);
-
-        inc++;
-    }
-
     auto op = parsed["output"];
 
     config_t *profile = obs_frontend_get_profile_config();
@@ -258,26 +219,99 @@ DashboardWidget::DashboardWidget(QWidget *parent, Json parsed) : QWidget(parent)
     change_advanced(parsed);
     change_stream(parsed);
 
+    // Resets the video because it can cause weirdness when settings the resolution
     obs_frontend_reset_video();
 
     config_save(profile);
+}
 
+// When the dashboard is created (that is logged in), it will take the parsed items and do several things:
+// 1) It will add a label, button, and switch for each server on the widget to interact with.
+// 2) For each modify button, it will register a callback to open a dialog to update server/key information.
+// 3) It will take the parsed json, and apply all the settings.
+// 4) It will start a timer that will send a heartbeat to the server every minute.
+DashboardWidget::DashboardWidget(QWidget *parent, Json parsed) : QWidget(parent)
+{
+    auto parsed_servers = parsed["servers"].array_items();
+
+    // CPU usage is collected over a continuous interval, so we need to store the
+    // cpu info struct otherwise it will always return 0 when created/destroyed just to poll
+    cpu_info = os_cpu_usage_info_start();
+
+    // Info sent to hearbeat/update api
+    id = parsed["user"]["id"].string_value();
+    name = parsed["user"]["name"].string_value();
+
+    gridLayout = new QGridLayout(this);
+
+    int inc = 0;
+    for (const auto &server : parsed_servers) {
+        std::string name = server["name"].string_value();
+
+        Switch *tswitch = new Switch();
+        tswitch->setLayoutDirection(Qt::RightToLeft);
+        tswitch->setChecked(server["status"] == "on");
+
+        // If any of the flips are switched, instantly send an update to the sever
+        connect(tswitch, &SelectionControl::stateChanged,
+                [&]() { send_update("https://mdca.co.com/api/obs_server_update"); });
+
+        // Keep track of the information so we can update it later with modify
+        server_information[name] = ServerInformation{server["url"].string_value(),
+                                                     server["key"].string_value(), tswitch};
+
+        QLabel *label = new QLabel(name.c_str());
+        QFont f("Arial", 12);
+        label->setFont(f);
+
+        // Create button modify. When clicked create a new dialog and grab the server information
+        // stored above. This so it can autofill the current values. When the dialog is accepted,
+        // update the server information and send an update to the server.
+        QPushButton *button = new QPushButton("Modify");
+        connect(button, &QPushButton::clicked, [name, this]() {
+            ServerInformation &server_info = server_information.at(name);
+
+            // .server, .key are both used to prefill
+            ServerDialog *dialog = new ServerDialog(name, server_info.server, server_info.key);
+
+            connect(dialog, &ServerDialog::accepted,
+                    [name, this](std::string server_url, std::string key) {
+                        // Update information in our records
+                        server_information[name].server = server_url;
+                        server_information[name].key = key;
+                        send_update("https://mdca.co.com/api/obs_server_update");
+                    });
+
+            dialog->show();
+        });
+
+        gridLayout->addWidget(label, inc, 0);
+        gridLayout->addWidget(button, inc, 1);
+        gridLayout->addWidget(tswitch, inc, 2);
+
+        inc++;
+    }
+
+    update_settings(parsed);
+
+    // Create timer that sends heartbeat every minute;
     timer = new QTimer;
 
-    connect(timer, &QTimer::timeout, [this]() {
-        send_update("https://mdca.co.com/api/obs_heartbeat");
-    });
+    connect(timer, &QTimer::timeout,
+            [this]() { send_update("https://mdca.co.com/api/obs_heartbeat"); });
 
-    timer->setInterval(1000*60);
+    timer->setInterval(1000 * 60);
     timer->start();
 
     setMaximumHeight(parsed_servers.size() * 50);
 }
 
+// Frees used resources
 DashboardWidget::~DashboardWidget()
 {
     os_cpu_usage_info_destroy(cpu_info);
     timer->deleteLater();
 }
 
+// This is to use the Q_OBJECT macro in order to use connect on some actions
 #include "dashboard-widget.moc"

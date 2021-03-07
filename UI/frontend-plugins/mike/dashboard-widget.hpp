@@ -24,10 +24,10 @@ class DashboardWidget : public QWidget {
     QGridLayout *gridLayout;
     std::unordered_map<std::string, ServerInformation> server_information;
     void send_update(std::string url);
-        std::string id;
-        std::string name;
+    std::string id;
+    std::string name;
 
     public:
     DashboardWidget(QWidget *parent, Json parsed);
-        ~DashboardWidget();
+    ~DashboardWidget();
 };

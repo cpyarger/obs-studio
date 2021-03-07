@@ -14,10 +14,14 @@
 
 #define ConfigSection "mike-obs-server"
 
+// Create overall container widget. This widget is the parent that moderates both dashboard and login.
 ContainerWidget::ContainerWidget(QWidget *parent) : QDockWidget(parent)
 {
     setWindowTitle("Login");
 
+    // Create a cb that gets passed to login widget when it gets created.
+    // This callback will delete the login widget, and create a new dashboard widget on login.
+    // It will set the active widget to the dashboard widget to interact with.
     current_widget = new LoginWidget(this, [&](Json parsed) {
         current_widget->deleteLater();
         current_widget = new DashboardWidget(this, parsed);
@@ -30,9 +34,10 @@ ContainerWidget::ContainerWidget(QWidget *parent) : QDockWidget(parent)
     setWidget(current_widget);
 }
 
+// Register the plugin to OBS. This registers the dock to the frontened and puts it into the correct location
 OBS_DECLARE_MODULE()
 OBS_MODULE_AUTHOR("Ford Smith");
-OBS_MODULE_USE_DEFAULT_LOCALE("mike_server", "en-US")
+OBS_MODULE_USE_DEFAULT_LOCALE("mike_api", "en-US")
 
 bool obs_module_load()
 {
@@ -46,7 +51,7 @@ bool obs_module_load()
             config_get_int(obs_frontend_get_global_config(), ConfigSection, "DockLocation");
     auto visible = config_get_bool(obs_frontend_get_global_config(), ConfigSection, "DockVisible");
     if (!config_has_user_value(obs_frontend_get_global_config(), ConfigSection, "DockLocation")) {
-        docklocation = Qt::DockWidgetArea::LeftDockWidgetArea;
+        docklocation = Qt::DockWidgetArea::BottomDockWidgetArea;
     }
     if (!config_has_user_value(obs_frontend_get_global_config(), ConfigSection, "DockVisible")) {
         visible = true;
@@ -73,5 +78,5 @@ MODULE_EXPORT const char *obs_module_description(void)
 
 MODULE_EXPORT const char *obs_module_name(void)
 {
-    return obs_module_text("MediaControls");
+    return obs_module_text("MikeOBSApi");
 }

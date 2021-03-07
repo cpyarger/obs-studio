@@ -226,7 +226,7 @@ void Switch::paintEvent(QPaintEvent *)
         if (!shadowPixmap.isNull())
             p.drawPixmap(thumbRect.center() - QPointF(THUMB_RADIUS, THUMB_RADIUS - 1.0),
                          shadowPixmap);
-p.setBrush(thumbBrushAnimation->currentValue().value<QColor>());
+        p.setBrush(thumbBrushAnimation->currentValue().value<QColor>());
         p.setRenderHint(QPainter::Antialiasing, true);
         //        qDebug() << thumbRect << thumbPosAniamtion->currentValue();
         p.drawEllipse(thumbRect.center(), THUMB_RADIUS - SHADOW_ELEVATION - 1.0,
@@ -322,5 +322,4 @@ void Switch::toggle(Qt::CheckState state)
                     colorFromOpacity(style.trackOnBrush, style.trackOnOpacity), trackEnd);
         }
     }
-
 }

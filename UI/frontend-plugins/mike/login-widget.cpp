@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QMessageBox>
 
+// CB to curl that reads in the data properly and returns to a string
 int curl_string_callback(void *data, int size, int cnt, void *user)
 {
     auto str = (std::string *)user;
@@ -19,6 +20,8 @@ int curl_string_callback(void *data, int size, int cnt, void *user)
     return cnt;
 }
 
+// Function that takes in a username and password, and returns the result from the server
+// If authenticated correctly, then it should return the settings.
 std::string Login(std::string un, std::string pw)
 {
     CURL *h = curl_easy_init();
@@ -46,6 +49,8 @@ std::string Login(std::string un, std::string pw)
         return "";
 }
 
+// Create the layout for the layou widget. This creates the inputs and creates the CB to run when
+// login button is pressed.
 LoginWidget::LoginWidget(QWidget *parent, LoginCallback _cb) : QWidget(parent), cb(_cb)
 {
     setWindowTitle("Login");
@@ -73,6 +78,9 @@ LoginWidget::LoginWidget(QWidget *parent, LoginCallback _cb) : QWidget(parent), 
 
     QWidget::setTabOrder(username, password);
 
+    // When the login button is clicked, parse the result from the server.
+    // If the server accepts, call another callback (which should create a dashboard
+    // and instantiate settings).
     QObject::connect(login_button, &QPushButton::clicked, [&]() {
         auto un = username->text();
         auto pw = password->text();
