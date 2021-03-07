@@ -21,12 +21,9 @@ int curl_string_callback(void *data, int size, int cnt, void *user)
 
 std::string Login(std::string un, std::string pw)
 {
-    // if (!usable)
-    //     return {};
-
     CURL *h = curl_easy_init();
     if (!h)
-        return {};
+        return "";
     auto e_un = curl_easy_escape(h, un.c_str(), un.size());
     auto e_pw = curl_easy_escape(h, pw.c_str(), pw.size());
     std::string url =
@@ -46,7 +43,7 @@ std::string Login(std::string un, std::string pw)
     if (ret == CURLE_OK)
         return result;
     else
-        return {};
+        return "";
 }
 
 LoginWidget::LoginWidget(QWidget *parent, LoginCallback _cb) : QWidget(parent), cb(_cb)
@@ -60,11 +57,11 @@ LoginWidget::LoginWidget(QWidget *parent, LoginCallback _cb) : QWidget(parent), 
     gridLayout->setColumnStretch(1, 1);
     gridLayout->setColumnStretch(2, 1);
 
-    login_button = new QPushButton("Login", this);
-    password = new QLineEdit(this);
-    username = new QLineEdit(this);
-    username_label = new QLabel("Username:", this);
-    password_label = new QLabel("Password:", this);
+    login_button = new QPushButton("Login");
+    password = new QLineEdit();
+    username = new QLineEdit();
+    username_label = new QLabel("Username:");
+    password_label = new QLabel("Password:");
 
     password->setEchoMode(QLineEdit::EchoMode::Password);
 
@@ -85,8 +82,8 @@ LoginWidget::LoginWidget(QWidget *parent, LoginCallback _cb) : QWidget(parent), 
         Json parsed = Json::parse(res, err);
         if (parsed["status"] != "good" || !err.empty()) {
             QMessageBox messageBox;
-            messageBox.critical(0,"Error","Login is incorrect!");
-            messageBox.setFixedSize(500,200);
+            messageBox.critical(0, "Error", "Login is incorrect!");
+            messageBox.setFixedSize(500, 200);
             return;
         }
 

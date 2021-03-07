@@ -114,8 +114,8 @@ Qt::CheckState SelectionControl::checkState() const
 void SelectionControl::checkStateSet()
 {
     const auto state = checkState();
-    emit stateChanged(state);
     toggle(state);
+    emit stateChanged(state);
 }
 
 void SelectionControl::nextCheckState()
@@ -165,6 +165,11 @@ QRect Switch::textRect()
                      : rect().marginsRemoved(QMargins(0, 0, w, 0));
 }
 
+bool Switch::isChecked()
+{
+    return SelectionControl::isChecked();
+}
+
 Switch::Switch(QWidget *parent) : SelectionControl(parent)
 {
     init();
@@ -187,7 +192,7 @@ QSize Switch::sizeHint() const
 {
     auto h = style.height;
     auto w = style.indicatorMargin.left() + style.height + style.indicatorMargin.right() +
-             fontMetrics().width(text());
+             fontMetrics().horizontalAdvance(text());
 
     return QSize(w, h);
 }
@@ -221,13 +226,14 @@ void Switch::paintEvent(QPaintEvent *)
         if (!shadowPixmap.isNull())
             p.drawPixmap(thumbRect.center() - QPointF(THUMB_RADIUS, THUMB_RADIUS - 1.0),
                          shadowPixmap);
-
-        p.setBrush(thumbBrushAnimation->currentValue().value<QColor>());
+p.setBrush(thumbBrushAnimation->currentValue().value<QColor>());
         p.setRenderHint(QPainter::Antialiasing, true);
         //        qDebug() << thumbRect << thumbPosAniamtion->currentValue();
         p.drawEllipse(thumbRect.center(), THUMB_RADIUS - SHADOW_ELEVATION - 1.0,
                       THUMB_RADIUS - SHADOW_ELEVATION - 1.0);
         p.setRenderHint(QPainter::Antialiasing, false);
+
+        // p.drawRect(1, 2, 300, 400);
 
         /* draw text */
         if (text().isEmpty())
@@ -316,4 +322,5 @@ void Switch::toggle(Qt::CheckState state)
                     colorFromOpacity(style.trackOnBrush, style.trackOnOpacity), trackEnd);
         }
     }
+
 }

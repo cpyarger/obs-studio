@@ -1,5 +1,6 @@
 project(mike)
 set(PROJECT_FULL_NAME "OBS Login System")
+set(PROJECT_NAME mike)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -18,24 +19,25 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #pch.h
 #push - widget.h)
 
-set(mike_SOURCES
+set(${PROJECT_NAME}_SOURCES
   container-widget.cpp
   dashboard-widget.cpp
   switch.cpp
   login-widget.cpp)
 
-set(mike_HEADERS
+set(${PROJECT_NAME}_HEADERS
   container-widget.hpp
   dashboard-widget.hpp
   switch.hpp
   style.hpp
   login-widget.hpp)
 
-add_library(mike MODULE ${mike_SOURCES} ${mike_HEADERS})
-target_link_libraries(mike
+add_library(${PROJECT_NAME} MODULE ${mike_SOURCES} ${mike_HEADERS})
+target_link_libraries(${PROJECT_NAME}
   obs-frontend-api
   Qt5::Widgets
   libobs)
 
-set_target_properties(mike PROPERTIES FOLDER "plugins/mike-server")
-install_obs_plugin_with_data(mike data)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "plugins/mike-server")
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+install_obs_plugin_with_data(${PROJECT_NAME} data)

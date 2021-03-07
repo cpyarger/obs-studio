@@ -2,10 +2,11 @@
 
 #include <QDockWidget>
 #include <QWidget>
+#include <QPointer>
 
 class ContainerWidget : public QDockWidget {
     private:
-    QWidget *current_widget;
+    QPointer<QWidget> current_widget;
 
     public:
     ContainerWidget(QWidget *parent);

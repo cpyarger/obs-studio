@@ -60,6 +60,7 @@ class Switch final : public SelectionControl {
     static constexpr auto SHADOW_ELEVATION = 2.0;
 
     public:
+    bool isChecked();
     explicit Switch(QWidget *parent = nullptr);
     Switch(const QString &text, QWidget *parent = nullptr);
     Switch(const QString &text, const QBrush &, QWidget *parent = nullptr);
@@ -89,6 +90,7 @@ class Switch final : public SelectionControl {
     }
 
     private:
+    std::function<void()> cb;
     Style::Switch style;
     QPixmap shadowPixmap;
     QPointer<Animator> thumbBrushAnimation;

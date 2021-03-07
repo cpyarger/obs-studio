@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QAction>
 #include <QString>
+#include <obs-service.h>
 
 #define ConfigSection "mike-obs-server"
 
@@ -18,7 +19,7 @@ ContainerWidget::ContainerWidget(QWidget *parent) : QDockWidget(parent)
     setWindowTitle("Login");
 
     current_widget = new LoginWidget(this, [&](Json parsed) {
-        delete current_widget;
+        current_widget->deleteLater();
         current_widget = new DashboardWidget(this, parsed);
         setWindowTitle(QString::fromUtf8(parsed["title"].string_value().c_str()));
         setWidget(current_widget);
