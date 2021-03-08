@@ -11,7 +11,7 @@
 
 using namespace json11;
 
-struct ServerInformation {
+struct ServerInfo{
 	std::string server;
 	std::string key;
 	Switch *widget;
@@ -22,7 +22,7 @@ private:
 	QTimer *timer;
 	os_cpu_usage_info_t *cpu_info;
 	QGridLayout *gridLayout;
-	std::unordered_map<std::string, ServerInformation> server_information;
+	std::unordered_map<std::string, ServerInfo> server_information;
 	void send_update(std::string url);
 	std::string id;
 	std::string name;

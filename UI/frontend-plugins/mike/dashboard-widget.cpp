@@ -280,7 +280,7 @@ DashboardWidget::DashboardWidget(QWidget *parent, Json parsed) : QWidget(parent)
 		});
 
 		// Keep track of the information so we can update it later with modify
-		server_information[name] = ServerInformation{
+		server_information[name] = ServerInfo{
 			server["url"].string_value(),
 			server["key"].string_value(), tswitch};
 
@@ -293,7 +293,7 @@ DashboardWidget::DashboardWidget(QWidget *parent, Json parsed) : QWidget(parent)
 		// update the server information and send an update to the server.
 		QPushButton *button = new QPushButton("Modify");
 		connect(button, &QPushButton::clicked, [name, this]() {
-			ServerInformation &server_info =
+			ServerInfo &server_info =
 				server_information.at(name);
 
 			// .server, .key are both used to prefill
