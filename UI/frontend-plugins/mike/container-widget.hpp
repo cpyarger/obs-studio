@@ -5,9 +5,9 @@
 #include <QPointer>
 
 class ContainerWidget : public QDockWidget {
-    private:
-    QPointer<QWidget> current_widget;
+private:
+	QPointer<QWidget> current_widget;
 
-    public:
-    ContainerWidget(QWidget *parent);
+public:
+	ContainerWidget(QWidget *parent);
 };
